@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+# this script is used to change default python_history from ~/.python_history
+# to $XDG_CACHE_HOME/python_history
+# https://unix.stackexchange.com/questions/630642/change-location-of-python-history
+import os
+import atexit
+import readline
+
+if os.environ.get("XDG_CACHE_HOME"):
+    history = os.path.join(os.environ.get("XDG_CACHE_HOME"), '/python_history')
+else:
+    history = os.path.join(os.path.expanduser('~'), '.cache/python_history')
+try:
+    readline.read_history_file(history)
+except OSError:
+    pass
+
+def write_history():
+    try:
+        readline.write_history_file(history)
+    except OSError:
+        pass
+
+atexit.register(write_history)

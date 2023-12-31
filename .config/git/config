@@ -1,0 +1,7 @@
+[init]
+	defaultBranch = main
+[user]
+	name = oxcl
+	email = oxcl@proton.me
+[alias]
+	amend = commit --amend

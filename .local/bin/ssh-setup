@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+# this script makes the proccess of adding ssh to a new server quicker. by automatically
+# generating an ssh key and copying it into the server. and also adding the server to ssh config file
+set -e
+if [[ "$#" -lt 2 ]]; then
+    # print help message
+    echo "ssh-setup: easily add ssh to a new server"
+    echo "usage:"
+    echo "ssh-setup <ssh-address> <key-name> [-C comment] [-p port] [-n name] [-d] [-i]"
+    echo "arguments:"
+    echo "-C|--comment               : add a comment (usually email address) to the ssh key"
+    echo "-p|--port                  : port of the remote server (default 22)"
+    echo "-n|--name                  : what to name this server and key in ssh config file. defaults to the key name"
+    echo "-d|--disable-password-auth : ssh into the remote server and disable password authentication"
+    echo "-i|--ignore-key-copy       : don't try to copy the ssh key into the remote server"
+    exit 0
+fi
+# parsing input arguments
+SSH_ADDRESS="$1"
+KEY_NAME="$2"
+shift 2
+PORT="22" # default value
+COMMENT=" " # default value
+KEY_PATH="$HOME/.ssh/$KEY_NAME"
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+	-C|--comment)
+	    COMMENT="$2"
+	    shift 2
+	    ;;
+	-p|--port)
+	    PORT="$2"
+	    shift 2
+	    ;;
+	-n|--name)
+	    KEY_NAME="$2"
+	    shift 2
+	    ;;
+	-d|--disable-password)
+	    DISABLE_PASSWORD_AUTH=1
+	    shift 1
+	    ;;
+	-i|--ignore-key-copy)
+	    IGNORE_KEY_COPY=1
+	    shift 1
+	    ;;
+	*)
+	    echo "invalid argument '$1'" >&2
+	    exit 1
+	    ;;
+    esac
+done
+# finding out the ssh user and address
+if [[ "$SSH_ADDRESS" == *'@'* ]]; then
+    # the address contains a user name
+    SSH_USER="$(echo "$SSH_ADDRESS" | cut -d'@' -f1)"
+    SERVER_ADDRESS="$(echo "$SSH_ADDRESS" | cut -d'@' -f2)"
+else
+    # the address doesn't contain a user name
+    SSH_USER="$USER"
+    SERVER_ADDRESS="$SSH_ADDRESS"
+fi
+# generate the ssh key if doesn't already exist
+if [[ ! -f "$KEY_PATH.pub" ]]; then
+    echo "generating ssh keys..."
+    ssh-keygen -t ed25519 -C "$COMMENT" -f "$KEY_PATH"
+    KEY_GENERATED=1
+fi
+# copy the ssh key to the server
+special_hosts=() # hosts that don't need the ssh public copying step.
+special_hosts+=("github.com")
+echo "copying ssh keys to the remote server..."
+if [[ " ${special_hosts[*]} " == *" $SERVER_ADDRESS "* ]] || [[ -n "$IGNORE_KEY_COPY" ]]; then
+    echo "copying the public key to remote server is skipped"
+    command -v xclip &>/dev/null && cat "$KEY_PATH.pub" | xclip -selection clipboard && echo "public key is copied to your clipboard"
+elif ! ssh-copy-id -i "$KEY_PATH.pub" "$SSH_ADDRESS" -p "$PORT"; then
+    echo "copying the public key to '$SSH_ADDRESS' failed" >&2
+    # remove the keys if they were generated in this script
+    [[ -n "$KEY_GENERATED" ]] && rm $KEY_PATH{,.pub}
+    exit 1
+fi
+# add key and server to ssh config
+echo "adding the server to ssh config..."
+if [[ ! -n "$NAME" ]]; then
+    [[ -n "$KEY_GENERATED" ]] && NAME="$KEY_NAME" || NAME="$SSH_ADDRESS"
+fi
+CONFIG_FILE="${SSH_CONFIG:-$HOME/.ssh/config}"
+echo "Host $NAME $SSH_ADDRESS" >> "$CONFIG_FILE"
+echo "    User $SSH_USER" >> "$CONFIG_FILE"
+echo "    HostName $SERVER_ADDRESS" >> "$CONFIG_FILE"
+echo "    Port $PORT" >> "$CONFIG_FILE"
+echo "    IdentityFile $KEY_PATH" >> "$CONFIG_FILE"
+
+# cache the key inside ssh agent
+echo "adding the key to ssh-agent..."
+ssh-add "$KEY_PATH"
+
+if [[ -n "$DISABLE_PASSOWRD_AUTH" ]]; then
+    echo "disabling password authentication for the remote server..."
+    ssh "$SSH_ADDRESS" -p "$PORT" <<ENDSSH
+    sudo sed -i '/PasswordAuthentication/d' /etc/ssh/sshd_config
+    sudo echo "PasswordAuthenticaton no" >> /etc/ssh/sshd_config
+    sudo systemctl restart ssh || sudo service ssh restart
+ENDSSH
+    echo "hi"
+fi
+echo "done"

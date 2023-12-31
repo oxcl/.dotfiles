@@ -1,0 +1,37 @@
+# this file is both sourced by x11 (in .xprofile) and zsh ( in .zprofile ) so it works both in graphical environment and tty
+
+# XDG variables
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_BIN_HOME="${HOME}/.local/bin"
+
+
+#move application specific config, data and cache to XDG directories for cleaner $HOME
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+export LESSHISTFILE="${XDG_CACHE_HOME}/lesshst"
+export TMUX_TMPDIR="$XDG_RUNTIME_DIR"
+export INPUTRC="${XDG_CONFIG_HOME}/shell/inputrc"
+export VIMINIT="source ${XDG_CONFIG_HOME}/vim/init.vim"
+export HISTFILE="${XDG_CACHE_HOME}/history" # generic history file for bash & zsh
+export ZSHZ_DATA="${XDG_DATA_HOME}/z" # zsh-z plugin
+
+
+# add extra folders to $PATH
+export PATH="${XDG_DATA_HOME}/npm/bin:$PATH" # add npm global packages
+export PATH="$XDG_BIN_HOME:$PATH" # add my own scripts and binaries
+export PATH="/test:$PATH"
+
+# set default terminal for window manager and desktop environments that respect it
+export TERMINAL="urxvt"
+
+# set default editor to emacs
+export EDITOR="emacs"
+
+export SAVEHIST=4000 # maximum size for $HISTFILE
+
+# make direnv work silently
+export DIRENV_LOG_FORMAT=""
+
+# a performance optimization for emacs LSP-mode
+export LSP_USE_PLISTS=true

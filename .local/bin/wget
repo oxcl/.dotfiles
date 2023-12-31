@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# wrapper for wget to change the default directory for the history file for a cleaner home directory
+exec $(which -a wget | head -n2 | tail -n1) --hsts-file="${XDG_CACHE_HOME:-$HOME/.cache}/wget-hsts" "$@"

@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+# make sure .xprofile is only sourced once due to a bug in nixos
+if [ ! -z $_XPROFILE_SOURCED ]; then return; else export _XPROFILE_SOURCED=1; fi
+# loading necessary environment variables for x11 ( environment variables are automatically loaded for terminals and shells that are called from your desktop environment or window manager)
+source "${XDG_CONFIG:-$HOME/.config}/zsh/env.zsh"
+
+# load settings related to xterm, urxvt and programs that respect x11 settings
+xrdb "${XDG_CONFIG_HOME:-$HOME/.config}/x11/resources"
+
+# run ssh-agen daemon
+[[ -z "$SSH_AGENT_PID" ]] && eval "$(ssh-agent)"
+# run gpg-agent daemon
+command -v gpg-agent &> /dev/null && [[ -z "$GPG_AGENT_INFO" ]] eval "$(gpg-agent --daemon)"
+
+# run urxvt daemon
+urxvtd -q -o &

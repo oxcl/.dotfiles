@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# this script makes the proccess of making a new script easier by adding a shbang and making
+# the scirpt executable
+set -e
+touch "$1"
+echo '#!/usr/bin/env bash' > "$1"
+chmod +x "$1"

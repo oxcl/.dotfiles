@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# this file will not be sourced automatically by fzf. you should source this file in your
+# .zshrc or .bashrc file so that the environment variables are available to fzf at launch
+export FZF_DEFAULT_OPTS='\
+--reverse \
+--height 40% \
+'

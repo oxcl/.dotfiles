@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# simple program to get tree view of a directory
+if command -v lsd &> /dev/null; then lsd $1 --tree --color=always --icon=always | tail +2
+elif command -v tree &> /dev/null; then tree -C $1 | tail +2
+else find $1 -not -path '*/.*' | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/" | tail +2
+fi
