@@ -1,0 +1,79 @@
+{ config,inputs, pkgs, ... }:
+
+{
+  home.username = "user";
+  home.homeDirectory = "/home/user";
+
+  
+  # rofi-blocks is an extension to rofi which allows finer control over rofi
+  nixpkgs.overlays = [
+    inputs.rofi-blocks.overlay
+  ];
+
+
+  home.packages = with pkgs; [
+    cmake
+    python3
+    git
+    git-crypt # transparently encrypt certain files and folders in a git repository
+    qmk
+    rxvt-unicode-emoji # urxvt
+    xclip
+    lsd
+    fzf
+    jq
+    direnv
+    nix-direnv
+    unzip
+    ncdu
+    ansible
+    noto-fonts-color-emoji
+    (rofi.override { plugins = [ rofi-blocks ]; })
+    bat
+    pspg # tui table viewer for databases like postgress and .csv files
+    w3m
+    more
+    most
+    firefox
+    browsh
+    zoxide
+    tldr
+    nuspell
+    hunspellDicts.en-us-large
+    hunspellDicts.en_US-large
+    hunspellDicts.fa-ir
+    hunspellDicts.fa_IR
+    ccls
+    ((emacsPackagesFor emacs29).emacsWithPackages (
+      epkgs: with epkgs; [ vterm treesit-grammars.with-all-grammars jinx ]
+    ))
+    jetbrains-mono
+    noto-fonts-emoji
+    vazir-fonts
+    vazir-code-font
+    emacs-all-the-icons-fonts
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+  ];
+
+  services.gpg-agent = {
+    enable = true;
+    pinentryFlavor = "tty";
+  };
+  
+  home.file = {
+  };
+
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
+
+
+  
+  # This value determines the Home Manager release that your configuration is
+  # compatible with. This helps avoid breakage when a new Home Manager release
+  # introduces backwards incompatible changes.
+  #
+  # You should not change this value, even if you update Home Manager. If you do
+  # want to update the value, then make sure to first check the Home Manager
+  # release notes.
+  home.stateVersion = "23.05"; # Please read the comment before changing.
+}
