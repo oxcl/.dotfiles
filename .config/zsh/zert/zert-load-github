@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+# wrapper around zert-load-git for github
+function zert-load-github(){
+    local REPO_URL="https://github.com/$1"
+    shift
+    zert-load-git "$REPO_URL" "$@"
+}
