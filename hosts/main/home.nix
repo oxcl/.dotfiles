@@ -1,14 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
-    ./base.nix
-  ];
+  imports = [ ../base/home.nix ];
   home.packages = with pkgs; [
     wezterm # wezterm is sluggish in VMs
   ];
- 
-  home.file = {
-
-  };
 }

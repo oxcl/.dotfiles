@@ -55,6 +55,7 @@
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     gnupg
     navi
+    stow
   ];
 
   services.gpg-agent = {
@@ -62,17 +63,6 @@
     pinentryFlavor = "tty";
   };
   
-  home.file = {
-    ".config" = {
-      recursive = true;
-      source = ../.config;
-    };
-    ".local" = {
-      recursive = true;
-      source = ../.local;
-    };
-  };
-
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 

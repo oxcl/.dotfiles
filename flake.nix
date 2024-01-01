@@ -29,14 +29,14 @@
 	  inherit pkgs;
           specialArgs = {inherit inputs;};
           modules = [
-            ./nixos/main/configuration.nix
+            ./hosts/main/configuration.nix
           ];
         };
         work = nixpkgs.lib.nixosSystem {
           inherit pkgs;
           specialArgs = { inherit inputs; };
           modules = [
-            ./nixos/work/configuration.nix
+            ./hosts/main/configuration.nix
           ];
         };
       };
@@ -44,7 +44,9 @@
       homeConfiguration = {
         main = home-manager.lib.homeManageConfiguration {
           inherit pkgs;
-          modules = [ ./home-manager/main.nix ];
+          modules = [
+	    ./hosts/main/home.nix
+	  ];
         };
       };
     };
