@@ -12,4 +12,4 @@ function history(){
     fi
 }
 zle -N history history
-bindkey '^F' history
+bindkey '^R' history
