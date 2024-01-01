@@ -54,6 +54,7 @@
     emacs-all-the-icons-fonts
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     gnupg
+    navi
   ];
 
   services.gpg-agent = {

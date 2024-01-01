@@ -28,7 +28,7 @@
 	main = nixpkgs.lib.nixosSystem {
 	  inherit pkgs;
           specialArgs = {inherit inputs;};
-          modules = [ 
+          modules = [
             ./nixos/main/configuration.nix
           ];
         };

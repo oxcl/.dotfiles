@@ -4,7 +4,7 @@
   imports = [
     ./base.nix
   ];
-  home.packages = [
+  home.packages = with pkgs; [
     wezterm # wezterm is sluggish in VMs
   ];
  
