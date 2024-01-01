@@ -62,6 +62,14 @@
   };
   
   home.file = {
+    ".config" = {
+      recursive = true;
+      source = ../.config;
+    };
+    ".local" = {
+      recursive = true;
+      source = ../.local;
+    };
   };
 
   # Let Home Manager install and manage itself.

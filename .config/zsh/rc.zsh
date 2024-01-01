@@ -75,9 +75,12 @@ alias unarchive="extract"
 # smarter cd with frecency search
 zert-load-omz plugin zoxide
 
-# the default completion for gitignore does not cache the list so it executes a curl command each time
-# this piece of code adds cacheing to it
 
+# fish-like history search with up and down arrow keys.
+# should be loaded after syntax highlighting
+zert-load-omz plugin history-substring-search
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-sutstring-search-down
 
 
 # load simple plugins that are either only for completion or aliases and don't need configuration
