@@ -1,0 +1,81 @@
+#!/usr/bin/env zsh
+function zert-utilize(){
+    # parse arguments
+    local FRAMEWORK="$1"
+    shift
+    while [ "$#" -gt 0 ]; do
+	case "$1" in
+	    -u|--url)
+		local FRAMEWORK_URL="$2"
+		shift 2
+		;;
+	    *)
+		echo "unknown argument '$1'" >&2
+		return 1
+	esac
+    done 
+    if [[ ! -n "$FRAMEWORK_URL" ]]; then
+	if [[ "$FRAMEWORK" == "ohmyzsh" ]]; then
+	    local FRAMEWORK_URL="https://github.com/ohmyzsh/ohmyzsh"
+        elif [[ "$FRAMEWORK" == "prezto" ]]; then
+	    local FRAMEWORK_URL="https://github.com/sorin-ionescu"
+	else
+	    echo "unknown framework $FRAMEWORK" >&2
+	fi
+    fi
+    local FRAMEWORK_DIR="$ZERT_DATA_HOME/$FRAMEWORK"
+    # ensure framework is installed
+    if [[ ! -d "$FRAMEWORK_DIR" ]]; then
+	echo "[zert] downloading '$FRAMEWORK' from '$FRAMEWORK_URL'..."
+	if ! git clone "$FRAMEWORK_URL" "$FRAMEWORK_DIR" -q --recurse-submodules; then
+	    echo "there was an erro downloading $FRAMEWORK using git from $FRAMEWORK_URL" >&2
+	    rm -rf "$FRAMEWORK_DIR"
+	    return 1
+	fi
+	local COMMIT_ID="$(git --git-dir="$FRAMEWORK_DIR/.git" rev-parse HEAD)"
+	local HASH_QUERY_RESULT="$(grep "$FRAMEWORK" "$ZERT_LOCK_FILE")"
+	local PINNED_COMMIT_ID="$(echo $HASH_QUERY_RESULT | cut -d';' -f2)"
+	if [[ ! -n "$HASH_QUERY_RESULT" ]]; then
+	    # add framwork hash (HEAD commit id) to zert.lock if doesn' exist
+	    echo "$FRAMEWORK;$COMMIT_ID;framework;$FRAMEWORK_URL" >> "$ZERT_LOCK_FILE"
+	elif ! git --git-dir="$FRAMEWORK_DIR/.git" checkout "$PINNED_COMMIT_ID" &> /dev/null; then # trying to checkout the pinned commit
+	    # a commit id is defined for this plugin name but git is unable to chekout this commit
+	    echo "! the $FRAMEWORK framework is pinned to a certian commit in $ZERT_LOCK_FILE" >&2
+	    echo "! but zert was not able to chekout this commit from the cloned repository" >&2
+	    echo "! pinned commit: $PINNED_COMMIT_ID" >&2
+	    echo "! current HEAD : $COMMIT_ID" >&2
+	    echo "! remove the line which contains '$FRAMEWORK' from $ZERT_LOCK_FILE or update the framework using zert-update" >&2
+	    echo "! this usually fixes it." >&2
+	    rm -rf "$FRAMEWORK_DIR"
+	    return 1
+	fi
+	# compile framework files into .zwc in paralell
+	setopt LOCAL_OPTIONS NO_NOTIFY NO_MONITOR
+	local PIDS=()
+	for FILE in $(find "$FRAMEWORK_DIR" -not -path "$PLUGIN_DIR/.*" -type f \( -name "*.zsh" -o -name "_*" \) -o -name "*.zsh-theme" ); do
+	    zcompile -R "$FILE" &
+	    PIDS+=("$!")
+	done
+	for PID in ${PIDS[@]}; do wait $PID; done
+	unset FILE PID
+    fi
+    
+    if [[ "$FRAMEWORK" == "ohmyzsh" ]]; then
+	# setup ohmyzsh configuration
+	export ZSH="$FRAMEWORK_DIR"
+	export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/ohmyzsh"
+	mkdir -p "$ZSH_CACHE_DIR/completions"
+	(( ${fpath[(Ie)"$ZSH_CACHE_DIR/completions"]} )) || fpath=("$ZSH_CACHE_DIR/completions" $fpath)
+	if [[ -f "$ZERT_DATA_HOME/omz_plugins" ]]; then
+	    # add omz plugins that were loaded on the last zsh startup to fpath
+	    # this is done so that the completion for those plugins are loaded and captured
+	    # for zcompdump file.
+	    while read plugin; do
+		fpath+=("$plugin")
+	    done < "$ZERT_DATA_HOME/omz_plugins"
+	    unset plugin
+	    rm "$ZERT_DATA_HOME/omz_plugins"
+	fi
+	autoload -Uz zert-load-omz
+    fi
+}

@@ -1,0 +1,56 @@
+#!/usr/bin/env zsh
+# downloads a plugin using 'git clone' if doesn't already exist and loads it
+function zert-load-git(){
+    local REPO_URL="$1"
+    shift
+    zert-parse-args "$@" # parsest optional input parameters that are common among load functions
+    if [[ ! -n "$PLUGIN_NAME" ]]; then
+	local PLUGIN_NAME="$(basename $REPO_URL .git)"
+    fi
+    local PLUGIN_DIR="$ZERT_DATA_HOME/plugins/$PLUGIN_NAME"
+
+    # ensure plugin exists
+    if [[ ! -d "$PLUGIN_DIR" ]]; then # plugin should be downloaded
+	echo "[zert] downloading '$PLUGIN_NAME' from '$REPO_URL'..."
+	if ! git clone "$REPO_URL" "$PLUGIN_DIR" -q; then
+	    echo "there was an error downloading $PLUGIN_NAME using git from $PLUGIN_URL" >&2
+	    rm -rf "$PLUGIN_DIR"
+	    return 1
+	fi
+	local COMMIT_ID="$(git --git-dir="$PLUGIN_DIR/.git" rev-parse HEAD)"
+        local HASH_QUERY_RESULT="$(grep "$PLUGIN_NAME" "$ZERT_LOCK_FILE")"
+	local PINNED_COMMIT_ID="$(echo $HASH_QUERY_RESULT | cut -d';' -f2)"
+	if [[ ! -n "$HASH_QUERY_RESULT" ]]; then
+	    # add plugin hash (HEAD commit id) to zert.lock if doesn't exist
+	    echo "$PLUGIN_NAME;$COMMIT_ID;git;$REPO_URL" >> "$ZERT_LOCK_FILE"
+	elif ! git --git-dir="$PLUGIN_DIR/.git" checkout "$PINNED_COMMIT_ID" &> /dev/null; then # checkout the brach from zert.lock 
+	    # a commit id is defined for this plugin name but git is unable to chekout this commit
+	    echo "! the plugin $PLUGIN_NAME is pinned to a certian commit in $ZERT_LOCK_FILE" >&2
+	    echo "! but zert was not able to chekout this commit from the cloned repository" >&2
+	    echo "! pinned commit: $PINNED_COMMIT_ID" >&2
+	    echo "! current HEAD : $COMMIT_ID" >&2
+	    echo "! update the plugin using 'zert-update $PLUGIN_NAME'" >&2
+	    echo "! this usually fixes it." >&2
+	    rm -rf "$PLUGIN_DIR"
+	    return 1
+	fi
+	# compile files in the plugin directory to .zwc in paralell
+	setopt LOCAL_OPTIONS NO_NOTIFY NO_MONITOR
+	local PIDS=()
+	for FILE in $(find "$PLUGIN_DIR" -not -path "$PLUGIN_DIR/.*" -type f \( -name "*.zsh" -o -name "_*" \) -o -name "*.zsh-theme" ); do
+	    zcompile -R "$FILE" &
+	    pids+=("$!")
+	done
+	unset FILE
+	for PID in ${PIDS[@]}; do wait $PID; done
+	unset PID
+    fi
+
+    # if ignore-alias flag is enabled stop plugin aliases from being set
+    [[ -n "$IGNORE_ALIAS" ]] && alias(){ :; }
+    [ -f "$PLUGIN_DIR/$PLUGIN_NAME.plugin.zsh" ] && source "$PLUGIN_DIR/$PLUGIN_NAME.plugin.zsh"
+    [ -f "$PLUGIN_DIR/$PLUGIN_NAME.zsh-theme" ] && source "$PLUGIN_DIR/$PLUGIN_NAME.zsh-theme"
+    [[ -n "$IGNORE_ALIAS" ]] && unfunction alias
+    unset PLUGIN_NAME
+    unset IGNORE_ALIAS
+}
