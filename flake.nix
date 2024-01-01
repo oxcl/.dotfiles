@@ -32,6 +32,13 @@
             ./nixos/main/configuration.nix
           ];
         };
+        work = nixpkgs.lib.nixosSystem {
+          inherit pkgs;
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./nixos/work/configuration.nix
+          ];
+        };
       };
       # this is useful if you want to setup home-manager without nixos
       homeConfiguration = {

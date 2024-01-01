@@ -53,6 +53,7 @@
     vazir-code-font
     emacs-all-the-icons-fonts
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    gnupg
   ];
 
   services.gpg-agent = {
