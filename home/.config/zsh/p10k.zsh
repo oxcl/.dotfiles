@@ -54,9 +54,11 @@
     terraform_version       # terraform version (https://www.terraform.io)
     toolbox                 # toolbox name (https://github.com/containers/toolbox)
     nix_shell               # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
-    my_direnv  
     command_execution_time  # duration of the last command
     vpn_ip                  # virtual private network indicator
+    my_direnv
+    my_global_history
+    my_per_directory_history
     prompt_char             # prompt symbol
   )
 
@@ -80,7 +82,6 @@
     # todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
     # timewarrior             # timewarrior tracking status (https://timewarrior.net/)
     # taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
-    # per_directory_history   # Oh My Zsh per-directory-history local/global indicator
     # cpu_arch                # CPU architecture
   )
 

@@ -1,6 +1,14 @@
 #!/usr/bin/env zsh
 # i add custom function and variables for powerlevel10k prompt here for easier access
 
+function prompt-full-redraw() {
+  local f
+  for f in chpwd "${chpwd_functions[@]}" precmd "${precmd_functions[@]}"; do
+    [[ "${+functions[$f]}" == 0 ]] || "$f" &>/dev/null || true
+  done
+  p10k display -r
+}
+
 # my own implementation of transient_prompt. after running each command the prompt will change
 # to become the mini version of the prompt
 # for this to work you have to disable p10k transient_prompt
@@ -24,4 +32,7 @@ function p10k-on-pre-prompt()  { # this function runs before new prompt gets pri
 function prompt_my_direnv(){
     [ -n "$DIRENV_LOADED" ] && p10k segment -r -i DIRENV_ICON -f green -s ACTIVE && return
     [ -n "$DIRENV_DIR" ] && p10k segment -r -i DIRENV_ICON -f red -s BLOCKED && return
+}
+function prompt_my_per_directory_history(){
+    [[ $_per_directory_history_is_global == false ]] && p10k segment -r -i HISTORY_ICON -t local -f yellow -s LOCAL
 }

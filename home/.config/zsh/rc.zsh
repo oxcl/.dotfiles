@@ -80,7 +80,33 @@ zert-load-omz plugin zoxide
 # should be loaded after syntax highlighting
 zert-load-omz plugin history-substring-search
 bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-sutstring-search-down
+bindkey '^[[B' history-substring-search-down
+# don't change prompt syntax highlighting
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND=""
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND=""
+
+
+# add directory-local history so that every directory keeps a local history in addition to the global history
+# local/global history can be toggled on and off with Ctrl-N
+HISTORY_BASE="${XDG_CACHE_HOME}/.directory_history"
+PER_DIRECTORY_HISTORY_PRINT_MODE_CHANGE=false # reduce printing message when toggling
+PER_DIRECTORY_HISTORY_TOGGLE='^N'
+HISTORY_START_WITH_GLOBAL=true
+zert-load-omz plugin per-directory-history
+# integration with p10k. i wrote a custom prompt segment for this in custom/p10k_custom.plugin.zsh
+function history-toggle(){
+    per-directory-history-toggle-history
+    command -v p10k &>/dev/null && {
+	if [[ $_per_directory_history_is_global == true ]]; then
+	    p10k display '1/(left)/(my_per_directory_history)'=hide
+	else
+	    p10k display '1/(left)/(my_per_directory_history)'=show
+	    prompt-full-redraw
+	fi
+    }
+}
+zle -N history-toggle history-toggle
+bindkey '^N' history-toggle
 
 
 # load simple plugins that are either only for completion or aliases and don't need configuration
@@ -99,7 +125,7 @@ setopt no_global_rcs
 setopt ksh_glob
 
 # ignore contigous duplicate commands in history
-setopt hist_ignore_dups
+setopt hist_ignore_all_dups
 
 # don't add commands that start with a space to history
 setopt hist_ignore_space
