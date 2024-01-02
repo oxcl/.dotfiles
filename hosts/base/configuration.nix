@@ -42,9 +42,8 @@
       # keymap configuration in x11
       xkb = {
 	layout = "us,ir(pes_keypad)";
-	# switch keyboard layout with LeftAlt+LShift
-	# the caps lock key is repurposed as a Hyper Modifier which is an additional modifier that is not available in normal keyboards. that can be used for keyboard shortcuts in programs like emacs
-	options = "grp:lalt_lshift_toggle,caps:hyper";	
+	# switch keyboard layout with Win+Space
+	options = "grp:win_space_toggle";	
       };
     };
   };

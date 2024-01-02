@@ -206,8 +206,11 @@ customized modus-theme to match gruvbox-material
 ** line numbers column
 #+begin_src emacs-lisp
   (setq-default display-line-numbers-width 4) ; how many digits for line numbers
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  (add-hook 'text-mode-hook 'display-line-numbers-mode)
+  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode))
+    (add-hook mode 'display-line-numbers-mode))
+
+  ;  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  ;  (add-hook 'text-mode-hook 'display-line-numbers-mode)
 #+end_src
 
 ** highlight current line
@@ -835,6 +838,14 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
 #+begin_src elisp
   (use-package rainbow-mode
     :hook (css-base-mode . rainbow-mode))
+#+end_src
+
+* rest client
+declare GET and POST requests in a http file and fire them up with emacs. similar to postman
+#+begin_src elisp
+	    (use-package restclient
+	      :mode ("\\.http\\'" . restclient-mode)
+	      :commands restclient-mode)
 #+end_src
 
 * dired

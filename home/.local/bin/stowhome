@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
+[[ ! -d $HOME/.config ]] && mkdir -p $HOME/.config
+[[ ! -d $HOME/.local/bin ]] && mkdir -p $HOME/.local/bin
 (cd $HOME/.dotfiles/home && stow . --target=$HOME)

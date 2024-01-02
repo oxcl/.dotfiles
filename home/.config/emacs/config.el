@@ -141,8 +141,11 @@
   (require 'gruvbox-material-extras))
 
 (setq-default display-line-numbers-width 4) ; how many digits for line numbers
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(add-hook 'text-mode-hook 'display-line-numbers-mode)
+(dolist (mode '(prog-mode-hook text-mode-hook restclient-mode))
+  (add-hook mode 'display-line-numbers-mode))
+
+;  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+;  (add-hook 'text-mode-hook 'display-line-numbers-mode)
 
 (global-hl-line-mode)
 (add-hook 'comint-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
@@ -571,6 +574,10 @@
 
 (use-package rainbow-mode
   :hook (css-base-mode . rainbow-mode))
+
+(use-package restclient
+  :mode ("\\.http\\'" . restclient-mode)
+  :commands restclient-mode)
 
 (setq delete-by-moving-to-trash t
       dired-listing-switches "-Ahl -v --group-directories-first"
