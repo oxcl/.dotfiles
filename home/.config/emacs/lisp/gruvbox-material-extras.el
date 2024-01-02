@@ -33,6 +33,9 @@
    ;; idle-highlight-mode
    `(idle-highlight ((,c :background ,bg-hover)))
    ;; emacs scroll-bar
-   `(scroll-bar ((,c :background ,bg-region)))))
+   `(scroll-bar ((,c :background ,bg-region)))
+   ;; restclient-mode
+   `(restclient-method-face ((,c :background ,bg-yellow-intense :foreground ,bg-main :weight bold)))
+   `(restclient-url-face ((,c :foreground ,blue :weight bold :underline t)))
+   `(restclient-header-name-face ((,c :foreground ,yellow)))))
 (provide 'gruvbox-material-extras)
-

@@ -1,4 +1,4 @@
-{ config,inputs, pkgs, ... }:
+{ config,inputs,lib, pkgs, ... }:
 
 {
   home.username = "user";
@@ -56,6 +56,7 @@
     gnupg
     navi
     stow
+    libfaketime
   ];
 
   services.gpg-agent = {
@@ -66,7 +67,11 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
-
+  
+  home.activation = {
+    # automatically run my stow script to setup dotfiles in home directory after every home-manager/nixos rebuild
+    myActivationAction = lib.hm.dag.entryAfter ["writeBoundary"] ''PATH="$PATH:${pkgs.stow}/bin" ${../../home/.local/bin/stowhome} '';
+  };
   
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release

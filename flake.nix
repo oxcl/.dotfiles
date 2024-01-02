@@ -36,7 +36,7 @@
           inherit pkgs;
           specialArgs = { inherit inputs; };
           modules = [
-            ./hosts/main/configuration.nix
+            ./hosts/work/configuration.nix
           ];
         };
       };

@@ -206,25 +206,24 @@ customized modus-theme to match gruvbox-material
 ** line numbers column
 #+begin_src emacs-lisp
   (setq-default display-line-numbers-width 4) ; how many digits for line numbers
-  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode))
+  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook))
     (add-hook mode 'display-line-numbers-mode))
-
-  ;  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  ;  (add-hook 'text-mode-hook 'display-line-numbers-mode)
+  (setq require-final-newline t)
 #+end_src
 
 ** highlight current line
 #+begin_src emacs-lisp
   (global-hl-line-mode)
   (add-hook 'comint-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+  (add-hook 'restclient-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
   (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil))) ; org-mode has a lot of bugs with hl-line
 #+end_src
 
 ** icons
 all-the-icons fonts should be installed for this to work
 #+begin_src elisp
-(use-package all-the-icons
-  :if (display-graphic-p))
+  (use-package all-the-icons
+    :if (display-graphic-p))
 #+end_src
 
 * editor
@@ -280,21 +279,21 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 *** navigation
 **** ace
 #+begin_src elisp
-    (use-package ace-window
-      :bind ("M-o" . 'ace-window)
-      :config
-      (setq aw-keys '(?a ?r ?s ?d ?g ?p ?d ?b ?v)))
+  (use-package ace-window
+    :bind ("M-o" . 'ace-window)
+    :config
+    (setq aw-keys '(?a ?r ?s ?d ?g ?p ?d ?b ?v)))
 #+end_src
 
 ** highlight current symbol
 highlight the word/symbol under the cursor (with a small delay) and all its occurrences in the visible buffer
 #+begin_src elisp
-	    (use-package idle-highlight-mode
-	      :hook ((prog-mode text-mode) . idle-highlight-mode)
-	      :hook (org-mode . (lambda () (idle-highlight-mode -1)))
-	      :custom
-	      (idle-highlight-idle-time 0.25)
-	      (idle-highlight-exceptions-face '(font-lock-comment-face)))
+  (use-package idle-highlight-mode
+    :hook ((prog-mode text-mode) . idle-highlight-mode)
+    :hook (org-mode . (lambda () (idle-highlight-mode -1)))
+    :custom
+    (idle-highlight-idle-time 0.25)
+    (idle-highlight-exceptions-face '(font-lock-comment-face)))
 #+end_src
 
 ** jump to occurrence of symbol under the cursor
@@ -306,14 +305,14 @@ C-* jumps to the next occurrence the symbol that is under the cursor.
     (let ((symbol (smartscan-symbol-at-pt 'end))
 	  (pos (point)))
       (when (smartscan-symbol-go-forward)
-	  (beginning-of-buffer)
-	  (smartscan-symbol-goto symbol 'forward)
-	  (unless (bobp) (setq pos (point)))
-	  (goto-char pos))))
-    (use-package smartscan
-      :config
-      (global-smartscan-mode)
-      (keymap-global-set "C-*" 'oxcl/smartscan-wrap))
+	(beginning-of-buffer)
+	(smartscan-symbol-goto symbol 'forward)
+	(unless (bobp) (setq pos (point)))
+	(goto-char pos))))
+  (use-package smartscan
+    :config
+    (global-smartscan-mode)
+    (keymap-global-set "C-*" 'oxcl/smartscan-wrap))
 #+end_src
 
 ** undo
@@ -503,12 +502,12 @@ so it's practically a less strict loose version of the normal isearch. it should
       (isearch-toggle-case-fold)
       (isearch-toggle-char-fold)
       (oxcl/enable-loose-color))
-      (add-hook 'isearch-mode-end-hook #'oxcl/disable-loose-color))
-    (defun oxcl/make-loose-backward ()
-      (interactive)
-      (oxcl/make-loose t))
-    (define-key isearch-mode-map (kbd "C-S-s") #'oxcl/make-loose)
-    (define-key isearch-mode-map (kbd "C-S-r") #'oxcl/make-loose-backward)
+    (add-hook 'isearch-mode-end-hook #'oxcl/disable-loose-color))
+  (defun oxcl/make-loose-backward ()
+    (interactive)
+    (oxcl/make-loose t))
+  (define-key isearch-mode-map (kbd "C-S-s") #'oxcl/make-loose)
+  (define-key isearch-mode-map (kbd "C-S-r") #'oxcl/make-loose-backward)
 #+end_src
 **** search count (lazy highlight)
 show total number of matches in the minibuffer
@@ -674,62 +673,63 @@ taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-
 automatically insert generic boilerplate via autoinsert and yasnippet when creating new files based on file extension
 this code integrates yasnippet with the builtin yasnippet which is taken from  [[https://www.emacswiki.org/emacs/AutoInsertMod][emacs-wiki]]
 #+begin_src elisp
-	(defun oxcl/yas-insert ()
-	  "Replace text in yasnippet templates."
-	  (yas-expand-snippet (buffer-string) (point-min) (point-max)))
+  (defun oxcl/yas-insert ()
+    "Replace text in yasnippet templates."
+    (yas-expand-snippet (buffer-string) (point-min) (point-max)))
 
-	(defun oxcl/setup-auto-insert ()
-	  (unless (featurep 'autoinsert)
-	    (require 'autoinsert)
-	    (auto-insert-mode)
-	    (setq auto-insert-query nil
-		  auto-insert-directory (expand-file-name "auto-inserts/" real-user-emacs-directory)
-		  auto-insert-alist '())
-	    ;; automatically load auto-insert snippets from .config/emacs/auto-inserts folder.
-	    ;; files which have only an underscore in the name will be applied to every file with that extension but only
-	    ;; if a more specific template is not found.
-	    (let ((auto-insert-files (cdr (cdr (directory-files (expand-file-name "auto-inserts" real-user-emacs-directory))))))
-	      (dolist (item auto-insert-files)
-		(let ((pattern-name (if (equal (file-name-base item) "_")
-					(concat "\\." (file-name-extension item) "\\'")
-				      (concat (file-name-base item) "\\." (file-name-extension item)))))
-		  (add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))))
-  ;;	  auto-insert-alist '((("main\\.c\\'" . "main.c")   . ["main.c" oxcl/yas-insert])
-  ;;			      (("\\.c\\'" . "c source") . ["_.c" oxcl/yas-insert]))))
-	(oxcl/setup-auto-insert)
+  (defun oxcl/setup-auto-insert ()
+    (unless (featurep 'autoinsert)
+      (require 'autoinsert)
+      (auto-insert-mode)
+      (setq auto-insert-query nil
+	    auto-insert-directory (expand-file-name "auto-inserts/" real-user-emacs-directory)
+	    auto-insert-alist '())
+      ;; automatically load auto-insert snippets from .config/emacs/auto-inserts folder.
+      ;; files which have only an underscore in the name will be applied to every file with that extension but only
+      ;; if a more specific template is not found.
+      (let ((auto-insert-files (cdr (cdr (directory-files (expand-file-name "auto-inserts" real-user-emacs-directory))))))
+	(dolist (item auto-insert-files)
+	  (let ((pattern-name (if (equal (file-name-base item) "_")
+				  (concat "\\." (file-name-extension item) "\\'")
+				(concat (file-name-base item) "\\." (file-name-extension item)))))
+	    (add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))
+      ;; this snippet adds an extra new line to every new file that is opened.
+      ;; fixes the problems with display-line-number-mode and hl-line-mode
+      (add-to-list 'auto-insert-alist `("\\.*" . ["_" oxcl/yas-insert]))))
+  (oxcl/setup-auto-insert)
 #+end_src
 
 ** completion
 *** defaults
 #+begin_src elisp
-;;  (setq-default completion-styles '(basic))
+  ;;  (setq-default completion-styles '(basic))
 #+end_src
 
 *** company
 **** defaults
 #+begin_src elisp
-    (use-package company
-      :hook
-      ((prog-mode org-mode conf-mode) . company-mode)
-      :config
-      (setq company-minimum-prefix-length 3
-	    company-idle-delay (lambda () (if (company-in-string-or-comment) nil 0.2))
-	    company-frontends '(company-pseudo-tooltip-frontend
-				company-echo-metadata-frontend)
-	    company-tooltip-align-annotations t
-	    company-tooltip-annotation-padding 1
-	    completion-at-point-functions '()
-	    company-selection-wrap-around t
-	    company-tooltip-width-grow-only t
-	    company-tooltip-flip-when-above t
-	    company-tooltip-minimum-width 60
-	    company-backends '(company-files
-			       (company-yasnippet company-dabbrev-code company-dabbrev))
-	    company-tooltip-maximum-width 100
-	    company-icon-margin 3
-	    company-files-exclusions '(".git/" ".DS_STORE" "node_modules/")
-  ;;	  company-transformers '(company-sort-by-backend-importance)
-	    company-sort-prefer-same-case-prefix t))
+  (use-package company
+    :hook
+    ((prog-mode org-mode conf-mode) . company-mode)
+    :config
+    (setq company-minimum-prefix-length 3
+	  company-idle-delay (lambda () (if (company-in-string-or-comment) nil 0.2))
+	  company-frontends '(company-pseudo-tooltip-frontend
+			      company-echo-metadata-frontend)
+	  company-tooltip-align-annotations t
+	  company-tooltip-annotation-padding 1
+	  completion-at-point-functions '()
+	  company-selection-wrap-around t
+	  company-tooltip-width-grow-only t
+	  company-tooltip-flip-when-above t
+	  company-tooltip-minimum-width 60
+	  company-backends '(company-files
+			     (company-yasnippet company-dabbrev-code company-dabbrev))
+	  company-tooltip-maximum-width 100
+	  company-icon-margin 3
+	  company-files-exclusions '(".git/" ".DS_STORE" "node_modules/")
+	  ;;	  company-transformers '(company-sort-by-backend-importance)
+	  company-sort-prefer-same-case-prefix t))
 #+end_src
 comp
 **** company-quick
@@ -767,18 +767,18 @@ makes the auto completion smarter by putting more common and more recent complet
 **** base
 
 #+begin_src elisp
-;;	(use-package prescient
-;;	  :defer t
-;;	  :config
-;;	  (prescient-persist-mode))
+  ;;	(use-package prescient
+  ;;	  :defer t
+  ;;	  :config
+  ;;	  (prescient-persist-mode))
 #+end_src
 
 **** prescient for company-mode
 #+begin_src elisp
-;;  (use-package company-prescient
-;;    :requires prescient
-;;    :after company
-;;    :hook (company-mode . company-prescient-mode))
+  ;;  (use-package company-prescient
+  ;;    :requires prescient
+  ;;    :after company
+  ;;    :hook (company-mode . company-prescient-mode))
 #+end_src
 
 ** LSP
@@ -791,33 +791,33 @@ makes the auto completion smarter by putting more common and more recent complet
 			 (make-local-variable 'company-backends)
 			 (setq company-backends '(company-files
 						  (company-yasnippet company-capf company-dabbrev-code))))))
-  :commands lsp
-  :config
-  (setq lsp-log-io t
-	lsp-auto-configure t
-	lsp-enable-symbol-highlighting nil
-	lsp-ui-doc-enable nil
-	lsp-ui-doc-show-with-cursor nil
-	lsp-ui-doc-show-with-mouse nil
-	lsp-lens-enable nil
-	lsp-headerline-breadcrumb-enable nil
-	lsp-ui-sideline-enable nil
-	lsp-ui-sideline-show-code-actions nil
-	lsp-ui-sideline-show-hover nil
-	lsp-modeline-code-actions-enable nil
-	lsp-diagnostics-provider :none
-	lsp-ui-sideline-show-diagnostics nil
-	lsp-eldoc-enable_hover nil
-	lsp-modeline-diagnostics-enable nil
-	lsp-signature-auto-activate nil
-	lsp-signature-render-documentation nil
-	lsp-completion-enable t
-	lsp-completion-show-detail t
-	lsp-completion-show-kind t
-	lsp-completion-sort-initial-results nil
-	lsp-completion-filter-on-incomplete nil
-	completion-at-point-functions '(lsp-completion-at-point)
-	lsp-enable-suggest-server-download nil))
+    :commands lsp
+    :config
+    (setq lsp-log-io t
+	  lsp-auto-configure t
+	  lsp-enable-symbol-highlighting nil
+	  lsp-ui-doc-enable nil
+	  lsp-ui-doc-show-with-cursor nil
+	  lsp-ui-doc-show-with-mouse nil
+	  lsp-lens-enable nil
+	  lsp-headerline-breadcrumb-enable nil
+	  lsp-ui-sideline-enable nil
+	  lsp-ui-sideline-show-code-actions nil
+	  lsp-ui-sideline-show-hover nil
+	  lsp-modeline-code-actions-enable nil
+	  lsp-diagnostics-provider :none
+	  lsp-ui-sideline-show-diagnostics nil
+	  lsp-eldoc-enable_hover nil
+	  lsp-modeline-diagnostics-enable nil
+	  lsp-signature-auto-activate nil
+	  lsp-signature-render-documentation nil
+	  lsp-completion-enable t
+	  lsp-completion-show-detail t
+	  lsp-completion-show-kind t
+	  lsp-completion-sort-initial-results nil
+	  lsp-completion-filter-on-incomplete nil
+	  completion-at-point-functions '(lsp-completion-at-point)
+	  lsp-enable-suggest-server-download nil))
 #+end_src
 
 *** ccls
@@ -828,7 +828,7 @@ makes the auto completion smarter by putting more common and more recent complet
     (ccls-sem-highlight-method 'overlay)
     (lsp-prefer-flymake nil)
     (ccls-initialization-options `(:cache      (:directory ,(expand-file-name "ccls-cache" (getenv "XDG_CACHE_HOME")))
-				   :completion (:placeholder :json-false))))
+					       :completion (:placeholder :json-false))))
 #+end_src
 
 ** css
@@ -843,9 +843,52 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
 * rest client
 declare GET and POST requests in a http file and fire them up with emacs. similar to postman
 #+begin_src elisp
-	    (use-package restclient
-	      :mode ("\\.http\\'" . restclient-mode)
-	      :commands restclient-mode)
+  ;; this function automatically adds "http://" to current request url if it lacks one
+  (defun oxcl/inject-http-to-url ()
+    (interactive)
+    (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+      (when (and ;; if line begins with a http method but it doesn't include a http:// or https://
+	   (string-match "^\\(GET\\|POST\\|PUT\\|PATCH\\|DELETE\\) .*$" line)
+	   (not (string-match "^\\w* \\(https:\\|http:\\)" line)))
+	(save-excursion
+	  (beginning-of-line)
+	  (forward-word)
+	  (forward-char)
+	  (insert "http://"))))
+    (newline))
+  (use-package restclient
+    :mode ("\\.http\\'" . restclient-mode)
+    :commands restclient-mode
+    :bind 
+    (:map restclient-mode-map
+    ("C-c C-v" . restclient-http-send-current)
+    ("C-c C-c" . restclient-http-send-current-stay-in-window)
+    ("RET" . oxcl/inject-http-to-url))
+    :config
+    (require 'restclient-jq) ; enable jq integration
+    ;; disable the builtin folding functionality
+    ;;(remove-hook 'restclient-mode-hook 'restclient-outline-mode)
+    
+    (setq restclient-inhibit-cookies t
+	  restclient-content-type-modes (push '("application/json" . json-ts-mode)
+					      restclient-content-type-modes)))
+#+end_src
+** jq integration
+use jq to query through the response object and store them in restclient variables with -> jq-set-var hook
+#+begin_src elisp
+    (use-package jq-mode :defer)
+    (use-package restclient-jq :defer)
+#+end_src
+#+begin_src elisp
+#+end_src
+
+** org-mode babel
+use #begin_src restclient to execute restclient requests inside an org-mode code block
+#+begin_src elisp
+  (use-package ob-restclient
+    :after org-mode
+    :config
+    (org-babel-do-load-languages 'org-babel-load-languages ''((restclient . t))))
 #+end_src
 
 * dired
