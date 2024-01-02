@@ -36,3 +36,9 @@ function prompt_my_direnv(){
 function prompt_my_per_directory_history(){
     [[ $_per_directory_history_is_global == false ]] && p10k segment -r -i HISTORY_ICON -t local -f yellow -s LOCAL
 }
+
+
+# custom copybuffer segment which displays a text or icon to notify the user that the buffer was copied
+function prompt_my_copybuffer(){
+    [[ -z "$_COPYBUFFER_SEGMENT" ]] && export _COPYBUFFER_SEGMENT=1 || p10k segment -r -i OK_ICON -t copied -f magenta -s LOCAL
+}

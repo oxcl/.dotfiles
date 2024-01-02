@@ -67,6 +67,7 @@
   # automatically hidden when the input line reaches it. Right prompt above the
   # last prompt line gets hidden if it would overlap with left prompt.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+    my_copybuffer
     # os_icon                 # os identifier
     # package                 # name@version from package.json (https://docs.npmjs.com/files/package.json)
     # ranger                  # ranger shell (https://github.com/ranger/ranger)

@@ -108,12 +108,12 @@ function history-toggle(){
 zle -N history-toggle history-toggle
 bindkey '^N' history-toggle
 
-
 # load simple plugins that are either only for completion or aliases and don't need configuration
-local simple_plugins=(adb ag bun cabal)
-for plugin in $simple_plugins; do zert-load-omz plugin $plugin; done
-unset simple_plugins plugin
 
+local simple_plugins=(docker-compose dotnet)
+for plugin in $simple_plugins; do zert-load-omz plugin $plugin --ignore-alias; done
+unset simple_plugins plugin
+rm $XDG_CACHE_DIR/zcompdump -f
 
 ####################
 # OPTIONS
@@ -138,9 +138,15 @@ setopt inc_append_history
 
 # run background jobs at a lower priority
 setopt bg_nice
-#
+
+# Ctrl-D will not exit the shell
+setopt ignore_eof
+
 # stop beeping
 setopt no_beep
+
+# set the definition of a word for navigation and editing commands
+WORDCHARS=""
 
 ####################
 # CUSTOMIZATIONS
@@ -149,7 +155,10 @@ setopt no_beep
 zstyle ":completion:*" menu select
 zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"
 
-bindkey -e # use emacs keybindings
+# emulate emacs keybindings
+bindkey -e
+bindkey "^H" backward-kill-word
+
 
 # my own aliases
 source "$HERE/alias.zsh"
@@ -157,7 +166,6 @@ source "$HERE/alias.zsh"
 # my own custom plugins
 for custom in $HERE/custom/*.plugin.zsh; do source $custom; done
 unset custom
-
 
 # load p10k customizations if available should be at the end of the rc file
 [[ -f "$HERE/p10k.zsh" ]] && source "$HERE/p10k.zsh"
