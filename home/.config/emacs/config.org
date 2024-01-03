@@ -841,21 +841,9 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
 #+end_src
 
 * rest client
+** defaults
 declare GET and POST requests in a http file and fire them up with emacs. similar to postman
 #+begin_src elisp
-  ;; this function automatically adds "http://" to current request url if it lacks one
-  (defun oxcl/inject-http-to-url ()
-    (interactive)
-    (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-      (when (and ;; if line begins with a http method but it doesn't include a http:// or https://
-	   (string-match "^\\(GET\\|POST\\|PUT\\|PATCH\\|DELETE\\) .*$" line)
-	   (not (string-match "^\\w* \\(https:\\|http:\\)" line)))
-	(save-excursion
-	  (beginning-of-line)
-	  (forward-word)
-	  (forward-char)
-	  (insert "http://"))))
-    (newline))
   (use-package restclient
     :mode ("\\.http\\'" . restclient-mode)
     :commands restclient-mode
@@ -863,32 +851,78 @@ declare GET and POST requests in a http file and fire them up with emacs. simila
     (:map restclient-mode-map
     ("C-c C-v" . restclient-http-send-current)
     ("C-c C-c" . restclient-http-send-current-stay-in-window)
-    ("RET" . oxcl/inject-http-to-url))
+    ("<ret>" . oxcl/inject-http-to-url))
     :config
-    (require 'restclient-jq) ; enable jq integration
-    ;; disable the builtin folding functionality
-    ;;(remove-hook 'restclient-mode-hook 'restclient-outline-mode)
-    
+    ;; fix yasnippet expand in restclient mode when fold/outline functionality is enabled
+    (add-hook 'restclient-mode-hook (lambda () (local-set-key (kbd "<tab>") yas-maybe-expand)))
+    ;; (remove-hook 'restclient-mode-hook 'restclient-outline-mode) ; disable fold in restclient-mode
+
     (setq restclient-inhibit-cookies t
-	  restclient-content-type-modes (push '("application/json" . json-ts-mode)
-					      restclient-content-type-modes)))
+	  restclient-response-body-only t
+	  restclient-content-type-modes (append '(("application/json" . json-ts-mode)
+						  ("application/octet-stream" . oxcl/restclient-hexl-mode))
+					      restclient-content-type-modes))
+    (add-hook 'restclient-response-mode-hook (lambda () (jinx-mode -1) (yas-minor-mode -1))))
 #+end_src
-** jq integration
-use jq to query through the response object and store them in restclient variables with -> jq-set-var hook
+
+** automatic http prefix injector
+this function automatically adds a "http://" at the beginning of the url if it's missing one since httpclient.el doesn't add the http:// by default
 #+begin_src elisp
-    (use-package jq-mode :defer)
-    (use-package restclient-jq :defer)
+  (defun oxcl/inject-http-to-url ()
+  (interactive)
+  (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+    (when (and ;; if line begins with a http method but it doesn't include a http:// or https://
+	 (string-match "^\\(GET\\|POST\\|PUT\\|PATCH\\|DELETE\\|HEAD\\|CONNECT\\|OPTIONS\\|TRACE\\) .*$" line)
+	 (not (string-match "^\\w* \\(https:\\|http:\\)" line)))
+      (save-excursion
+	(beginning-of-line)
+	(forward-word)
+	(forward-char)
+	(insert "http://"))))
+  (newline))
+#+end_src
+
+** jq integration
+use jq to query and search the response object and store them in restclient variables with ~-> jq-set-var :<var-name> <jq-query>~
+#+begin_src elisp
+      (use-package jq-mode
+	:hook (restclient-mode . (lambda () (require 'jq-mode))))
+      (use-package restclient-jq :after jq-mode)
 #+end_src
 #+begin_src elisp
 #+end_src
 
-** org-mode babel
-use #begin_src restclient to execute restclient requests inside an org-mode code block
+** org-mode babel integration
+use ~#begin_src restclient~ to execute restclient requests inside an org-mode code block
 #+begin_src elisp
   (use-package ob-restclient
     :after org-mode
     :config
     (org-babel-do-load-languages 'org-babel-load-languages ''((restclient . t))))
+#+end_src
+
+** json integration
+prettify json files and diplay UTF-8 characters correctly
+#+begin_src elisp
+	(add-hook
+	 'restclient-mode-hook
+	 (lambda () (add-hook 'restclient-response-loaded-hook
+			      (lambda () (when (eq major-mode 'json-ts-mode) (json-pretty-print-buffer))))))
+#+end_src
+
+** hexl-mode integration
+automatically display responses with binary format in hexl-mode (emacs builtin hex editor)
+#+begin_src elisp
+  (defun oxcl/restclient-hexl-mode ()
+    (set-buffer-file-coding-system 'binary)
+    (setq buffer-undo-list nil)
+    (hexl-mode))
+  (add-hook 'restclient-mode-hook
+	    (lambda() 
+	      (add-hook 'restclient-response-received-hook
+			(lambda ()  (set-buffer-file-coding-system 'utf-8)
+			  (when (eq major-mode 'hexl-mode) (hexl-mode-exit 0))))))
+
 #+end_src
 
 * dired

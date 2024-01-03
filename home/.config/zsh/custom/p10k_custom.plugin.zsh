@@ -38,7 +38,10 @@ function prompt_my_per_directory_history(){
 }
 
 
+
+
 # custom copybuffer segment which displays a text or icon to notify the user that the buffer was copied
+_COPYBUFFER_SEGMENT= # empty the variable when the shell starts
 function prompt_my_copybuffer(){
     [[ -z "$_COPYBUFFER_SEGMENT" ]] && export _COPYBUFFER_SEGMENT=1 || p10k segment -r -i OK_ICON -t copied -f magenta -s LOCAL
 }

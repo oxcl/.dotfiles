@@ -77,5 +77,5 @@ alias fzfp="fzf --preview 'bat --color=always --style=numbers --line-range=:500 
 # breaking the habbit of using clear instead of Ctrl-l
 alias clear=" echo 'use Ctrl-l'"
 
-# use my active shell instead of bash for nix-shell
-alias nix-shell="nix-shell --command $(basename $SHELL)"
+# nix/nixos aliases
+alias nrs="sudo nixos-rebuild switch --flake $HOME/.dotfiles$MY_NIX_HOST"

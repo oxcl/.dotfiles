@@ -145,20 +145,23 @@ setopt ignore_eof
 # stop beeping
 setopt no_beep
 
-# set the definition of a word for navigation and editing commands
-WORDCHARS=""
 
 ####################
 # CUSTOMIZATIONS
 ####################
+
+# set the definition of a word for navigation and editing commands
+WORDCHARS=""
+
 # use ls colors for zsh file completion aswell
 zstyle ":completion:*" menu select
 zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"
 
 # emulate emacs keybindings
 bindkey -e
-bindkey "^H" backward-kill-word
-
+bindkey "^H" backward-kill-word # Ctrl+Backspace
+bindkey "^[Oc" forward-word # Ctrl+<Right>
+bindkey "^[Od" backward-word # Ctrl+<Left>
 
 # my own aliases
 source "$HERE/alias.zsh"

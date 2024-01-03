@@ -37,5 +37,8 @@
    ;; restclient-mode
    `(restclient-method-face ((,c :background ,bg-yellow-intense :foreground ,bg-main :weight bold)))
    `(restclient-url-face ((,c :foreground ,blue :weight bold :underline t)))
-   `(restclient-header-name-face ((,c :foreground ,yellow)))))
+   `(restclient-header-name-face ((,c :foreground ,yellow)))
+   ;; my custom faces for colorizing hexl-mode
+   `(oxcl/hexl-printable-face ((,c :foreground ,yellow)))
+   `(oxcl/hexl-null-face ((,c :foreground ,fg-dim)))))
 (provide 'gruvbox-material-extras)
