@@ -59,6 +59,7 @@
     my_direnv
     my_global_history
     my_per_directory_history
+    my_asciinema
     prompt_char             # prompt symbol
   )
 

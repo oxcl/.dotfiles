@@ -108,8 +108,16 @@ function history-toggle(){
 zle -N history-toggle history-toggle
 bindkey '^N' history-toggle
 
-# load simple plugins that are either only for completion or aliases and don't need configuration
 
+# autosuggestion in gray color after the cursor based on history and zsh completinos
+zert-load-github zsh-users/zsh-autosuggestions
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
+ZSH_AUTOSUGGEST_MANUAL_REBIND=true # boosts performance but makes the plugin more unstable
+
+
+
+# load simple plugins that are either only for completion or aliases and don't need configuration
 local simple_plugins=(docker-compose dotnet fancy-ctrl-z gitfast git-extras flutter golang gh)
 for plugin in $simple_plugins; do zert-load-omz plugin $plugin --ignore-alias; done
 unset simple_plugins plugin

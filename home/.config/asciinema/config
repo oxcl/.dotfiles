@@ -1,0 +1,2 @@
+[record]
+command = _ASCIINEMA_SEGMENT=1 HISTFILE=/dev/null /usr/bin/env zsh
