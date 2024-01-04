@@ -9,6 +9,9 @@
   nixpkgs.overlays = [
     inputs.rofi-blocks.overlay
   ];
+  nixpkgs.config = {
+    allowUnfree = true;
+  };
 
 
   home.packages = with pkgs; [
@@ -60,6 +63,17 @@
     libfaketime
     poke
     nix-output-monitor
+    websocat
+    gh
+    # archive and compression tools
+    pigz
+    pbzip2
+    pixz
+    lzip
+    lz4
+    unrar
+    cabextract
+    p7zip
   ];
 
   services.gpg-agent = {

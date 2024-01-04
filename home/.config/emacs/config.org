@@ -290,9 +290,8 @@ highlight the word/symbol under the cursor (with a small delay) and all its occu
 #+begin_src elisp
   (use-package idle-highlight-mode
     :hook ((prog-mode text-mode) . idle-highlight-mode)
-    :hook (org-mode . (lambda () (idle-highlight-mode -1)))
     :custom
-    (idle-highlight-idle-time 0.25)
+    (idle-highlight-idle-time 0.1)
     (idle-highlight-exceptions-face '(font-lock-comment-face)))
 #+end_src
 

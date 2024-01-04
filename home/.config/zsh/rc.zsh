@@ -110,7 +110,7 @@ bindkey '^N' history-toggle
 
 # load simple plugins that are either only for completion or aliases and don't need configuration
 
-local simple_plugins=(docker-compose dotnet fancy-ctrl-z gitfast git-extras flutter golang)
+local simple_plugins=(docker-compose dotnet fancy-ctrl-z gitfast git-extras flutter golang gh)
 for plugin in $simple_plugins; do zert-load-omz plugin $plugin --ignore-alias; done
 unset simple_plugins plugin
 rm $XDG_CACHE_DIR/zcompdump -f
