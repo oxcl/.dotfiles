@@ -844,25 +844,30 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
 ** defaults
 declare GET and POST requests in a http file and fire them up with emacs. similar to postman
 #+begin_src elisp
-  (use-package restclient
-    :mode ("\\.http\\'" . restclient-mode)
-    :commands restclient-mode
-    :bind 
-    (:map restclient-mode-map
-    ("C-c C-v" . restclient-http-send-current)
-    ("C-c C-c" . restclient-http-send-current-stay-in-window)
-    ("<ret>" . oxcl/inject-http-to-url))
-    :config
-    ;; fix yasnippet expand in restclient mode when fold/outline functionality is enabled
-    (add-hook 'restclient-mode-hook (lambda () (local-set-key (kbd "<tab>") yas-maybe-expand)))
-    ;; (remove-hook 'restclient-mode-hook 'restclient-outline-mode) ; disable fold in restclient-mode
+    (use-package restclient
+      :mode ("\\.http\\'" . restclient-mode)
+      :commands restclient-mode
+      :bind 
+      (:map restclient-mode-map
+      ("C-c C-v" . restclient-http-send-current)
+      ("C-c C-c" . restclient-http-send-current-stay-in-window)
+      ("C-c C-d" . oxcl/restclient-send-current-show-headers))
+      :config
+      ;; fix yasnippet expand in restclient mode when fold/outline functionality is enabled
+      (add-hook 'restclient-mode-hook (lambda () (local-set-key (kbd "<tab>") yas-maybe-expand)))
+      ;; (remove-hook 'restclient-mode-hook 'restclient-outline-mode) ; disable fold in restclient-mode
 
-    (setq restclient-inhibit-cookies t
-	  restclient-response-body-only t
-	  restclient-content-type-modes (append '(("application/json" . json-ts-mode)
-						  ("application/octet-stream" . oxcl/restclient-hexl-mode))
-					      restclient-content-type-modes))
-    (add-hook 'restclient-response-mode-hook (lambda () (jinx-mode -1) (yas-minor-mode -1))))
+      (setq restclient-inhibit-cookies t
+	    restclient-response-body-only t
+	    restclient-content-type-modes (append '(("application/json" . json-ts-mode)
+						    ("application/octet-stream" . oxcl/restclient-hexl-mode))
+						restclient-content-type-modes))
+      (add-hook 'restclient-response-mode-hook (lambda () (jinx-mode -1) (yas-minor-mode -1))))
+    (defun oxcl/restclient-send-current-show-headers ()
+      (interactive)
+      (setq restclient-response-body-only nil)
+      (restclient-http-send-current-stay-in-window)
+      (add-hook 'restclient-response-loaded-hook (lambda () (setq restclient-response-body-only t))))
 #+end_src
 
 ** automatic http prefix injector
@@ -880,6 +885,7 @@ this function automatically adds a "http://" at the beginning of the url if it's
 	(forward-char)
 	(insert "http://"))))
   (newline))
+  (add-hook 'restclient-mode-hook (lambda () (local-set-key (kbd "<return>") #'oxcl/inject-http-to-url)))
 #+end_src
 
 ** org-mode babel integration
@@ -971,14 +977,16 @@ in my implementation of ~gruvbox-material~ i have defined custom faces:
  - ~oxcl/hexl-null-face~
 i will use these to colorize the hexl-mode buffer
 #+begin_src elisp
-     (setq oxcl/hexl-printable-left-regexp "[2-7][a-zA-Z0-9]\\(?: \\)"
-	   oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
-	   oxcl/hexl-null-left-regexp  "00\\b"
-	   oxcl/hexl-null-right-regexp " 00")
-     (font-lock-add-keywords 'hexl-mode `((,oxcl/hexl-printable-left-regexp  . 'oxcl/hexl-printable-face)
-					  (,oxcl/hexl-printable-right-regexp . 'oxcl/hexl-printable-face)
-					  (,oxcl/hexl-null-left-regexp       . 'oxcl/hexl-null-face)
-					  (,oxcl/hexl-null-right-regexp      . 'oxcl/hexl-null-face)) 'set)
+	 (setq oxcl/hexl-printable-left-regexp "$[2-7][a-zA-Z0-9]\\(?: \\)"
+	       oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
+	       oxcl/hexl-null-left-regexp  "00\\b"
+	       oxcl/hexl-null-right-regexp " 00"
+	       oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
+	 (font-lock-add-keywords 'hexl-mode `((,oxcl/hexl-ascii-regexp           . 'oxcl/hexl-ascii-face)
+					      (,oxcl/hexl-printable-left-regexp  . 'oxcl/hexl-printable-face)
+					      (,oxcl/hexl-printable-right-regexp . 'oxcl/hexl-printable-face)
+					      (,oxcl/hexl-null-left-regexp       . 'oxcl/hexl-null-face)
+					      (,oxcl/hexl-null-right-regexp      . 'oxcl/hexl-null-face)) 'set)
 #+end_src
 
 * dired

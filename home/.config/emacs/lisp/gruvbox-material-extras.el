@@ -45,7 +45,8 @@
   
   ;; my custom faces for colorizing hexl-mode
   (defface oxcl/hexl-printable-face `((t (:foreground ,yellow))) "Face for highlighting hex codes that are in the ascii printable range")
-  (defface oxcl/hexl-null-face `((t (:foreground ,fg-dim))) "Face for highlighting 0 or null hex codes"))
+  (defface oxcl/hexl-null-face `((t (:foreground ,fg-dim))) "Face for highlighting 0 or null hex codes")
+  (defface oxcl/hexl-ascii-face `((t (:foreground ,cyan))) "Face for highlighting ascii representations"))
 
 
 (provide 'gruvbox-material-extras)

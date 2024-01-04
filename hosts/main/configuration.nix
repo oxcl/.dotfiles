@@ -25,5 +25,9 @@
     extraSpecialArgs = {inherit inputs; };
     users.user = import ./home.nix;
   };
+
+  environment.variables = {
+    MY_NIX_HOST = "main";
+  };
 }
 

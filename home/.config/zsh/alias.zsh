@@ -78,4 +78,4 @@ alias fzfp="fzf --preview 'bat --color=always --style=numbers --line-range=:500 
 alias clear=" echo 'use Ctrl-l'"
 
 # nix/nixos aliases
-alias nrs="sudo nixos-rebuild switch --flake $HOME/.dotfiles$MY_NIX_HOST"
+alias nrs="sudo echo && sudo nixos-rebuild switch --flake $HOME/.dotfiles#$MY_NIX_HOST --log-format internal-json |& nom --json"

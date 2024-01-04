@@ -59,6 +59,7 @@
     stow
     libfaketime
     poke
+    nix-output-monitor
   ];
 
   services.gpg-agent = {
