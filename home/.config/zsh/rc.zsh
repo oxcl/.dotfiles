@@ -163,6 +163,10 @@ bindkey "^H" backward-kill-word # Ctrl+Backspace
 bindkey "^[Oc" forward-word # Ctrl+<Right>
 bindkey "^[Od" backward-word # Ctrl+<Left>
 
+
+# load fzf completions
+command -v fzf-share &> /dev/null && source "$(fzf-share)/completion.zsh"
+
 # my own aliases
 source "$HERE/alias.zsh"
 

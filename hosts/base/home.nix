@@ -71,9 +71,13 @@
     pixz
     lzip
     lz4
-    unrar
+    rar
+    zip
     cabextract
     p7zip
+    asciinema
+    asciinema-agg
+    gifsicle
   ];
 
   services.gpg-agent = {
