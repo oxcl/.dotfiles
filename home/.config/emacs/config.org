@@ -182,7 +182,7 @@ automatically regenerate the lockfile when installing a new package or upgrading
 #+end_src
 
 ** theme
-customized modus-theme to match gruvbox-material
+customized modus-themes to match gruvbox-material
 #+begin_src emacs-lisp
   (use-package modus-themes
     :config
@@ -882,6 +882,15 @@ this function automatically adds a "http://" at the beginning of the url if it's
   (newline))
 #+end_src
 
+** org-mode babel integration
+use ~#begin_src restclient~ to execute restclient requests inside an org-mode code block
+#+begin_src elisp
+  (use-package ob-restclient
+    :after org-mode
+    :config
+    (org-babel-do-load-languages 'org-babel-load-languages ''((restclient . t))))
+#+end_src
+
 ** jq integration
 use jq to query and search the response object and store them in restclient variables with ~-> jq-set-var :<var-name> <jq-query>~
 #+begin_src elisp
@@ -890,15 +899,6 @@ use jq to query and search the response object and store them in restclient vari
       (use-package restclient-jq :after jq-mode)
 #+end_src
 #+begin_src elisp
-#+end_src
-
-** org-mode babel integration
-use ~#begin_src restclient~ to execute restclient requests inside an org-mode code block
-#+begin_src elisp
-  (use-package ob-restclient
-    :after org-mode
-    :config
-    (org-babel-do-load-languages 'org-babel-load-languages ''((restclient . t))))
 #+end_src
 
 ** json integration
@@ -923,6 +923,62 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 			(lambda ()  (set-buffer-file-coding-system 'utf-8)
 			  (when (eq major-mode 'hexl-mode) (hexl-mode-exit 0))))))
 
+#+end_src
+
+* hex editor
+some enhancements to the builtin hex editor in emacs
+** detect binary files automatically
+automatically detect binary format when opening files and switch to hex editor
+#+begin_src elisp
+  (add-hook 'find-file-hook (lambda ()
+			      (when (equal buffer-file-coding-system 'no-conversion) (hexl-mode))))
+  (add-to-list 'auto-mode-alist '("\\.\\(bin\\|exe\\|dat\\|dll\\|ana\\|anac\\|hex\\)\\'" . hexl-mode))
+#+end_src
+
+** keybindings
+add quality of life keybindings
+#+begin_src elisp
+    (defun oxcl/hexl-backspace ()
+      (interactive)
+      (hexl-backward-char 1)
+      (hexl-insert-char 0 1)
+      (hexl-backward-char 1))
+    (add-hook 'hexl-mode-hook (lambda ()
+    (keymap-local-set "<backspace>" #'oxcl/hexl-backspace)))
+#+end_src
+
+** mode-line info
+display byte, short, float and integer representations of the value under the cursor in the mode-line
+#+begin_src elisp
+    (setq oxcl/hexl-val-in-byte ""
+	  oxcl/hexl-val-in-short ""
+	  oxcl/hexl-val-in-int32 ""
+	  oxcl/hexl-val-in-int64 ""
+	  oxcl/hexl-val-in-float ""
+	  oxcl/hexl-val-in-double "")
+    (defun oxcl/hexl-update-mode-line ()
+  ;;    (setq oxcl/hexl-val-in-byte (format "byte: %s" (char-after-point)))
+      (force-mode-line-update) "string")
+    (add-hook 'hexl-mode-hook
+	      (lambda ()
+		(setq mode-line-format (append mode-line-format '((:eval oxcl/hexl-val-in-byte))))))
+#+end_src
+
+** colorize hexl-mode
+add colors to hexl-mode buffer
+in my implementation of ~gruvbox-material~ i have defined custom faces:
+ - ~oxcl/hexl-printable-face~
+ - ~oxcl/hexl-null-face~
+i will use these to colorize the hexl-mode buffer
+#+begin_src elisp
+     (setq oxcl/hexl-printable-left-regexp "[2-7][a-zA-Z0-9]\\(?: \\)"
+	   oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
+	   oxcl/hexl-null-left-regexp  "00\\b"
+	   oxcl/hexl-null-right-regexp " 00")
+     (font-lock-add-keywords 'hexl-mode `((,oxcl/hexl-printable-left-regexp  . 'oxcl/hexl-printable-face)
+					  (,oxcl/hexl-printable-right-regexp . 'oxcl/hexl-printable-face)
+					  (,oxcl/hexl-null-left-regexp       . 'oxcl/hexl-null-face)
+					  (,oxcl/hexl-null-right-regexp      . 'oxcl/hexl-null-face)) 'set)
 #+end_src
 
 * dired

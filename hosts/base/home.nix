@@ -15,6 +15,7 @@
     cmake
     python3
     git
+    git-extras
     git-crypt # transparently encrypt certain files and folders in a git repository
     qmk
     rxvt-unicode-emoji # urxvt
@@ -57,6 +58,7 @@
     navi
     stow
     libfaketime
+    poke
   ];
 
   services.gpg-agent = {

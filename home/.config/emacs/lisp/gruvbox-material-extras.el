@@ -38,7 +38,14 @@
    `(restclient-method-face ((,c :background ,bg-yellow-intense :foreground ,bg-main :weight bold)))
    `(restclient-url-face ((,c :foreground ,blue :weight bold :underline t)))
    `(restclient-header-name-face ((,c :foreground ,yellow)))
-   ;; my custom faces for colorizing hexl-mode
-   `(oxcl/hexl-printable-face ((,c :foreground ,yellow)))
-   `(oxcl/hexl-null-face ((,c :foreground ,fg-dim)))))
+   ;; solaire-mode
+  `( solaire-default-face ((,c :ihnerit default :background ,bg-dim)))
+  `( solaire-line-number-face ((,c :ihnerit default)))
+  `( solaire-hl-line-face ((,c :ihnerit default))))
+  
+  ;; my custom faces for colorizing hexl-mode
+  (defface oxcl/hexl-printable-face `((t (:foreground ,yellow))) "Face for highlighting hex codes that are in the ascii printable range")
+  (defface oxcl/hexl-null-face `((t (:foreground ,fg-dim))) "Face for highlighting 0 or null hex codes"))
+
+
 (provide 'gruvbox-material-extras)

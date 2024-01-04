@@ -4,9 +4,11 @@
 # executed. the kebinding C-h is also set for this command
 function history(){
     if command -v fzf &> /dev/null && [ -t 1 ]; then
-	echo
-	builtin history "$@" | fzf --tac | awk '{print $1=""}1' | awk '{$1==$1}1' | zsh
-	zle reset-prompt
+	local command="$(builtin history 1 "$@" | fzf --tac | awk '{print $1=""}1' | awk '{$1==$1}1')"
+	BUFFER="$(echo $command | xargs)" # trim white space
+	if ! zle accept-line &>/dev/null; then
+	    (echo $command | exec zsh )
+        fi
     else
 	builtin history "$@"
     fi

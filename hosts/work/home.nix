@@ -7,6 +7,6 @@
   ];
 
   home.sessionVariables = {
-    MY_NIX_HOST="work"
-  }
+    MY_NIX_HOST="work";
+  };
 }
