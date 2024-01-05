@@ -78,6 +78,7 @@
     asciinema
     asciinema-agg
     gifsicle
+    fx
   ];
 
   services.gpg-agent = {

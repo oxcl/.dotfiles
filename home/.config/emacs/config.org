@@ -839,6 +839,20 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
     :hook (css-base-mode . rainbow-mode))
 #+end_src
 
+** GNU poke
+poke is an interactive and extensible editor for structured binary data with more advanced features than a simple hex editor
+poke has a dedicated DSL named Poke which can be used to define binary structures.
+poke integration with emacs comes in two packages: ~poke.el~ a user interface for poke and ~poke-mode~ a major mode for writing Poke files
+*** poke.el
+#+begin_src elisp
+  (use-package poke)
+#+end_src
+
+*** poke-mode
+#+begin_src elisp
+  (use-package poke-mode)
+#+end_src
+
 * rest client
 ** defaults
 declare GET and POST requests in a http file and fire them up with emacs. similar to postman

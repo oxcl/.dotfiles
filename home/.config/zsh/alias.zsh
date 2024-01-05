@@ -79,3 +79,12 @@ alias clear=" echo 'use Ctrl-l'"
 
 # nix/nixos aliases
 alias nrs="sudo echo && sudo nixos-rebuild switch --flake $HOME/.dotfiles#$MY_NIX_HOST --log-format internal-json |& nom --json"
+
+# json viewer
+if command -v fx &>/dev/null; then
+    alias json="fx"
+elif command -v jless &> /dev/null; then
+    alias json="jless"
+else
+    alias json="echo 'install fx or jless' >&2"
+fi
