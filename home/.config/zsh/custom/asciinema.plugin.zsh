@@ -12,10 +12,10 @@ function rec() {
     # convert to gif
     if command -v agg &>/dev/null; then
 	agg $filename "${filename%.cast}.gif" \
-	    --theme 3c3836,ddc7a1,665c54,ea6962,a9b665,e78a4e,7daea3,d3869b,89b482,d4be98 # gruvbox-material
+	    --theme $COLOR_BG_1,$COLOR_FG_1,$COLOR_BG_5,$COLOR_RED,$COLOR_GREEN,$COLOR_YELLOW,$COLOR_BLUE,$COLOR_PURPLE,$COLOR_AQUA,$COLOR_FG_0 # environments are provided from .config/zsh/theme.zsh
 	[[ "$?" != 0 ]] || ! command -v gifsicle && return
 	# make an optimized version of the gif 
-	gifsicle --lossy=80 -k 128 -O2 -Okeep-empty "${filename%.cast}.gif" -o "${filename%.cast}.opt.gif"
+	gifsicle --lossy=80 -k 64 -O2 -Okeep-empty "${filename%.cast}.gif" -o "${filename%.cast}.opt.gif"
     fi
     export LAST_RECORDED_ASCIINEMA="$filename"
 }

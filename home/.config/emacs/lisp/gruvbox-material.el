@@ -1,4 +1,5 @@
 ;; based on https://user-images.githubusercontent.com/58662350/213884039-4eac92cc-c23a-4add-8d45-6838daf9d48b.png
+(defalias 'e 'getenv)
 (setq modus-operandi-palette-overrides
       '((bg-main "#eddeb5") ; bg1
 	(bg-dim "#d5c4a1") ; bg5
@@ -180,7 +181,41 @@
 	(org-block-begin-line bg-dim)
 	;; used by flyspell
 	(underline-warning green-faint)
-	(underline-err green-faint)))
+	(underline-err green-faint)
+	;; vterm
+	(bg-term-black "black")
+	(fg-term-black "black")
+	(bg-term-black-bright "green")
+	(fg-term-black-bright "green")
+	(bg-term-red "red")
+	(fg-term-red "red")
+	(bg-term-red-bright "red")
+	(fg-term-red-bright "red")
+	(bg-term-green "green")
+	(fg-term-green "green")
+	(bg-term-green-bright "green")
+	(fg-term-green-bright "green")
+	(bg-term-yellow "yellow")
+	(fg-term-yellow "yellow")
+	(bg-term-yellow-bright "yellow")
+	(fg-term-yellow-bright "yellow")
+	(bg-term-blue "blue")
+	(fg-term-blue "blue")
+	(bg-term-blue-bright "blue")
+	(fg-term-blue-bright "blue")
+	(bg-term-magenta "magenta")
+	(fg-term-magenta "magenta")
+	(bg-term-magenta-bright "magenta")
+	(fg-term-magenta-bright "magenta")
+	(bg-term-cyan "cyan")
+	(fg-term-cyan "cyan")
+	(bg-term-cyan-bright "cyan")
+	(fg-term-cyan-bright "cyan")
+	(bg-term-white "white")
+	(fg-term-white "white")
+	(bg-term-white-bright "pink")
+	(fg-term-white-bright "pink")
+	))
 
 (defun oxcl/disable-loose-color ()
   (custom-set-faces

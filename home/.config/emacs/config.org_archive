@@ -1,0 +1,33 @@
+
+
+Archived entries from file /home/user/.dotfiles/home/.config/emacs/config.org
+
+
+* theme
+:PROPERTIES:
+:ARCHIVE_TIME: 2024-01-05 Fri 17:12
+:ARCHIVE_FILE: ~/.dotfiles/home/.config/emacs/config.org
+:ARCHIVE_OLPATH: ui
+:ARCHIVE_CATEGORY: config
+:END:
+customized modus-themes to match gruvbox-material
+#+begin_src emacs-lisp
+  (use-package modus-themes
+    :config
+    (setq modus-themes-bold-constructs t
+	  modus-themes-italic-constructs t
+	  modus-themes-org-blocks 'gray-background
+	  modus-themes-prompts '(bold)
+	  modus-themes-completions
+	  (quote ((selection . (regular))))
+	  modus-themes-headings
+	  '((1 . (ultrabold 1.5))
+	  (2 . (extrabold 1.3))
+	  (3 . (bold 1.2))
+	  (4 . (semibold 1.1))
+	  (t . (bold 1.1))))
+    (require 'gruvbox-material)
+    (load-theme 'modus-vivendi :no-confirm)
+    (require 'gruvbox-material-extras))
+#+end_src
+

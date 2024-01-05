@@ -1,2 +1,9 @@
 [record]
 command = _ASCIINEMA_SEGMENT=1 HISTFILE=/dev/null /usr/bin/env zsh
+idle_time_limit = 2
+
+[play]
+idle_time_limit = 2
+
+[notifications]
+enabled = no

@@ -33,5 +33,3 @@ export SAVEHIST=4000 # maximum size for $HISTFILE
 # make direnv work silently
 export DIRENV_LOG_FORMAT=""
 
-# a performance optimization for emacs LSP-mode
-export LSP_USE_PLISTS=true

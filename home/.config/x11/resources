@@ -1,41 +1,41 @@
 ! Theme
 !----------------------------------
 
-*.cursor:                #ddc7a1
-*.background:            #3c3836
-*.foreground:            #ddc7a1
+*.cursor:                FG_COLOR
+*.background:            BG_COLOR
+*.foreground:            FG_COLOR
 
 ! Black
-*.color0:                #665c54
-*.color8:                #928374
+*.color0:                #000000
+*.color8:                GREY_1
 
 ! Red
-*.color1:                #ea6962
-*.color9:                #ea6962
+*.color1:                RED
+*.color9:                RED
 
 ! Green
-*.color2:                #a9b665
-*.color10:               #a9b665
+*.color2:                GREEN
+*.color10:               GREEN
 
 ! Yellow
-*.color3:                #e78a4e
-*.color11:               #d8a657
+*.color3:                YELLOW
+*.color11:               YELLOW
 
 ! Blue
-*.color4:                #7daea3
-*.color12:               #7daea3
+*.color4:                BLUE
+*.color12:               BLUE
 
 ! Magenta
-*.color5:                #d3869b
-*.color13:               #d3869b
+*.color5:                PURPLE
+*.color13:               PURPLE
 
 ! Cyan
-*.color6:                #89b482
-*.color14:               #89b482
+*.color6:                AQUA
+*.color14:               AQUA
 
 ! White
-*.color7:                #d4be98
-*.color15:               #d4be98
+*.color7:                #FFFFFF
+*.color15:               FG_0
 
 
 ! Text

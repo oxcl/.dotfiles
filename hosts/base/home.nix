@@ -49,7 +49,11 @@
     hunspellDicts.fa_IR
     ccls
     ((emacsPackagesFor emacs29).emacsWithPackages (
-      epkgs: with epkgs; [ vterm treesit-grammars.with-all-grammars jinx ]
+      epkgs: with epkgs; [
+	vterm
+	treesit-grammars.with-all-grammars
+	jinx
+      ]
     ))
     jetbrains-mono
     noto-fonts-emoji
@@ -79,6 +83,8 @@
     asciinema-agg
     gifsicle
     fx
+    libvterm
+    neofetch
   ];
 
   services.gpg-agent = {
