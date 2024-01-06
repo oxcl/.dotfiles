@@ -114,11 +114,12 @@ zert-load-github zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
 ZSH_AUTOSUGGEST_MANUAL_REBIND=true # boosts performance but makes the plugin more unstable
+ZSH_AUTOSUGGEST_COMPLETION_IGNORE="npm *"
 
 
 
 # load simple plugins that are either only for completion or aliases and don't need configuration
-local simple_plugins=(docker-compose dotnet fancy-ctrl-z gitfast git-extras flutter golang gh)
+local simple_plugins=(docker-compose dotnet fancy-ctrl-z gitfast git-extras flutter golang gh lxd)
 for plugin in $simple_plugins; do zert-load-omz plugin $plugin --ignore-alias; done
 unset simple_plugins plugin
 rm $XDG_CACHE_DIR/zcompdump -f

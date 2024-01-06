@@ -146,15 +146,15 @@ automatically regenerate the lockfile when installing a new package or upgrading
     (unless commit
       (straight-freeze-versions)))
   (add-hook 'straight-vc-git-post-clone-hook 'oxcl/update-lockfile)
-  (advice-add 'straight-pull-package
-	      :after (lambda ()
-		       (straight-freeze-versions)))
-  (advice-add 'straight-pull-package-and-deps
-	      :after (lambda ()
-		       (straight-freeze-versions)))
-  (advice-add 'straight-pull-all
-	      :after (lambda ()
-		       (straight-freeze_versions)))
+  ;; (advice-add 'straight-pull-package
+  ;; 	    :after (lambda ()
+  ;; 		     (straight-freeze-versions)))
+  ;; (advice-add 'straight-pull-package-and-deps
+  ;; 	    :after (lambda ()
+  ;; 		     (straight-freeze-versions nil)))
+  ;; (advice-add 'straight-pull-all
+  ;; 	    :after (lambda ()
+  ;; 		     (straight-freeze-versions nil)))
 #+end_src
 
 ** use-package
@@ -839,18 +839,88 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
     :hook (css-base-mode . rainbow-mode))
 #+end_src
 
+** hex editor
+some enhancements to the builtin hex editor in emacs
+*** detect binary files automatically
+automatically detect binary format when opening files and switch to hex editor
+#+begin_src elisp
+  (add-hook 'find-file-hook (lambda ()
+			      (when (equal buffer-file-coding-system 'no-conversion) (hexl-mode))))
+  (add-to-list 'auto-mode-alist '("\\.\\(bin\\|exe\\|dat\\|dll\\|ana\\|anac\\|hex\\)\\'" . hexl-mode))
+#+end_src
+
+*** keybindings
+add quality of life keybindings
+#+begin_src elisp
+    (defun oxcl/hexl-backspace ()
+      (interactive)
+      (hexl-backward-char 1)
+      (hexl-insert-char 0 1)
+      (hexl-backward-char 1))
+    (add-hook 'hexl-mode-hook (lambda ()
+    (keymap-local-set "<backspace>" #'oxcl/hexl-backspace)))
+#+end_src
+
+*** mode-line info
+TODO
+display byte, short, float and integer representations of the value under the cursor in the mode-line
+#+begin_src elisp
+    (setq oxcl/hexl-val-in-byte ""
+	  oxcl/hexl-val-in-short ""
+	  oxcl/hexl-val-in-int32 ""
+	  oxcl/hexl-val-in-int64 ""
+	  oxcl/hexl-val-in-float ""
+	  oxcl/hexl-val-in-double "")
+    (defun oxcl/hexl-update-mode-line ()
+  ;;    (setq oxcl/hexl-val-in-byte (format "byte: %s" (char-after-point)))
+      (force-mode-line-update) "string")
+    (add-hook 'hexl-mode-hook
+	      (lambda ()
+		(setq mode-line-format (append mode-line-format '((:eval oxcl/hexl-val-in-byte))))))
+#+end_src
+
+*** colorize hexl-mode
+add colors to hexl-mode buffer
+in my implementation of ~gruvbox-material~ i have defined custom faces:
+ - ~oxcl/hexl-printable-face~
+ - ~oxcl/hexl-null-face~
+i will use these to colorize the hexl-mode buffer
+#+begin_src elisp
+	 (setq oxcl/hexl-printable-left-regexp "$[2-7][a-zA-Z0-9]\\(?: \\)"
+	       oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
+	       oxcl/hexl-null-left-regexp  "00\\b"
+	       oxcl/hexl-null-right-regexp " 00"
+	       oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
+	 (font-lock-add-keywords 'hexl-mode `((,oxcl/hexl-ascii-regexp           . 'oxcl/hexl-ascii-face)
+					      (,oxcl/hexl-printable-left-regexp  . 'oxcl/hexl-printable-face)
+					      (,oxcl/hexl-printable-right-regexp . 'oxcl/hexl-printable-face)
+					      (,oxcl/hexl-null-left-regexp       . 'oxcl/hexl-null-face)
+					      (,oxcl/hexl-null-right-regexp      . 'oxcl/hexl-null-face)) 'set)
+#+end_src
+
 ** GNU poke
 poke is an interactive and extensible editor for structured binary data with more advanced features than a simple hex editor
 poke has a dedicated DSL named Poke which can be used to define binary structures.
 poke integration with emacs comes in two packages: ~poke.el~ a user interface for poke and ~poke-mode~ a major mode for writing Poke files
 *** poke.el
 #+begin_src elisp
-  (use-package poke)
+    (use-package poke
+      :requires (poke-mode))
 #+end_src
 
 *** poke-mode
 #+begin_src elisp
   (use-package poke-mode)
+#+end_src
+
+** terminal emulator
+#+begin_src elisp
+		    (use-package vterm
+		      :custom
+		      (vterm-ignore-blink-cursor t)
+		      (vterm-environment '("_VTERM=1"))
+		      :config
+		      (add-hook 'vterm-mode-hook (lambda () )))
 #+end_src
 
 * rest client
@@ -942,64 +1012,6 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 			(lambda ()  (set-buffer-file-coding-system 'utf-8)
 			  (when (eq major-mode 'hexl-mode) (hexl-mode-exit 0))))))
 
-#+end_src
-
-* hex editor
-some enhancements to the builtin hex editor in emacs
-** detect binary files automatically
-automatically detect binary format when opening files and switch to hex editor
-#+begin_src elisp
-  (add-hook 'find-file-hook (lambda ()
-			      (when (equal buffer-file-coding-system 'no-conversion) (hexl-mode))))
-  (add-to-list 'auto-mode-alist '("\\.\\(bin\\|exe\\|dat\\|dll\\|ana\\|anac\\|hex\\)\\'" . hexl-mode))
-#+end_src
-
-** keybindings
-add quality of life keybindings
-#+begin_src elisp
-    (defun oxcl/hexl-backspace ()
-      (interactive)
-      (hexl-backward-char 1)
-      (hexl-insert-char 0 1)
-      (hexl-backward-char 1))
-    (add-hook 'hexl-mode-hook (lambda ()
-    (keymap-local-set "<backspace>" #'oxcl/hexl-backspace)))
-#+end_src
-
-** mode-line info
-display byte, short, float and integer representations of the value under the cursor in the mode-line
-#+begin_src elisp
-    (setq oxcl/hexl-val-in-byte ""
-	  oxcl/hexl-val-in-short ""
-	  oxcl/hexl-val-in-int32 ""
-	  oxcl/hexl-val-in-int64 ""
-	  oxcl/hexl-val-in-float ""
-	  oxcl/hexl-val-in-double "")
-    (defun oxcl/hexl-update-mode-line ()
-  ;;    (setq oxcl/hexl-val-in-byte (format "byte: %s" (char-after-point)))
-      (force-mode-line-update) "string")
-    (add-hook 'hexl-mode-hook
-	      (lambda ()
-		(setq mode-line-format (append mode-line-format '((:eval oxcl/hexl-val-in-byte))))))
-#+end_src
-
-** colorize hexl-mode
-add colors to hexl-mode buffer
-in my implementation of ~gruvbox-material~ i have defined custom faces:
- - ~oxcl/hexl-printable-face~
- - ~oxcl/hexl-null-face~
-i will use these to colorize the hexl-mode buffer
-#+begin_src elisp
-	 (setq oxcl/hexl-printable-left-regexp "$[2-7][a-zA-Z0-9]\\(?: \\)"
-	       oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
-	       oxcl/hexl-null-left-regexp  "00\\b"
-	       oxcl/hexl-null-right-regexp " 00"
-	       oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
-	 (font-lock-add-keywords 'hexl-mode `((,oxcl/hexl-ascii-regexp           . 'oxcl/hexl-ascii-face)
-					      (,oxcl/hexl-printable-left-regexp  . 'oxcl/hexl-printable-face)
-					      (,oxcl/hexl-printable-right-regexp . 'oxcl/hexl-printable-face)
-					      (,oxcl/hexl-null-left-regexp       . 'oxcl/hexl-null-face)
-					      (,oxcl/hexl-null-right-regexp      . 'oxcl/hexl-null-face)) 'set)
 #+end_src
 
 * dired

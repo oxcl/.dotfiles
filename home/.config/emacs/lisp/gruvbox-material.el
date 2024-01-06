@@ -7,7 +7,7 @@
 	(fg-dim "#928374") ; grey1
 	(bg-active "#ebdbb2") ; bg2
 	(bg-inactive "#dac9a5") ; bg4
-	(border "#928374") ; grey1
+	(border "#928374") ; grey0
 	(red "#c14a4a")
 	(red-warmer "#d54b36")
 	(red-cooler "#ad4b5f")
@@ -117,7 +117,7 @@
 	(bg-search-lazy bg-inactive)))
 
 (setq modus-themes-common-palette-overrides
-      '((fg-alt blue-warmer)
+      `((fg-alt blue-warmer)
 	(bg-magenta-subtle unspecified)
 	(bg-cyan-subtle unspecified)
 	(bg-blue-intense unspecified)
@@ -183,39 +183,38 @@
 	(underline-warning green-faint)
 	(underline-err green-faint)
 	;; vterm
-	(bg-term-black "black")
-	(fg-term-black "black")
-	(bg-term-black-bright "green")
-	(fg-term-black-bright "green")
-	(bg-term-red "red")
-	(fg-term-red "red")
-	(bg-term-red-bright "red")
-	(fg-term-red-bright "red")
-	(bg-term-green "green")
-	(fg-term-green "green")
-	(bg-term-green-bright "green")
-	(fg-term-green-bright "green")
-	(bg-term-yellow "yellow")
-	(fg-term-yellow "yellow")
-	(bg-term-yellow-bright "yellow")
-	(fg-term-yellow-bright "yellow")
-	(bg-term-blue "blue")
-	(fg-term-blue "blue")
-	(bg-term-blue-bright "blue")
-	(fg-term-blue-bright "blue")
-	(bg-term-magenta "magenta")
-	(fg-term-magenta "magenta")
-	(bg-term-magenta-bright "magenta")
-	(fg-term-magenta-bright "magenta")
-	(bg-term-cyan "cyan")
-	(fg-term-cyan "cyan")
-	(bg-term-cyan-bright "cyan")
-	(fg-term-cyan-bright "cyan")
-	(bg-term-white "white")
-	(fg-term-white "white")
-	(bg-term-white-bright "pink")
-	(fg-term-white-bright "pink")
-	))
+	(bg-term-black ,(e "COLOR_BG_DIM")) ; color 0
+	(bg-term-red red) ; color 1
+	(bg-term-green green) ; color 2
+	(bg-term-yellow yellow) ; color 3
+	(bg-term-blue blue) ; color 4
+	(bg-term-magenta magenta) ; color 5
+	(bg-term-cyan cyan) ; color 6
+	(bg-term-white ,(e "COLOR_FG_0")) ; color 7
+	(bg-term-black-bright ,(e "COLOR_GREY_1")) ; color 8
+	(bg-term-red-bright red) ; color 9
+	(bg-term-green-bright green) ; color 10
+	(bg-term-yellow-bright yellow-warmer) ; color 11
+	(bg-term-blue-bright blue) ; color 12
+	(bg-term-magenta-bright magenta) ; color 13
+	(bg-term-cyan-bright cyan) ; color 14
+	(bg-term-white-bright ,(e "COLOR_GREY_2")) ; color 15
+	(bg-term-black ,(e "COLOR_BG_DIM")) ; color 0
+	(fg-term-red red) ; color 1
+	(fg-term-green green) ; color 2
+	(fg-term-yellow yellow) ; color 3
+	(fg-term-blue blue) ; color 4
+	(fg-term-magenta magenta) ; color 5
+	(fg-term-cyan cyan) ; color 6
+	(fg-term-white ,(e "COLOR_FG_0")) ; color 7
+	(fg-term-black-bright ,(e "COLOR_GREY_1")) ; color 8
+	(fg-term-red-bright red) ; color 9
+	(fg-term-green-bright green) ; color 10
+	(fg-term-yellow-bright yellow-warmer) ; color 11
+	(fg-term-blue-bright blue) ; color 12
+	(fg-term-magenta-bright magenta) ; color 13
+	(fg-term-cyan-bright cyan) ; color 14
+	(fg-term-white-bright ,(e "COLOR_GREY_2")))) ; color 15
 
 (defun oxcl/disable-loose-color ()
   (custom-set-faces

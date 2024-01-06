@@ -85,6 +85,8 @@
     fx
     libvterm
     neofetch
+    lxd
+    nodejs_21
   ];
 
   services.gpg-agent = {

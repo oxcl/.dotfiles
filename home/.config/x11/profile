@@ -13,16 +13,17 @@ xrdb -DRED="$COLOR_RED" \
      -DAQUA="$COLOR_AQUA" \
      -DYELLOW="$COLOR_YELLOW" \
      -DORANGE="$COLOR_ORANGE" \
-     -DBG_COLOR="$COLOR_BG_0" \
-     -DFG_COLOR="$COLOR_FG_0" \
+     -DBG_COLOR="$COLOR_BG_1" \
+     -DFG_COLOR="$COLOR_FG_1" \
      -DGREY_1="$COLOR_GREY_1" \
-     -DFG_0="$COLOR_FG_0" \
+     -DGREY_2="$COLOR_GREY_2" \
+     -DBG_DIM="$COLOR_BG_DIM" \
      "${XDG_CONFIG_HOME:-$HOME/.config}/x11/resources"
 
 # run ssh-agent daemon
 [[ -z "$SSH_AGENT_PID" ]] && eval "$(ssh-agent)"
 # run gpg-agent daemon
-command -v gpg-agent &> /dev/null && [[ -z "$GPG_AGENT_INFO" ]] eval "$(gpg-agent --daemon)"
+command -v gpg-agent &> /dev/null && [[ -z "$GPG_AGENT_INFO" ]] && eval "$(gpg-agent --daemon)"
 
 # run urxvt daemon
 urxvtd -q -o &

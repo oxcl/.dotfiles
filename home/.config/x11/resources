@@ -6,7 +6,7 @@
 *.foreground:            FG_COLOR
 
 ! Black
-*.color0:                #000000
+*.color0:                BG_DIM
 *.color8:                GREY_1
 
 ! Red
@@ -19,7 +19,7 @@
 
 ! Yellow
 *.color3:                YELLOW
-*.color11:               YELLOW
+*.color11:               ORANGE
 
 ! Blue
 *.color4:                BLUE
@@ -34,8 +34,8 @@
 *.color14:               AQUA
 
 ! White
-*.color7:                #FFFFFF
-*.color15:               FG_0
+*.color7:                FG_MAIN
+*.color15:               GREY_2
 
 
 ! Text
@@ -87,15 +87,12 @@ URxvt*.perl-ext-common:  bidi,clipboard-osc,resize-font
 ! *VT100.colorBD:           red
 ! *VT100.colorULMode:       true
 ! *VT100.colorUL:           cyan
-! URxvt.colorIT:            #a9b665
-! URxvt.colorBD:            #ea6962
-! URxvt.colorUL:            #7daea3
+! URxvt.colorIT:            GREEN
+! URxvt.colorBD:            RED
+! URxvt.colorUL:            BLUE
 
 ! xterm
 !---------------------------------
 xterm*faceName: JetBrainsMono Nerd Font Mono
 xterm*faceSize: 11
-
-! emacs
-!---------------------------------
 
