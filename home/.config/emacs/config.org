@@ -177,35 +177,11 @@ automatically regenerate the lockfile when installing a new package or upgrading
 #+end_src
 ** font
 #+begin_src emacs-lisp
-  (set-frame-font "JetBrains Mono 8" t t)
-  (setq-default line-spacing 1) ; small padding between each line
-#+end_src
-
-** consistent font size across monitors
-#+begin_src elisp
-  ;; Font size adjustment
-(defun oxcl/adjust-font-size (frame)
-  "Inspired by https://emacs.stackexchange.com/a/44930/17066. FRAME is ignored.
-If I let Windows handle DPI everything looks blurry."
-  ;; Using display names is unreliable...switched to checking the resolution
-  (let* ((attrs (frame-monitor-attributes)) ;; gets attribs for current frame
-         (monitor-name (cdr (fourth attrs)))
-         (width-mm (second (third attrs)))
-         (width-px (fourth (first attrs)))
-         (size 13)) ;; default for first screen at work
-    (when (eq width-px 2560) ;; middle display at work
-      (setq size 11))
-    (when (eq width-px 1920) ;; laptop screen
-      (setq size 12))
-    (when (eq 531 width-mm)
-      (setq size 9)) ;; External monitor at home
-    (when (eq 1095 width-mm)
-      (setq size 15)) ;; television
-    (when (eq (length (display-monitor-attributes-list)) 1) ;; override everything if no external monitors!
-      (setq size 10))
-    (set-frame-font (format "Consolas %s" size))
-    ))
-(add-hook 'window-size-change-functions #'oxcl/adjust-font-size)
+  (set-frame-font "JetBrainsMono 8")
+;;	 (set-frame-font (format "JetBrains Mono %d" (round (/ 11000 (+( x-display-pixel-width) 120)))) nil t)
+      ;;  (set-face-attribute 'default (selected-frame) :height (round (/ 100000 (* (x-display-pixel-width)  1.1)))) :family "JetBrainsMono Nerd Font")
+    (set-face-attribute 'default (selected-frame) :family "JetBrainsMono Nerd Font" :height (/ 102400 (* (x-display-pixel-width) 1)))
+    (setq-default line-spacing 1) ; small padding between each line
 #+end_src
 
 ** theme
@@ -241,9 +217,8 @@ customized modus-themes to match gruvbox-material
 ** highlight current line
 #+begin_src emacs-lisp
   (global-hl-line-mode)
-  (add-hook 'comint-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-  (add-hook 'restclient-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-  (add-hook 'org-mode-hook (lambda () (setq-local global-hl-line-mode nil))) ; org-mode has a lot of bugs with hl-line
+  (dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode))
+    (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
 #+end_src
 
 ** icons
@@ -254,6 +229,12 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 * editor
+** text navigation
+left arrow should keep the cursor at the end of the line instead of jumping to the next line
+#+begin_src elisp
+  (setq track_eol t)
+#+end_src
+
 ** window management
 *** scrolling
 **** defaults
@@ -805,56 +786,6 @@ makes the auto completion smarter by putting more common and more recent complet
   ;;    :requires prescient
   ;;    :after company
   ;;    :hook (company-mode . company-prescient-mode))
-#+end_src
-
-** LSP
-*** lsp-mode
-#+begin_src elisp
-  (use-package lsp-mode
-    :hook (
-	   (lsp-mode . lsp-enable-which-key-integration)
-	   (lsp-mode . (lambda ()
-			 (make-local-variable 'company-backends)
-			 (setq company-backends '(company-files
-						  (company-yasnippet company-capf company-dabbrev-code))))))
-    :commands lsp
-    :config
-    (setq lsp-log-io t
-	  lsp-auto-configure t
-	  lsp-enable-symbol-highlighting nil
-	  lsp-ui-doc-enable nil
-	  lsp-ui-doc-show-with-cursor nil
-	  lsp-ui-doc-show-with-mouse nil
-	  lsp-lens-enable nil
-	  lsp-headerline-breadcrumb-enable nil
-	  lsp-ui-sideline-enable nil
-	  lsp-ui-sideline-show-code-actions nil
-	  lsp-ui-sideline-show-hover nil
-	  lsp-modeline-code-actions-enable nil
-	  lsp-diagnostics-provider :none
-	  lsp-ui-sideline-show-diagnostics nil
-	  lsp-eldoc-enable_hover nil
-	  lsp-modeline-diagnostics-enable nil
-	  lsp-signature-auto-activate nil
-	  lsp-signature-render-documentation nil
-	  lsp-completion-enable t
-	  lsp-completion-show-detail t
-	  lsp-completion-show-kind t
-	  lsp-completion-sort-initial-results nil
-	  lsp-completion-filter-on-incomplete nil
-	  completion-at-point-functions '(lsp-completion-at-point)
-	  lsp-enable-suggest-server-download nil))
-#+end_src
-
-*** ccls
-#+begin_src elisp
-  (use-package ccls
-    :hook ((c-mode c++-mode objc-mode cuda-mode c-ts-mode c++-ts-mode) . (lambda () (require 'ccls) (lsp)))
-    :custom
-    (ccls-sem-highlight-method 'overlay)
-    (lsp-prefer-flymake nil)
-    (ccls-initialization-options `(:cache      (:directory ,(expand-file-name "ccls-cache" (getenv "XDG_CACHE_HOME")))
-					       :completion (:placeholder :json-false))))
 #+end_src
 
 ** css

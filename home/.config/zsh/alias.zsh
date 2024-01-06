@@ -88,3 +88,7 @@ elif command -v jless &> /dev/null; then
 else
     alias json="echo 'install fx or jless' >&2"
 fi
+
+
+# disable hyperlink server since urxvt and vterm don't support it anyway
+alias poke="poke --no-hserver"
