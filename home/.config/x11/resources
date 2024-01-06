@@ -1,9 +1,9 @@
 ! Theme
 !----------------------------------
 
-*.cursor:                FG_COLOR
-*.background:            BG_COLOR
-*.foreground:            FG_COLOR
+*.cursor:                FG_MAIN
+*.background:            BG_MAIN
+*.foreground:            FG_MAIN
 
 ! Black
 *.color0:                BG_DIM

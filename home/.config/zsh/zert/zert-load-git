@@ -11,7 +11,7 @@ function zert-load-git(){
 
     # ensure plugin exists
     if [[ ! -d "$PLUGIN_DIR" ]]; then # plugin should be downloaded
-	echo "[zert] downloading '$PLUGIN_NAME' from '$REPO_URL'..."
+	echo "[zert] downloading '$PLUGIN_NAME' from '$REPO_URL'..." >&2
 	if ! git clone "$REPO_URL" "$PLUGIN_DIR" -q; then
 	    echo "there was an error downloading $PLUGIN_NAME using git from $PLUGIN_URL" >&2
 	    rm -rf "$PLUGIN_DIR"
