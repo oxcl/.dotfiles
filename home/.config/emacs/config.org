@@ -217,7 +217,7 @@ customized modus-themes to match gruvbox-material
 ** highlight current line
 #+begin_src emacs-lisp
   (global-hl-line-mode)
-  (dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode))
+  (dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode-hook))
     (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
 #+end_src
 
