@@ -97,7 +97,25 @@
   programs.chromium = {
     enable = true;
     dictionaries = with pkgs; [ hunspellDictsChromium.en_US ];
-    extensions = [ "cjpalhdlnbpafiamejdnhcphjbkeiagm" ];
+    commandLineArgs = [
+      "--start-fullscreen"
+    ];
+    extensions = [
+      "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
+      "eimadpbcbfnmbkopoojfekhnkhdbieeh" # dark reader
+      "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
+      "dgmanlpmmkibanfdgjocnabmcaclkmod" # just read
+      "hokcepcfcicnhalinladgknhaljndhpc" # witchcraft
+    ];
+  };
+
+  systemd.user.services.witchcraft-server = {
+    Unit.Description = "local http server to host user-script files in ~/.config/chromium/user-scripts for witchcraft chrome extension to use";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Service = {
+      WorkingDirectory = "%h/.config/chromium/user-scripts";
+      ExecStart = "${pkgs.python3}/bin/python3 -m http.server 5743";
+    };
   };
 
   gtk.theme.name = "Adwaita-Dark";
