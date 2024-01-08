@@ -96,6 +96,7 @@
 
   programs.chromium = {
     enable = true;
+    package = pkgs.ungoogled-chromium;
     dictionaries = with pkgs; [ hunspellDictsChromium.en_US ];
     commandLineArgs = [
       "--start-fullscreen"
