@@ -93,6 +93,14 @@
     enable = true;
     pinentryFlavor = "tty";
   };
+
+  programs.chromium = {
+    enable = true;
+    dictionaries = with pkgs; [ hunspellDictsChromium.en_US ];
+    extensions = [ "cjpalhdlnbpafiamejdnhcphjbkeiagm" ];
+  };
+
+  gtk.theme.name = "Adwaita-Dark";
   
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
