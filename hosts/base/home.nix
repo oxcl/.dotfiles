@@ -30,7 +30,6 @@
     nix-direnv
     unzip
     ncdu
-    ansible
     noto-fonts-color-emoji
     (rofi.override { plugins = [ rofi-blocks ]; })
     bat
@@ -96,7 +95,6 @@
 
   programs.chromium = {
     enable = true;
-    package = pkgs.ungoogled-chromium;
     dictionaries = with pkgs; [ hunspellDictsChromium.en_US ];
     commandLineArgs = [
       "--start-fullscreen"
@@ -107,6 +105,7 @@
       "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
       "dgmanlpmmkibanfdgjocnabmcaclkmod" # just read
       "hokcepcfcicnhalinladgknhaljndhpc" # witchcraft
+      "gfbliohnnapiefjpjlpjnehglfpaknnc" # surfingkeys
     ];
   };
 
