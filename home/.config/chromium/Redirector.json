@@ -1,0 +1,23 @@
+{
+    "createdBy": "Redirector v3.5.3",
+    "createdAt": "2024-01-10T11:49:58.936Z",
+    "redirects": [
+        {
+            "description": "libreddit",
+            "exampleUrl": "https://reddit.com",
+            "exampleResult": "https://libreddit.kavin.rocks",
+            "error": null,
+            "includePattern": ".?reddit.com(/.*)?",
+            "excludePattern": "",
+            "patternDesc": "",
+            "redirectUrl": "https://libreddit.kavin.rocks$1",
+            "patternType": "R",
+            "processMatches": "noProcessing",
+            "disabled": false,
+            "grouped": false,
+            "appliesTo": [
+                "main_frame"
+            ]
+        }
+    ]
+}
