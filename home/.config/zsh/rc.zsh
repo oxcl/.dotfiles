@@ -35,10 +35,6 @@ zert-utilize ohmyzsh # initialize ohmyzsh with zert
 # clippaste | <command> # paste clipboard to stdin
 zert-load-omz lib clipboard
 
-# recommend available aliasse for an entered commands
-zert-load-omz plugin alias-finder
-zstyle ":omz:plugins:alias-finder" autoload yes # enables it
-
 # automatically send system notifications for commands that take a long time
 zert-load-omz plugin bgnotify
 bgnofity_threshold=60 # more than 60 seconds
@@ -116,10 +112,11 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
 ZSH_AUTOSUGGEST_MANUAL_REBIND=true # boosts performance but makes the plugin more unstable
 ZSH_AUTOSUGGEST_COMPLETION_IGNORE="npm *"
 
-
+# prepped sudo to current or previous command by pressing  <esc> twice
+zert-load-omz plugin sudo
 
 # load simple plugins that are either only for completion or aliases and don't need configuration
-local simple_plugins=(docker-compose dotnet fancy-ctrl-z gitfast git-extras flutter golang gh lxd pylint)
+local simple_plugins=(docker-compose dotnet fancy-ctrl-z gitfast git-extras flutter golang gh lxd pylint redis-cli)
 for plugin in $simple_plugins; do zert-load-omz plugin $plugin --ignore-alias; done
 unset simple_plugins plugin
 rm $XDG_CACHE_DIR/zcompdump -f

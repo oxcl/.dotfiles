@@ -89,6 +89,9 @@ else
     alias json="echo 'install fx or jless' >&2"
 fi
 
+# systemd
+alias sc="systemctl"
+alias scu="systemctl --user"
 
 # disable hyperlink server since urxvt and vterm don't support it anyway
 alias poke="poke --no-hserver"
