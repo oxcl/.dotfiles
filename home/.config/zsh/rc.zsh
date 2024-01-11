@@ -173,6 +173,8 @@ bindkey "^[Od" backward-word # Ctrl+<Left>
 # load fzf completions
 command -v fzf-share &> /dev/null && source "$(fzf-share)/completion.zsh"
 
+command -v fuck &> /dev/null && eval "$(thefuck --alias)"
+
 # my own aliases
 source "$HERE/alias.zsh"
 

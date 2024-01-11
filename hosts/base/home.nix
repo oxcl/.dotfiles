@@ -87,6 +87,7 @@
     lxd
     nodejs_21
     zsh-completions
+    thefuck
   ];
 
   services.gpg-agent = {
