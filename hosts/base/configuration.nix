@@ -64,6 +64,7 @@
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
+  hardware.keyboard.qmk.enable = true;
 
   # packages that are listed here will be installed system wide.
   # most packages should be installed with home-manager

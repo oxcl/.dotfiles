@@ -88,6 +88,7 @@
     nodejs_21
     zsh-completions
     thefuck
+    expect
   ];
 
   services.gpg-agent = {

@@ -108,6 +108,10 @@ bindkey '^N' history-toggle
 # autosuggestion in gray color after the cursor based on history and zsh completinos
 zert-load-github zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+if command -v thefuck &>/dev/null; then
+    # custom strategy i wrote for thefuck integration with zsh-autosuggestion
+    ZSH_AUTOSUGGEST_STRATEGY=(thefuck $ZSH_AUTOSUGGEST_STRATEGY)
+fi
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
 ZSH_AUTOSUGGEST_MANUAL_REBIND=true # boosts performance but makes the plugin more unstable
 ZSH_AUTOSUGGEST_COMPLETION_IGNORE="npm *"
