@@ -89,6 +89,8 @@
     zsh-completions
     thefuck
     expect
+    fq
+    pup
   ];
 
   services.gpg-agent = {

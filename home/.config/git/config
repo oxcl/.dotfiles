@@ -5,3 +5,5 @@
 	email = oxcl@proton.me
 [alias]
 	amend = commit --amend
+[core]
+	compression = 0
