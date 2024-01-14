@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
-[[ ! -d $HOME/.config ]] && mkdir -p $HOME/.config
-[[ ! -d $HOME/.local ]] && mkdir -p $HOME/.local
-[[ ! -d $HOME/.config/chromium ]] && mkdir -p $HOME/.config/chromium
+# mirror config files in .dotfiles/home directory to $HOME using symlinkgs via GNU stow
+
+function ensure_dir(){
+  [[ ! -d "$1"  ]] && mkdir -p "$1"
+}
+
+# directories are created to prevent symlinking of these directories by stow
+# because some programs add data/cache files into these directories
+ensure_dir "${XDG_DATA_HOME:-$HOME/.local}"
+ensure_dir "${XDG_CONFIG_HOME:-$HOME/.config}/chromium"
+ensure_dir "${XDG_CONFIG_HOME:-$HOME/.config}/asciinema"
 (cd $HOME/.dotfiles/home && stow . --target=$HOME)
