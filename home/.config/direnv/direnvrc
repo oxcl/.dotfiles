@@ -2,4 +2,4 @@
 # this file is loaded by direnv before loading any .env or .envrc files
 # when cding into directories.
 # hook to change the default behaviour when the .env file is untrusted
-export DIRENV_LOADED=1
+export DIRENV_LOADED=1 # used by my custom zsh-powerlevel10k prompt segment

@@ -668,14 +668,6 @@ taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-
 #+end_src
 
 ** snippets and templates
-*** yasnippet
-#+begin_src elisp
-  (use-package yasnippet
-    :custom
-    (yas-snippet-dirs `(,(expand-file-name "snippets" real-user-emacs-directory)))
-    :config
-    (yas-global-mode 1))
-#+end_src
 *** auto insert
 automatically insert generic boilerplate via autoinsert and yasnippet when creating new files based on file extension
 this code integrates yasnippet with the builtin yasnippet which is taken from  [[https://www.emacswiki.org/emacs/AutoInsertMod][emacs-wiki]]
@@ -695,17 +687,22 @@ this code integrates yasnippet with the builtin yasnippet which is taken from  [
       ;; files which have only an underscore in the name will be applied to every file with that extension but only
       ;; if a more specific template is not found.
       (let ((auto-insert-files (cdr (cdr (directory-files (expand-file-name "auto-inserts" real-user-emacs-directory))))))
-	(dolist (item auto-insert-files)
-	  (let ((pattern-name (if (equal (file-name-base item) "_")
-				  (concat "\\." (file-name-extension item) "\\'")
-				(concat (file-name-base item) "\\." (file-name-extension item)))))
-	    (add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))
-      ;; this snippet adds an extra new line to every new file that is opened.
-      ;; fixes the problems with display-line-number-mode and hl-line-mode
-      (add-to-list 'auto-insert-alist `("\\.*" . ["_" oxcl/yas-insert]))))
-  (oxcl/setup-auto-insert)
+      (dolist (item auto-insert-files)
+	(let ((pattern-name (if (equal (file-name-base item) "_")
+				(concat "\\." (file-name-extension item) "\\'")
+			      (concat (file-name-base item) "\\." (file-name-extension item)))))
+	  (add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))))
 #+end_src
 
+*** yasnippet
+#+begin_src elisp
+    (use-package yasnippet
+      :custom
+      (yas-snippet-dirs `(,(expand-file-name "snippets" real-user-emacs-directory)))
+      :config
+      (yas-global-mode 1)
+      (oxcl/setup-auto-insert))
+#+end_src
 ** completion
 *** defaults
 #+begin_src elisp
