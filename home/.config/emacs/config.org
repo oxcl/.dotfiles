@@ -868,6 +868,11 @@ poke integration with emacs comes in two packages: ~poke.el~ a user interface fo
   (use-package poke-mode)
 #+end_src
 
+** cmake
+#+begin_src elisp
+  (use-package cmake-mode)
+#+end_src
+
 ** terminal emulator
 #+begin_src elisp
   (use-package vterm

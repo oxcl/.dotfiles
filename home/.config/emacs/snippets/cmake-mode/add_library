@@ -1,0 +1,6 @@
+# name: generate add_library function in cmake with static and shared (dynamic) options
+# contributor: oxcl
+# key: add_library
+# --
+add_library(${1:libary_name} ${2:$$(yas-choose-value '("STATIC" "SHARED"))} ${3:files})
+taget_link_libraries(`()`

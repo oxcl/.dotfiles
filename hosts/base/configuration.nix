@@ -19,7 +19,7 @@
   users.users.user = {
     isNormalUser = true;
     shell = pkgs.zsh;
-   extraGroups = [ "wheel" "vboxsf" "networkmanager" ]; # Enable ‘sudo’ for the user.
+   extraGroups = [ "wheel" "vboxsf" "networkmanager" "docker" ]; # Enable ‘sudo’ for the user.
   };
   programs.zsh.enable = true;
 
@@ -32,7 +32,9 @@
   # networking.wireless.enable = true;
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default
 
-
+  virtualisation.docker = {
+    enable = true;
+  };
 
   services = {
     xserver = {
