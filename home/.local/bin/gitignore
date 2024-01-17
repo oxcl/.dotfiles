@@ -20,7 +20,8 @@ _gitignore_fetch () {
     fi
 }
 if [[ "$#" -lt 1 ]]; then
-    cat "$_GIT_IGNORE_CACHE_FILE" | fzf -m | tr "\n" " " | xargs gitignore
+    CHOICES=$(cat "$_GIT_IGNORE_CACHE_FILE" | fzf -m | tr "\n" " ")
+    [[ -n "$CHOICES" ]] && xargs gitignore
 else
     _gitignore_fetch "$@"
 fi
