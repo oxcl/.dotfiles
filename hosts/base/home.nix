@@ -91,6 +91,7 @@
     expect
     fq
     pup
+    ttyper
   ];
 
   services.gpg-agent = {
