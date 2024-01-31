@@ -9,7 +9,11 @@
     };
     # since rofi-blocks was not available in nixpkgs i wrote my own flake for it.
     rofi-blocks = {
-        url = "github:oxcl/rofi-blocks-nix";
+      url = "github:oxcl/rofi-blocks-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    gruvbox-material-gtk = {
+      url = "github:oxcl/gruvbox-material-gtk-nix";
     };
   };
 

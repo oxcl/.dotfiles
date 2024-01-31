@@ -34,4 +34,4 @@ export SAVEHIST=4000 # maximum size for $HISTFILE
 export DIRENV_LOG_FORMAT=""
 
 # xdg
-export GTK_THEME=Adwaita:dark
+export GTK_THEME=Gruvbox-Material-Dark

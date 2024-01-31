@@ -8,6 +8,7 @@
   # rofi-blocks is an extension to rofi which allows finer control over rofi
   nixpkgs.overlays = [
     inputs.rofi-blocks.overlay
+    inputs.gruvbox-material-gtk.overlays.default
   ];
   nixpkgs.config = {
     allowUnfree = true;
@@ -94,7 +95,7 @@
     firefox
     dconf
     overpass
-    gtk-engine-murrine
+    gruvbox-material-gtk
   ];
 
   services.gpg-agent = {
