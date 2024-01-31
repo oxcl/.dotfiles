@@ -12,18 +12,8 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/872b7c63-666c-4dfe-a799-1424661f2faa";
+    { device = "/dev/disk/by-uuid/5fa8c419-31d6-4c5a-bc05-16dcaa0f059f";
       fsType = "ext4";
-    };
-
-  fileSystems."/home/user/shared" =
-    { device = "shared";
-      fsType = "vboxsf";
-    };
-
-  fileSystems."/media/sf_shared" =
-    { device = "shared";
-      fsType = "vboxsf";
     };
 
   swapDevices = [ ];
@@ -33,6 +23,7 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp0s3.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   virtualisation.virtualbox.guest.enable = true;

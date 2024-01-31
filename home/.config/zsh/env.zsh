@@ -33,3 +33,5 @@ export SAVEHIST=4000 # maximum size for $HISTFILE
 # make direnv work silently
 export DIRENV_LOG_FORMAT=""
 
+# xdg
+export GTK_THEME=Adwaita:dark
