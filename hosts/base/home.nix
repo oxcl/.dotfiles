@@ -86,6 +86,7 @@
     neofetch
     lxd
     nodejs_21
+    bun
     zsh-completions
     thefuck
     expect

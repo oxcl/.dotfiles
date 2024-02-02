@@ -46,10 +46,7 @@ bgnofity_threshold=60 # more than 60 seconds
 zert-load-omz plugin direnv
 function _direnv_hook(){
     trap -- '' SIGINT;
-    eval "$(direnv export zsh 2>/tmp/direnv_nag)";
-    printf "\e[31m"
-    cat /tmp/direnv_nag | grep -v "is blocked" # make direnv stfu about untrusted .env files
-    printf "\e[0m"
+    eval "$(direnv export zsh 2> >(grep -v 'is blocked' >&2) )";
     trap - SIGINT;
 }
 
