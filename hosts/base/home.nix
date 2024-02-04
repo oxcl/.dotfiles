@@ -93,7 +93,7 @@
     fq
     pup
     ttyper
-    firefox
+    firefox-bin
     dconf
     overpass
     gruvbox-material-gtk
