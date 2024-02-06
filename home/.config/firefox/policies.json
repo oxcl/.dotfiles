@@ -15,11 +15,11 @@
       "Locked": true,
       "Cryptomining": true,
       "Fingerprinting": true,
-      "EmailTracking": true,
+      "EmailTracking": true
     },
     "EncryptedMediaExtensions": {
       "Enabled": false,
-      "Locked": true,
+      "Locked": true
     },
     "ExtensionSettings": {
       "*": {

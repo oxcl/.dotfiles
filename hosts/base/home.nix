@@ -93,11 +93,16 @@
     fq
     pup
     ttyper
-    firefox-bin
     dconf
     overpass
     gruvbox-material-gtk
   ];
+
+  programs.firefox = {
+    enable = true;
+    package = pkgs.firefox-bin;
+    policies = (builtins.fromJSON (builtins.readFile ../../home/.config/firefox/policies.json)).policies;
+  };
 
   services.gpg-agent = {
     enable = true;
