@@ -2,9 +2,7 @@
 #+AUTHOR: oxcl
 #+DESCRIPTION: my personal emacs config
 #+STARTUP: overview
-#+PROPERTY: header-args :results silent
-#+OPTIONS: toc:
-* TABLE OF CONTENTS :toc:
+#+PROPERTY: header-args :results silent :tangle ./init.el
 * startup optimizations
 most of theses optimizations are taken from doom emacs [[https://github.com/doomemacs/doomemacs/blob/master/lisp/doom.el][doom.el]]
 #+begin_src elisp
@@ -104,63 +102,51 @@ make sure internet communications are in TLS.this code is taken from [[https://g
   (add-to-list 'load-path (expand-file-name "lisp" real-user-emacs-directory))
 #+end_src
 
-** straight.el
-*** bootstrap
-i use straight.el for it's locking mechanism
+** elpaca
 #+begin_src emacs-lisp
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-	 (expand-file-name
-	  "straight/repos/straight.el/bootstrap.el"
-	  (or (bound-and-true-p straight-base-dir)
-	      user-emacs-directory)))
-	(bootstrap-version 7))
-    (unless (file-exists-p bootstrap-file)
-      ;; symlink the lockfiles from the .config directory into straight.el directory
-      (let ((lockfile-path (expand-file-name "straight/versions" user-emacs-directory)))
-	(make-directory lockfile-path t)
-	(make-symbolic-link (expand-file-name "lockfile.el" real-user-emacs-directory)
-			    (expand-file-name "default.el" lockfile-path)))
-      (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
+  (defvar elpaca-installer-version 0.6)
+  (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+  (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+  (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+  (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                                :ref nil
+                                :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                                :build (:not elpaca--activate-package)))
+  (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+         (build (expand-file-name "elpaca/" elpaca-builds-directory))
+         (order (cdr elpaca-order))
+         (default-directory repo))
+    (add-to-list 'load-path (if (file-exists-p build) build repo))
+    (unless (file-exists-p repo)
+      (make-directory repo t)
+      (when (< emacs-major-version 28) (require 'subr-x))
+      (condition-case-unless-debug err
+          (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                   ((zerop (call-process "git" nil buffer t "clone"
+                                         (plist-get order :repo) repo)))
+                   ((zerop (call-process "git" nil buffer t "checkout"
+                                         (or (plist-get order :ref) "--"))))
+                   (emacs (concat invocation-directory invocation-name))
+                   ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                         "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                   ((require 'elpaca))
+                   ((elpaca-generate-autoloads "elpaca" repo)))
+              (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+            (error "%s" (with-current-buffer buffer (buffer-string))))
+        ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+    (unless (require 'elpaca-autoloads nil t)
+      (require 'elpaca)
+      (elpaca-generate-autoloads "elpaca" repo)
+      (load "./elpaca-autoloads")))
+  (add-hook 'after-init-hook #'elpaca-process-queues)
+  (elpaca `(,@elpaca-order))
 #+end_src
-
-*** defaults
-#+begin_src emacs-lisp
-  ;; main user in hosting platforms to fetch the forked version of a package
-  (setq straight-host-usernames
-	'((github . "oxcl")))
-  ;; how straight.el should know if a package repository was manually edited.
-  (setq straight-check-for-modification '(find-when-checking watchexec))
-#+end_src
-
-*** automatic lockfile generation
-automatically regenerate the lockfile when installing a new package or upgrading old ones
-#+begin_src emacs-lisp
-  (cl-defun oxcl/update-lockfile (&key commit repo-dir remote url branch depth)
-    (unless commit
-      (straight-freeze-versions)))
-  (add-hook 'straight-vc-git-post-clone-hook 'oxcl/update-lockfile)
-  ;; (advice-add 'straight-pull-package
-  ;; 	    :after (lambda ()
-  ;; 		     (straight-freeze-versions)))
-  ;; (advice-add 'straight-pull-package-and-deps
-  ;; 	    :after (lambda ()
-  ;; 		     (straight-freeze-versions nil)))
-  ;; (advice-add 'straight-pull-all
-  ;; 	    :after (lambda ()
-  ;; 		     (straight-freeze-versions nil)))
-#+end_src
-
 ** use-package
 #+begin_src emacs-lisp
-  (straight-use-package 'use-package)
-  (setq straight-use-package-by-default t)
+  (elpaca elpaca-use-package
+    (elpaca-use-package-mode)
+    (setq use-package-always-ensure t))
+  (elpaca-wait)
 #+end_src
 
 * ui
@@ -175,6 +161,7 @@ automatically regenerate the lockfile when installing a new package or upgrading
   (blink-cursor-mode -1) ; disable cursor blink
   (set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
 #+end_src
+
 ** font
 #+begin_src emacs-lisp
   (set-frame-font "JetBrainsMono 11")
@@ -185,25 +172,23 @@ automatically regenerate the lockfile when installing a new package or upgrading
 #+end_src
 
 ** theme
-customized modus-themes to match gruvbox-material
 #+begin_src emacs-lisp
-  (use-package modus-themes
+  (use-package doom-themes
     :config
-    (setq modus-themes-bold-constructs t
-	  modus-themes-italic-constructs t
-	  modus-themes-org-blocks 'gray-background
-	  modus-themes-prompts '(bold)
-	  modus-themes-completions
-	  (quote ((selection . (regular))))
-	  modus-themes-headings
-	  '((1 . (ultrabold 1.5))
-	    (2 . (extrabold 1.3))
-	    (3 . (bold 1.2))
-	    (4 . (semibold 1.1))
-	    (t . (bold 1.1))))
-    (require 'gruvbox-material)
-    (load-theme 'modus-vivendi :no-confirm)
-    (require 'gruvbox-material-extras))
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (doom-themes-org-config))
+  (use-package doom-gruvbox-material-theme
+    :ensure (:host github
+	     :repo "Cardoso1994/doom-gruvbox-material-theme")
+    :requires doom-themes
+    :init
+    (setq doom-gruvbox-material-background  "random"
+	  doom-gruvbox-material-palette     "material")
+    :config
+    (add-to-list 'custom-theme-load-path (expand-file-name "doom-gruvbox-material-theme/" elpaca-builds-directory))
+    (load-theme 'doom-gruvbox-material t))
 #+end_src
 
 ** line numbers column
@@ -539,9 +524,9 @@ replace emacs regex with a more modern functional regex
 
 * org mode
 #+begin_src elisp
-  (setq org-confirm-babel-evaluate nil)
-  (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
-  (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
+;;  (setq org-confirm-babel-evaluate nil)
+;;  (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
+;;  (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
 #+end_src
 
 * programming
@@ -664,7 +649,7 @@ taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-
 ** git
 *** magit
 #+begin_src elisp
-  (use-package magit)
+;;  (use-package magit)
 #+end_src
 
 ** snippets and templates
@@ -870,13 +855,13 @@ poke integration with emacs comes in two packages: ~poke.el~ a user interface fo
 
 ** terminal emulator
 #+begin_src elisp
-  (use-package vterm
-    :custom
-    (vterm-ignore-blink-cursor t)
-    (vterm-environment '("_VTERM=1"))
-    (vterm-clear-scrollback-when-clearing t)
-    :config
-    (add-hook 'vterm-mode-hook (lambda () )))
+;;  (use-package vterm
+;;    :custom
+;;    (vterm-ignore-blink-cursor t)
+;;    (vterm-environment '("_VTERM=1"))
+;;    (vterm-clear-scrollback-when-clearing t)
+;;    :config
+;;    (add-hook 'vterm-mode-hook (lambda () )))
 #+end_src
 
 * rest client

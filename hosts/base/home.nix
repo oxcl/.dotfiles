@@ -49,7 +49,6 @@
     ccls
     ((emacsPackagesFor emacs29).emacsWithPackages (
       epkgs: with epkgs; [
-	vterm
 	treesit-grammars.with-all-grammars
 	jinx
       ]
@@ -82,7 +81,6 @@
     asciinema-agg
     gifsicle
     fx
-    libvterm
     neofetch
     lxd
     nodejs_21
