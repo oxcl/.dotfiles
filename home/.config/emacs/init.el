@@ -125,20 +125,16 @@
 
 (use-package doom-themes
   :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (doom-themes-org-config))
-(use-package doom-gruvbox-material-theme
-  :ensure (:host github
-	   :repo "Cardoso1994/doom-gruvbox-material-theme")
-  :requires doom-themes
-  :init
-  (setq doom-gruvbox-material-background  "random"
-	doom-gruvbox-material-palette     "material")
+  (setq doom-themes-enable-bold t 
+	doom-themes-enable-italic t
+	custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
+	doom-my-theme-brighter-mode-line t
+	doom-my-theme-padded-modeline 4)
+  (doom-themes-org-config)
+  (load-theme 'doom-my t))
+(use-package solaire-mode
   :config
-  (add-to-list 'custom-theme-load-path (expand-file-name "doom-gruvbox-material-theme/" elpaca-builds-directory))
-  (load-theme 'doom-gruvbox-material t))
+  (solaire-global-mode +1))
 
 (setq-default display-line-numbers-width 4) ; how many digits for line numbers
 (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook))
@@ -382,6 +378,7 @@
 (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 (add-to-list 'auto-mode-alist '("\\(\\.cmake\\|CMakeLists\\.txt\\)\\'" . cmake-ts-mode))
+(setq treesit-font-lock-level 4)
 
 (use-package clojure-ts-mode
   :commands (clojure-ts-mode)
@@ -395,10 +392,10 @@
   :commands (nix-ts-mode)
   :mode "\\.nix\\'")
 
-(use-package lua-ts-mode
-  :straight (:host sourcehut :repo "johnmuhl/lua-ts-mode")
-  :mode "\\.lua\\'"
-  :commands (lua-ts-mode))
+;;  (use-package lua-ts-mode
+;;    :straight (:host sourcehut :repo "johnmuhl/lua-ts-mode")
+;;    :mode "\\.lua\\'"
+;;    :commands (lua-ts-mode))
 
 (use-package rainbow-delimiters
   :config

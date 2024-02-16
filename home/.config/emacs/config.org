@@ -175,20 +175,16 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 #+begin_src emacs-lisp
   (use-package doom-themes
     :config
-    ;; Global settings (defaults)
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (doom-themes-org-config))
-  (use-package doom-gruvbox-material-theme
-    :ensure (:host github
-	     :repo "Cardoso1994/doom-gruvbox-material-theme")
-    :requires doom-themes
-    :init
-    (setq doom-gruvbox-material-background  "random"
-	  doom-gruvbox-material-palette     "material")
+    (setq doom-themes-enable-bold t 
+	  doom-themes-enable-italic t
+	  custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
+	  doom-my-theme-brighter-mode-line t
+	  doom-my-theme-padded-modeline 4)
+    (doom-themes-org-config)
+    (load-theme 'doom-my t))
+  (use-package solaire-mode
     :config
-    (add-to-list 'custom-theme-load-path (expand-file-name "doom-gruvbox-material-theme/" elpaca-builds-directory))
-    (load-theme 'doom-gruvbox-material t))
+    (solaire-global-mode +1))
 #+end_src
 
 ** line numbers column
@@ -553,6 +549,7 @@ replace builtin tree-sitter major modes with the old ones
   (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
   (add-to-list 'auto-mode-alist '("\\(\\.cmake\\|CMakeLists\\.txt\\)\\'" . cmake-ts-mode))
+  (setq treesit-font-lock-level 4)
 #+end_src
 
 *** third-party ts-modes
@@ -580,10 +577,10 @@ since the builtin support for tree-sitter major modes is limited to few language
 
 **** lua
 #+begin_src elisp
-  (use-package lua-ts-mode
-    :straight (:host sourcehut :repo "johnmuhl/lua-ts-mode")
-    :mode "\\.lua\\'"
-    :commands (lua-ts-mode))
+;;  (use-package lua-ts-mode
+;;    :straight (:host sourcehut :repo "johnmuhl/lua-ts-mode")
+;;    :mode "\\.lua\\'"
+;;    :commands (lua-ts-mode))
 #+end_src
 
 ** parenthesis and delimiters

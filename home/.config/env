@@ -1,4 +1,4 @@
-# this file is both sourced by x11 (in .xprofile) and zsh ( in .zprofile ) so it works both in graphical environment and tty
+# this file is sourced by x11 (in .xprofile), zsh (in .zprofile) and bash (in .bash-profile) so it works both in graphical environment and tty
 
 # XDG variables
 export XDG_CONFIG_HOME="${HOME}/.config"
@@ -32,6 +32,11 @@ export SAVEHIST=4000 # maximum size for $HISTFILE
 
 # make direnv work silently
 export DIRENV_LOG_FORMAT=""
+
+
+# load environment variables for themeing. these environment variables can be used by other
+# programs to make a universal theme that applies to the whole system
+source "${XDG_CONFIG_HOME}/themes/default.sh"
 
 # xdg
 export GTK_THEME=Gruvbox-Material-Dark

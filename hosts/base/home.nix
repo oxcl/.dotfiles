@@ -94,6 +94,7 @@
     dconf
     overpass
     gruvbox-material-gtk
+    sxiv
   ];
 
   programs.firefox = {

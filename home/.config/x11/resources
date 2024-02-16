@@ -1,41 +1,41 @@
 ! Theme
 !----------------------------------
 
-*.cursor:                FG_MAIN
-*.background:            BG_MAIN
-*.foreground:            FG_MAIN
+*.cursor:                MY_THEME_FG_DIM
+*.background:            MY_THEME_BG
+*.foreground:            MY_THEME_FG
 
 ! Black
-*.color0:                BG_DIM
-*.color8:                GREY_1
+*.color0:                MY_THEME_BG0
+*.color8:                MY_THEME_DARK_GREY
 
 ! Red
-*.color1:                RED
-*.color9:                RED
+*.color1:                MY_THEME_RED
+*.color9:                MY_THEME_RED_SUBTLE
 
 ! Green
-*.color2:                GREEN
-*.color10:               GREEN
+*.color2:                MY_THEME_GREEN
+*.color10:               MY_THEME_GREEN_SUBTLE
 
 ! Yellow
-*.color3:                YELLOW
-*.color11:               ORANGE
+*.color3:                MY_THEME_YELLOW
+*.color11:               MY_THEME_ORANGE
 
 ! Blue
-*.color4:                BLUE
-*.color12:               BLUE
+*.color4:                MY_THEME_BLUE
+*.color12:               MY_THEME_BLUE_SUBTLE
 
 ! Magenta
-*.color5:                PURPLE
-*.color13:               PURPLE
+*.color5:                MY_THEME_PURPLE
+*.color13:               MY_THEME_PURPLE_SUBTLE
 
 ! Cyan
-*.color6:                AQUA
-*.color14:               AQUA
+*.color6:                MY_THEME_AQUA
+*.color14:               MY_THEME_AQUA_SUBTLE
 
 ! White
-*.color7:                FG_MAIN
-*.color15:               GREY_2
+*.color7:                MY_THEME_FG
+*.color15:               MY_THEME_LIGHT_GREY
 
 
 ! Text

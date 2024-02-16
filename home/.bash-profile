@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+# loading necessary environment variables for bash mainly useful in tty logins (and maybe ssh?)
+source "${XDG_CONFIG:-$HOME/.config}/env" 

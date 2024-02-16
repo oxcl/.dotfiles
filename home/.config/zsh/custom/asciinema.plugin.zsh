@@ -12,7 +12,7 @@ function rec() {
     # convert to gif
     if command -v agg &>/dev/null; then
 	agg $filename "${filename%.cast}.gif" \
-	    --theme $COLOR_BG_1,$COLOR_FG_1,$COLOR_BG_5,$COLOR_RED,$COLOR_GREEN,$COLOR_YELLOW,$COLOR_BLUE,$COLOR_PURPLE,$COLOR_AQUA,$COLOR_FG_0 # environments are provided from .config/zsh/theme.zsh
+	    --theme $(echo "$MY_THEME_BG,$MY_THEME_FG,$MY_THEME_BG0,$MY_THEME_RED,$MY_THEME_GREEN,$MY_THEME_YELLOW,$MY_THEME_BLUE,$MY_THEME_PURPLE,$MY_THEME_AQUA,$MY_THEME_FG,$MY_THEME_DARK_GREY,$MY_THEME_RED_SUBTLE,$MY_THEME_GREEN_SUBTLE,$MY_THEME_YELLOW_SUBTLE,$MY_THEME_BLUE_SUBTLE,$MY_THEME_PURPLE_SUBTLE,$MY_THEME_AQUA_SUBTLE,$MY_THEME_LIGHT_GREY" | tr -d '#')
 	[[ "$?" != 0 ]] || ! command -v gifsicle && return
 	# make an optimized version of the gif 
 	gifsicle --lossy=80 -k 64 -O2 -Okeep-empty "${filename%.cast}.gif" -o "${filename%.cast}.opt.gif"
