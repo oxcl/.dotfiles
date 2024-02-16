@@ -469,50 +469,6 @@
 
 ;;  (setq-default completion-styles '(basic))
 
-(use-package company
-  :hook
-  ((prog-mode org-mode conf-mode) . company-mode)
-  :config
-  (setq company-minimum-prefix-length 3
-	company-idle-delay (lambda () (if (company-in-string-or-comment) nil 0.2))
-	company-frontends '(company-pseudo-tooltip-frontend
-			    company-echo-metadata-frontend)
-	company-tooltip-align-annotations t
-	company-tooltip-annotation-padding 1
-	completion-at-point-functions '()
-	company-selection-wrap-around t
-	company-tooltip-width-grow-only t
-	company-tooltip-flip-when-above t
-	company-tooltip-minimum-width 60
-	company-backends '(company-files
-			   (company-yasnippet company-dabbrev-code company-dabbrev))
-	company-tooltip-maximum-width 100
-	company-icon-margin 3
-	company-files-exclusions '(".git/" ".DS_STORE" "node_modules/")
-	;;	  company-transformers '(company-sort-by-backend-importance)
-	company-sort-prefer-same-case-prefix t))
-
-(use-package company-quickhelp
-  :hook (company-mode . company-quickhelp-mode))
-
-(use-package company-box
-  :after company
-  :hook (company-mode . company-box-mode)
-  :config
-  (setq company-box-scrollbar 'right
-	company-box-doc-delay 0.2
-	company-box-doc-frame-parameters  '((internal-border-width . 1)
-					    (left-fringe . 10)
-					    (right-fringe . 10))
-	company-box-backends-colors '())
-  (add-to-list 'company-box-frame-parameters '(scroll-bar-width . 7))
-  (advice-add 'company-box-doc--make-buffer
-	      :filter-return (lambda (buffer)
-			       (with-current-buffer buffer
-				 (modus-themes-with-colors
-				   (face-remap-add-relative 'fringe `(:background ,bg-dim :foreground ,bg-dim)))
-				 buffer))))
-
 ;;	(use-package prescient
 ;;	  :defer t
 ;;	  :config

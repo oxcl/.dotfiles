@@ -77,7 +77,7 @@ Can be an integer to determine the exact padding."
    ;; but can also be useful as a basis for subtle highlights (e.g. for hl-line
    ;; or region), especially when paired with the `doom-darken', `doom-lighten',
    ;; and `doom-blend' helper functions.
-   (bg-alt     `(,theme-bg2 "black"       "black"        ))
+   (bg-alt     `(,theme-bg1 "black"       "black"        ))
    (fg-alt     `(,theme-fg "#2d2d2d"     "white"        ))
 
    ;; These should represent a spectrum from bg to fg, where base0 is a starker
@@ -125,7 +125,7 @@ Can be an integer to determine the exact padding."
    (selection      red)
    (comments       (if doom-my-theme-brighter-comments theme-light-grey grey))
    (doc-comments   (if doom-my-theme-brighter-comments green theme-green-subtle))
-   (region         base5)
+   (region         base6)
    (error          red)
    (warning        yellow)
    (success        green)
@@ -135,14 +135,14 @@ Can be an integer to determine the exact padding."
 
    ;; These are extra color variables used only in this theme; i.e. they aren't
    ;; mandatory for derived themes.
-   (modeline-fg              fg1)
-   (modeline-fg-alt          base5)
+   (modeline-fg              theme-fg-dim)
+   (modeline-fg-alt          theme-fg-dim)
    (modeline-bg              (if doom-my-theme-brighter-modeline
-                                 (doom-darken blue 0.45)
-                               (doom-darken bg-alt 0.1)))
+                                 base5
+                               base4))
    (modeline-bg-alt          (if doom-my-theme-brighter-modeline
-                                 (doom-darken blue 0.475)
-                               `(,(doom-darken (car bg-alt) 0.15) ,@(cdr bg))))
+                                 base6
+                               base5))
    (modeline-bg-inactive     `(,(car bg-alt) ,@(cdr base1)))
    (modeline-bg-inactive-alt `(,(doom-darken (car bg-alt) 0.1) ,@(cdr bg)))
 
@@ -195,8 +195,14 @@ Can be an integer to determine the exact padding."
     :inherit 'mode-line-inactive
     :background modeline-bg-inactive-alt
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-inactive-alt)))
+  ;;;; hl-line
+   (hl-line :background base3)
   ;;;; tree-sitter
    (font-lock-operator-face :foreground operators)
    (font-lock-escape-face   :foreground yellow)
+   (font-lock-delimiter-face :foreground theme-yellow-subtle)
    (font-lock-doc-markup-face :foreground green)
-   (font-lock-preprocessor-face :foreground theme-red-subtle)))
+   (font-lock-preprocessor-face :foreground theme-red-subtle)
+   (font-lock-property-name-face :foreground blue)
+ ;;;; idle highlight
+   (idle-highlight :background base4)))
