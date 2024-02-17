@@ -121,10 +121,10 @@ Can be an integer to determine the exact padding."
    (builtin        dark-cyan)
    (highlight      base7)
    (vertical-bar   base2)
-
-   (selection      red)
    (comments       (if doom-my-theme-brighter-comments theme-light-grey grey))
    (doc-comments   (if doom-my-theme-brighter-comments green theme-green-subtle))
+
+   (selection      red)
    (region         base6)
    (error          red)
    (warning        yellow)
@@ -141,8 +141,8 @@ Can be an integer to determine the exact padding."
                                  base5
                                base4))
    (modeline-bg-alt          (if doom-my-theme-brighter-modeline
-                                 base6
-                               base5))
+                                 base5
+                               base4))
    (modeline-bg-inactive     `(,(car bg-alt) ,@(cdr base1)))
    (modeline-bg-inactive-alt `(,(doom-darken (car bg-alt) 0.1) ,@(cdr bg)))
 
@@ -152,7 +152,7 @@ Can be an integer to determine the exact padding."
 
 
   ;;;; Base theme face overrides
-  (((line-number &override) :foreground base4)
+  (((line-number &override) :foreground base6)
    ((line-number-current-line &override) :foreground fg)
    ((font-lock-comment-face &override)
     :background (if doom-my-theme-comment-bg (doom-lighten bg 0.05) 'unspecified))
@@ -195,14 +195,15 @@ Can be an integer to determine the exact padding."
     :inherit 'mode-line-inactive
     :background modeline-bg-inactive-alt
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-inactive-alt)))
-  ;;;; hl-line
+
+   ;;;; hl-line
    (hl-line :background base3)
-  ;;;; tree-sitter
+   ;;;; tree-sitter
    (font-lock-operator-face :foreground operators)
    (font-lock-escape-face   :foreground yellow)
    (font-lock-delimiter-face :foreground theme-yellow-subtle)
    (font-lock-doc-markup-face :foreground green)
    (font-lock-preprocessor-face :foreground theme-red-subtle)
    (font-lock-property-name-face :foreground blue)
- ;;;; idle highlight
+   ;;;; idle highlight
    (idle-highlight :background base4)))

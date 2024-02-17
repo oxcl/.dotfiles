@@ -65,8 +65,9 @@ bg_soft(){
   export MY_THEME_BG_YELLOW="#574833"
 }
 fg_original() {
-  export MY_THEME_FG_DIM="#c9b99a"
+  export MY_THEME_FG0="#c9b99a"
   export MY_THEME_FG="#ebdbb2"
+  export MY_THEME_FG1="#ebdbb2"
   export MY_THEME_RED="#fb4934"
   export MY_THEME_ORANGE="#fe8019"
   export MY_THEME_YELLOW="#fabd2f"
@@ -84,8 +85,9 @@ fg_original() {
   export MY_THEME_PURPLE_SUBTLE="#ab6c7d"
 }
 fg_mix(){
-  export MY_THEME_FG_DIM="#c5b18d"
-  export MY_THEME_FG="#E2cca9"
+  export MY_THEME_FG0="#c5b18d"
+  export MY_THEME_FG="#e2cca9"
+  export MY_THEME_FG1="#e2cca9"
   export MY_THEME_RED="#f2594b"
   export MY_THEME_ORANGE="#f28534"
   export MY_THEME_YELLOW="#e9b143"
@@ -103,8 +105,9 @@ fg_mix(){
   export MY_THEME_PURPLE_SUBTLE="#ab6c7d"
 }
 fg_material(){
-  export MY_THEME_FG_DIM="#c5b18d"
-  export MY_THEME_FG="#D4be98"
+  export MY_THEME_FG0="#c5b18d"
+  export MY_THEME_FG="#d4be98"
+  export MY_THEME_FG1="#ddc7a1"
   export MY_THEME_RED="#ea6962"
   export MY_THEME_ORANGE="#e78a4e"
   export MY_THEME_YELLOW="#d8a657"
