@@ -126,13 +126,16 @@
 (use-package doom-themes
   :config
   (setq doom-themes-enable-bold t 
-	doom-themes-enable-italic t
-	custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
-	doom-my-theme-brighter-mode-line t
-	doom-my-theme-padded-modeline 4)
+      doom-themes-enable-italic t
+      custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
+      doom-my-theme-brighter-mode-line t
+      doom-my-theme-padded-modeline 4)
   (doom-themes-org-config)
-  (load-theme 'doom-my t))
+  (if (equal (getenv "MY_THEME_LOADED") "1")
+    (load-theme 'doom-my t)
+    (load-theme 'doom-gruvbox t)))
 (use-package solaire-mode
+  :after doom-themes
   :config
   (solaire-global-mode +1))
 

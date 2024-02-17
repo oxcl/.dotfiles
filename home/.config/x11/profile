@@ -6,7 +6,9 @@ source "${XDG_CONFIG:-$HOME/.config}/env"
 source "${XDG_CONFIG:-$HOME/.config}/themes/default"
 
 # load settings related to xterm, urxvt and programs that respect x11 settings
-xrdb $(eval echo "$(echo ${!MY_THEME_*} | xargs -n1 | xargs -I{} printf '-D{}=${} ' )") "${XDG_CONFIG_HOME:-$HOME/.config}/x11/resources"
+if [ -n "$MY_THEME_LOADED" ]; then
+   xrdb $(eval echo "$(echo ${!MY_THEME_*} | xargs -n1 | xargs -I{} printf '-D{}=${} ' )") "${XDG_CONFIG_HOME:-$HOME/.config}/x11/resources"
+fi
 
 # run ssh-agent daemon
 [[ -z "$SSH_AGENT_PID" ]] && eval "$(ssh-agent)"
