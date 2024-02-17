@@ -798,6 +798,14 @@ poke integration with emacs comes in two packages: ~poke.el~ a user interface fo
   (use-package poke-mode)
 #+end_src
 
+** editorconfig
+#+begin_src elisp
+  (use-package editorconfig
+    :config
+    (editorconfig-mode 1))
+#+end_src
+
+
 ** terminal emulator
 #+begin_src elisp
 ;;  (use-package vterm

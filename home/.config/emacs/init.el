@@ -526,6 +526,10 @@
 
 (use-package poke-mode)
 
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
+
 ;;  (use-package vterm
 ;;    :custom
 ;;    (vterm-ignore-blink-cursor t)
@@ -632,17 +636,3 @@
 (use-package ctrlf
   :config
   (ctrlf-mode 1))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("d1f51a7a068ea7c2fb0b931e9b9e86360be50d003d048cc7232a691518790a9d" "691d671429fa6c6d73098fc6ff05d4a14a323ea0a18787daeb93fde0e48ab18b" default)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-(put 'upcase-region 'disabled nil)

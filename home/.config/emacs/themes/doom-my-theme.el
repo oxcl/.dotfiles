@@ -125,7 +125,7 @@ Can be an integer to determine the exact padding."
    (doc-comments   (if doom-my-theme-brighter-comments green theme-green-subtle))
 
    (selection      red)
-   (region         base6)
+   (region         theme-bg6)
    (error          red)
    (warning        yellow)
    (success        green)
