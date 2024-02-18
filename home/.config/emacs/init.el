@@ -125,7 +125,7 @@
 
 (use-package doom-themes
   :config
-  (setq doom-themes-enable-bold t 
+  (setq doom-themes-enable-bold t
       doom-themes-enable-italic t
       custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
       doom-my-theme-brighter-modeline t
@@ -451,19 +451,21 @@
     (require 'autoinsert)
     (auto-insert-mode)
     (setq auto-insert-query nil
-	  auto-insert-directory (expand-file-name "auto-inserts/" real-user-emacs-directory)
-	  auto-insert-alist '())
+          auto-insert-directory (expand-file-name "auto-inserts/" real-user-emacs-directory)
+          auto-insert-alist '())
     ;; automatically load auto-insert snippets from .config/emacs/auto-inserts folder.
     ;; files which have only an underscore in the name will be applied to every file with that extension but only
     ;; if a more specific template is not found.
     (let ((auto-insert-files (cdr (cdr (directory-files (expand-file-name "auto-inserts" real-user-emacs-directory))))))
-    (dolist (item auto-insert-files)
-      (let ((pattern-name (if (equal (file-name-base item) "_")
-			      (concat "\\." (file-name-extension item) "\\'")
-			    (if (file-name-extension item)
-				(concat (file-name-base item) "\\." (file-name-extension item))
-			      (file-name-base item)))))
-	(add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))))
+      (dolist (item auto-insert-files)
+        (let ((pattern-name (if (equal (file-name-base item) "_")
+                                (if (file-name-extension item)
+                                    (concat "\\." (file-name-extension item) "\\'")
+                                  "\\'")
+                              (if (file-name-extension item)
+                                  (concat (file-name-base item) "\\." (file-name-extension item) "\\'")
+                                (concat (file-name-base item) "\\'")))))
+              (add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))))
 
 (use-package yasnippet
   :custom
@@ -543,7 +545,7 @@
 (use-package restclient
   :mode ("\\.http\\'" . restclient-mode)
   :commands restclient-mode
-  :bind 
+  :bind
   (:map restclient-mode-map
   ("C-c C-v" . restclient-http-send-current)
   ("C-c C-c" . restclient-http-send-current-stay-in-window)
@@ -600,7 +602,7 @@
   (setq buffer-undo-list nil)
   (hexl-mode))
 (add-hook 'restclient-mode-hook
-	  (lambda() 
+	  (lambda()
 	    (add-hook 'restclient-response-received-hook
 		      (lambda ()  (set-buffer-file-coding-system 'utf-8)
 			(when (eq major-mode 'hexl-mode) (hexl-mode-exit 0))))))
@@ -616,7 +618,7 @@
 
 ;; toggle a dired buffer in other window for current directory with C-x C-d
 ;;  (keymap-global-set "C-x C-d" #'dired-jump-other-window)
-(add-hook 'dired-mode-hook (lambda () 
+(add-hook 'dired-mode-hook (lambda ()
 			     (local-set-key (kbd "C-x C-d") #'quit-window)
 			     ;; home key moves to the first item in list instead of the dired header
 			     (local-set-key (kbd "<C-home>") (lambda ()
@@ -633,8 +635,9 @@
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
 
-(setq org-fold-core-style 'overlays)
 
-(use-package ctrlf
-  :config
-  (ctrlf-mode 1))
+
+(setq org-fold-core-style 'overlays)
+     (use-package ctrlf
+       :config
+       (ctrlf-mode 1))
