@@ -423,23 +423,6 @@
 (electric-pair-mode)
 (setq electric-pair-skip-whitespace nil)
 
-(defun oxcl/hungry-delete ()
-  (interactive)
-  (let (( current-line (buffer-substring-no-properties
-			(line-beginning-position)
-			(line-end-position))))
-    (if (and (string-blank-p current-line) (not (string-empty-p current-line)))
-	(progn
-	  (open-line 1)
-	  (beginning-of-line)
-	  (kill-line))
-      (delete-backward-char 1))))
-(defun oxcl/add-hungry-delete-bindings ()
-  (local-set-key (kbd "S-DEL") (key-binding (kbd "DEL")))
-  (local-set-key (kbd "DEL") #'oxcl/hungry-delete))
-(add-hook 'prog-mode-hook #'oxcl/add-hungry-delete-bindings)
-(add-hook 'text-mode-hook #'oxcl/add-hungry-delete-bindings)
-
 ;;  (use-package magit)
 
 (defun oxcl/yas-insert ()
