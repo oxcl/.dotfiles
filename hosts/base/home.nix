@@ -95,6 +95,7 @@
     overpass
     gruvbox-material-gtk
     sxiv
+    hyperfine
   ];
 
   programs.firefox = {
