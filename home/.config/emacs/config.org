@@ -193,7 +193,7 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 ** line numbers column
 #+begin_src emacs-lisp
   (setq-default display-line-numbers-width 4) ; how many digits for line numbers
-  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook))
+  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook))
     (add-hook mode 'display-line-numbers-mode))
   (setq require-final-newline t)
 #+end_src
@@ -657,26 +657,28 @@ taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-
 automatically insert generic boilerplate via autoinsert and yasnippet when creating new files based on file extension
 this code integrates yasnippet with the builtin yasnippet which is taken from  [[https://www.emacswiki.org/emacs/AutoInsertMod][emacs-wiki]]
 #+begin_src elisp
-  (defun oxcl/yas-insert ()
-    "Replace text in yasnippet templates."
-    (yas-expand-snippet (buffer-string) (point-min) (point-max)))
+      (defun oxcl/yas-insert ()
+	"Replace text in yasnippet templates."
+	(yas-expand-snippet (buffer-string) (point-min) (point-max)))
 
-  (defun oxcl/setup-auto-insert ()
-    (unless (featurep 'autoinsert)
-      (require 'autoinsert)
-      (auto-insert-mode)
-      (setq auto-insert-query nil
-	    auto-insert-directory (expand-file-name "auto-inserts/" real-user-emacs-directory)
-	    auto-insert-alist '())
-      ;; automatically load auto-insert snippets from .config/emacs/auto-inserts folder.
-      ;; files which have only an underscore in the name will be applied to every file with that extension but only
-      ;; if a more specific template is not found.
-      (let ((auto-insert-files (cdr (cdr (directory-files (expand-file-name "auto-inserts" real-user-emacs-directory))))))
-      (dolist (item auto-insert-files)
-	(let ((pattern-name (if (equal (file-name-base item) "_")
-				(concat "\\." (file-name-extension item) "\\'")
-			      (concat (file-name-base item) "\\." (file-name-extension item)))))
-	  (add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))))
+      (defun oxcl/setup-auto-insert ()
+	(unless (featurep 'autoinsert)
+	  (require 'autoinsert)
+	  (auto-insert-mode)
+	  (setq auto-insert-query nil
+		auto-insert-directory (expand-file-name "auto-inserts/" real-user-emacs-directory)
+		auto-insert-alist '())
+	  ;; automatically load auto-insert snippets from .config/emacs/auto-inserts folder.
+	  ;; files which have only an underscore in the name will be applied to every file with that extension but only
+	  ;; if a more specific template is not found.
+	  (let ((auto-insert-files (cdr (cdr (directory-files (expand-file-name "auto-inserts" real-user-emacs-directory))))))
+	  (dolist (item auto-insert-files)
+	    (let ((pattern-name (if (equal (file-name-base item) "_")
+				    (concat "\\." (file-name-extension item) "\\'")
+				  (if (file-name-extension item)
+				      (concat (file-name-base item) "\\." (file-name-extension item))
+				    (file-name-base item)))))
+	      (add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))))
 #+end_src
 
 *** yasnippet

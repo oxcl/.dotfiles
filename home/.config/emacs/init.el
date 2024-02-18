@@ -140,7 +140,7 @@
   (solaire-global-mode +1))
 
 (setq-default display-line-numbers-width 4) ; how many digits for line numbers
-(dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook))
+(dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook))
   (add-hook mode 'display-line-numbers-mode))
 (setq require-final-newline t)
 
@@ -460,7 +460,9 @@
     (dolist (item auto-insert-files)
       (let ((pattern-name (if (equal (file-name-base item) "_")
 			      (concat "\\." (file-name-extension item) "\\'")
-			    (concat (file-name-base item) "\\." (file-name-extension item)))))
+			    (if (file-name-extension item)
+				(concat (file-name-base item) "\\." (file-name-extension item))
+			      (file-name-base item)))))
 	(add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))))
 
 (use-package yasnippet
