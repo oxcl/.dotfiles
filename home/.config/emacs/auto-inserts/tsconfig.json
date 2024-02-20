@@ -1,0 +1,23 @@
+{
+  "include": ["${1:src}/**/*"],
+  "compilerOptions": {
+    "target": "es6",
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "strict": true,
+    "useUnknownInCatchVariables": true,
+    "module": "nodenext",
+    "resolveJsonModule": true,
+    "rootDir": "$1",
+    "outDir": "${2:dist}",
+    "removeComments": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+  },
+}
