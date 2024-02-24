@@ -10,7 +10,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "strict": true,
     "useUnknownInCatchVariables": true,
-    "module": "nodenext",
+    "module": "es2022",
     "resolveJsonModule": true,
     "rootDir": "$1",
     "outDir": "${2:dist}",
