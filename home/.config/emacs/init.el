@@ -105,17 +105,21 @@
 
 (elpaca elpaca-use-package
   (elpaca-use-package-mode)
-  (setq use-package-always-ensure t))
+  (setq use-package-always-ensure t
+        use-package-always-defer t))
 (elpaca-wait)
 
+(use-package delight
+  :demand t)
+
 (setq ring-bell-function 'ignore ; disable visual or audible ring
-      overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
-(scroll-bar-mode -1)
-(tool-bar-mode -1) ; hide the tool bar (with the icons)
-(menu-bar-mode -1) ; hide the menu bar
-(tooltip-mode -1) ; hide tooltip popup window on mouse hover
-(blink-cursor-mode -1) ; disable cursor blink
-(set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
+	overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
+;;  (scroll-bar-mode -1)
+;;  (tool-bar-mode -1) ; hide the tool bar (with the icons)
+;;  (menu-bar-mode -1) ; hide the menu bar
+;;  (tooltip-mode -1) ; hide tooltip popup window on mouse hover
+;;  (blink-cursor-mode -1) ; disable cursor blink
+;;  (set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
 
 (set-frame-font "JetBrainsMono 11")
 ;;	 (set-frame-font (format "JetBrains Mono %d" (round (/ 11000 (+( x-display-pixel-width) 120)))) nil t)
@@ -124,6 +128,7 @@
     (setq-default line-spacing 1) ; small padding between each line
 
 (use-package doom-themes
+  :demand t
   :config
   (setq doom-themes-enable-bold t
       doom-themes-enable-italic t
@@ -134,6 +139,7 @@
   (if (equal (getenv "MY_THEME_LOADED") "1")
     (load-theme 'doom-my t)
     (load-theme 'doom-gruvbox t)))
+
 (use-package solaire-mode
   :after doom-themes
   :config
@@ -515,6 +521,7 @@
 
 (use-package editorconfig
   :config
+
   (editorconfig-mode 1))
 
 ;;  (use-package vterm

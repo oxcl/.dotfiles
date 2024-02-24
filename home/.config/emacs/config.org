@@ -1,9 +1,10 @@
-#+TITLE: oxcl emacs config
+#+TITLE: My Personal Emacs Configurations
 #+AUTHOR: oxcl
-#+DESCRIPTION: my personal emacs config
+#+DESCRIPTION: This is my personal emacs configuration written in literate programming style using org-mode
 #+STARTUP: overview
 #+PROPERTY: header-args :results silent :tangle ./init.el
-* startup optimizations
+* Startup
+** Optimizations
 most of theses optimizations are taken from doom emacs [[https://github.com/doomemacs/doomemacs/blob/master/lisp/doom.el][doom.el]]
 #+begin_src elisp
   (unless init-file-debug
@@ -36,10 +37,9 @@ most of theses optimizations are taken from doom emacs [[https://github.com/doom
       (add-transient-hook! 'tool-bar-mode (tool-bar-setup))))
 #+end_src
 
-* sane defaults
-** unclutter working directory
+** Unclutter Working Directory
 *** relocate emacs user directory
-because many packages including builtin ones use ~user-emacs-directory
+because many packages including builtin ones use ~user-emacs-directory~ i just move the folder to cache
 #+begin_src elisp
   (setq real-user-emacs-directory user-emacs-directory)
   (setq user-emacs-directory oxcl/cache-dir)
@@ -61,7 +61,7 @@ because many packages including builtin ones use ~user-emacs-directory
   (setq create-lockfiles nil)
 #+end_src
 
-** reduce verbosity
+** Reduce Verbosity
 #+begin_src elisp
   ;; suppress compiler warnings
   (setq native-comp-async-report-warnings-errors init-file-debug
@@ -69,7 +69,7 @@ because many packages including builtin ones use ~user-emacs-directory
 	ad-redefinition-action 'accept)
 #+end_src
 
-** enforce TLS
+** Enforce TLS
 make sure internet communications are in TLS.this code is taken from [[https://github.com/doomemacs/doomemacs/blob/master/lisp/doom.el#L646][doomemacs]]
 #+begin_src elisp
   (setq gnutls-verify-error noninteractive
@@ -96,7 +96,7 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 
 #+end_src
 
-* package manager
+* Package Management
 ** add local scripts to path
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "lisp" real-user-emacs-directory))
@@ -141,12 +141,20 @@ make sure internet communications are in TLS.this code is taken from [[https://g
   (add-hook 'after-init-hook #'elpaca-process-queues)
   (elpaca `(,@elpaca-order))
 #+end_src
+
 ** use-package
 #+begin_src emacs-lisp
   (elpaca elpaca-use-package
     (elpaca-use-package-mode)
-    (setq use-package-always-ensure t))
+    (setq use-package-always-ensure t
+          use-package-always-defer t))
   (elpaca-wait)
+#+end_src
+
+** delight
+#+begin_src elisp
+  (use-package delight
+    :demand t)
 #+end_src
 
 * ui
@@ -154,12 +162,12 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 #+begin_src emacs-lisp
   (setq ring-bell-function 'ignore ; disable visual or audible ring
 	overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1) ; hide the tool bar (with the icons)
-  (menu-bar-mode -1) ; hide the menu bar
-  (tooltip-mode -1) ; hide tooltip popup window on mouse hover
-  (blink-cursor-mode -1) ; disable cursor blink
-  (set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
+;;  (scroll-bar-mode -1)
+;;  (tool-bar-mode -1) ; hide the tool bar (with the icons)
+;;  (menu-bar-mode -1) ; hide the menu bar
+;;  (tooltip-mode -1) ; hide tooltip popup window on mouse hover
+;;  (blink-cursor-mode -1) ; disable cursor blink
+;;  (set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
 #+end_src
 
 ** font
@@ -173,21 +181,23 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 
 ** theme
 #+begin_src emacs-lisp
-    (use-package doom-themes
-      :config
-      (setq doom-themes-enable-bold t
-  	  doom-themes-enable-italic t
-  	  custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
-  	  doom-my-theme-brighter-modeline t
-  	  doom-my-theme-padded-modeline 4)
-      (doom-themes-org-config)
-      (if (equal (getenv "MY_THEME_LOADED") "1")
-  	(load-theme 'doom-my t)
-        (load-theme 'doom-gruvbox t)))
-    (use-package solaire-mode
-      :after doom-themes
-      :config
-      (solaire-global-mode +1))
+  (use-package doom-themes
+    :demand t
+    :config
+    (setq doom-themes-enable-bold t
+	doom-themes-enable-italic t
+	custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
+	doom-my-theme-brighter-modeline t
+	doom-my-theme-padded-modeline 4)
+    (doom-themes-org-config)
+    (if (equal (getenv "MY_THEME_LOADED") "1")
+      (load-theme 'doom-my t)
+      (load-theme 'doom-gruvbox t)))
+
+  (use-package solaire-mode
+    :after doom-themes
+    :config
+    (solaire-global-mode +1))
 #+end_src
 
 ** line numbers column
@@ -790,7 +800,6 @@ poke integration with emacs comes in two packages: ~poke.el~ a user interface fo
 
     (editorconfig-mode 1))
 #+end_src
-
 
 ** terminal emulator
 #+begin_src elisp
