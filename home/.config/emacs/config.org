@@ -223,6 +223,23 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 * editor
+** Indentation
+*** prefer spaces over tabs
+#+begin_src elisp
+  (setq-default tab-width 4
+                indent-tabs-mode nil)
+  (setq tab-always-indent nil
+        electric-indent-mode nil)
+  (global-set-key (kbd "RET") #'newline-and-indent)
+  ;;    (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
+  (dolist (command '(yank yank-pop))
+    (eval `(defadvice ,command (after indent-region activate)
+             (and (not current-prefix-arg)
+                  (member major-mode '(org-mode prog-mode conf-mode))
+                  (let ((mark-even-if-inactive transient-mark-mode))
+                    (indent-region (region-beginning) (region-end) nil))))))
+#+end_src
+
 ** text navigation
 left arrow should keep the cursor at the end of the line instead of jumping to the next line
 #+begin_src elisp
@@ -236,7 +253,7 @@ left arrow should keep the cursor at the end of the line instead of jumping to t
   (setq scroll-error-top-bottom t ; put the cursor at the top or bottom of the window if no more scrolls are possible
 	scroll-conservatively 100 ; only scroll the minimum lines at a time when the cursor goes out the window
 	scroll-margin 5) ; start scrolling the window when the distance between the cursor and the window boundaries are less than this number
-
+  
 #+end_src
 
 **** scroll windows by half a page
@@ -677,6 +694,7 @@ this code integrates yasnippet with the builtin yasnippet which is taken from  [
 *** yasnippet
 #+begin_src elisp
     (use-package yasnippet
+      :demand t
       :custom
       (yas-snippet-dirs `(,(expand-file-name "snippets" real-user-emacs-directory)))
       :config
