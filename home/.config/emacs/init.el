@@ -14,7 +14,7 @@
   (add-hook 'after-init-hook #'oxcl/reset-inhibited-vars-h)
   (define-advice startup--load-user-init-file (:after (&rest _) undo-inhibit-vars)
     (when init-file-had-error
-  (doom--reset-inhibited-vars-h)))
+(doom--reset-inhibited-vars-h)))
   (advice-add #'display-startup-echo_area-message :override #'ignore)
   (advice-add #'display-startup-screen :override #'ignore)
   (define-advice load-file (:override (file) silence)
@@ -39,26 +39,26 @@
 
 ;; suppress compiler warnings
 (setq native-comp-async-report-warnings-errors init-file-debug
-  native-comp-warning-on-missing-source init-file-debug
-  ad-redefinition-action 'accept)
+native-comp-warning-on-missing-source init-file-debug
+ad-redefinition-action 'accept)
 
 (setq gnutls-verify-error noninteractive
-  gnutls-algorithm-priority
-  (when (boundp 'libgnutls-version)
+gnutls-algorithm-priority
+(when (boundp 'libgnutls-version)
 	(concat "SECURE128:+SECURE192:-VERS-ALL"
 		(if (and (not (memq system-type '(cygwin windows-nt ms-dos)))
 			 (>= libgnutls-version 30605))
 		    ":+VERS-TLS1.3")
 		":+VERS-TLS1.2"))
-  ;; `gnutls-min-prime-bits' is set based on recommendations from
-  ;; https://www.keylength.com/en/4/
-  gnutls-min-prime-bits 3072
-  tls-checktrust gnutls-verify-error
-  ;; Emacs is built with gnutls.el by default, so `tls-program' won't
-  ;; typically be used, but in the odd case that it does, we ensure a more
-  ;; secure default for it (falling back to `openssl' if absolutely
-  ;; necessary). See https://redd.it/8sykl1 for details.
-  tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls1 -no_tls1_1 -ign_eof"
+;; `gnutls-min-prime-bits' is set based on recommendations from
+;; https://www.keylength.com/en/4/
+gnutls-min-prime-bits 3072
+tls-checktrust gnutls-verify-error
+;; Emacs is built with gnutls.el by default, so `tls-program' won't
+;; typically be used, but in the odd case that it does, we ensure a more
+;; secure default for it (falling back to `openssl' if absolutely
+;; necessary). See https://redd.it/8sykl1 for details.
+tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls1 -no_tls1_1 -ign_eof"
 		    "gnutls-cli -p %p --dh-bits=3072 --ocsp --x509cafile=%t \
 --strict-tofu --priority='SECURE192:+SECURE128:-VERS-ALL:+VERS-TLS1.2:+VERS-TLS1.3' %h"
 		    ;; compatibility fallbacks
@@ -113,12 +113,9 @@
   :demand t)
 
 (setq ring-bell-function 'ignore ; disable visual or audible ring
-	overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
-;;  (scroll-bar-mode -1)
-;;  (tool-bar-mode -1) ; hide the tool bar (with the icons)
-;;  (menu-bar-mode -1) ; hide the menu bar
+      overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
+(blink-cursor-mode -1) ; disable cursor blink
 ;;  (tooltip-mode -1) ; hide tooltip popup window on mouse hover
-;;  (blink-cursor-mode -1) ; disable cursor blink
 ;;  (set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
 
 (set-frame-font "JetBrainsMono 11")
@@ -131,10 +128,10 @@
   :demand t
   :config
   (setq doom-themes-enable-bold t
-  doom-themes-enable-italic t
-  custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
-  doom-my-theme-brighter-modeline t
-  doom-my-theme-padded-modeline 4)
+doom-themes-enable-italic t
+custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
+doom-my-theme-brighter-modeline t
+doom-my-theme-padded-modeline 4)
   (doom-themes-org-config)
   (if (equal (getenv "MY_THEME_LOADED") "1")
     (load-theme 'doom-my t)
@@ -157,12 +154,12 @@
 (use-package all-the-icons
   :if (display-graphic-p))
 
-(setq-default tab-width 4
+(setq-default tab-width 2
               indent-tabs-mode nil)
+(add-hook 'python-ts-mode-hook (lambda () (setq tab-width 4)))
 (setq tab-always-indent nil
       electric-indent-mode nil)
 (global-set-key (kbd "RET") #'newline-and-indent)
-;;    (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
 (dolist (command '(yank yank-pop))
   (eval `(defadvice ,command (after indent-region activate)
            (and (not current-prefix-arg)
@@ -170,11 +167,23 @@
                 (let ((mark-even-if-inactive transient-mark-mode))
                   (indent-region (region-beginning) (region-end) nil))))))
 
+(use-package indent-bars
+  :ensure (:host github :repo "jdtsmith/indent-bars")
+  :hook (prog-mode conf-mode)
+  :custom
+  (indent-bars-treesit-support t)
+  (indent-bars-width-frac 0.1)
+  (indent-bars-pattern ".")
+  (indent-bars-color '("white" :blend 0.15))
+  (indent-bars-color-by-depth nil)
+  (indent-bars-starting-column 0))
+  ;;(add-hook 'indent-bars-mode-hook (lambda () (setq indent-bars-spacing tab-width))))
+
 (setq track_eol t)
 
 (setq scroll-error-top-bottom t ; put the cursor at the top or bottom of the window if no more scrolls are possible
-  scroll-conservatively 100 ; only scroll the minimum lines at a time when the cursor goes out the window
-  scroll-margin 5) ; start scrolling the window when the distance between the cursor and the window boundaries are less than this number
+scroll-conservatively 100 ; only scroll the minimum lines at a time when the cursor goes out the window
+scroll-margin 5) ; start scrolling the window when the distance between the cursor and the window boundaries are less than this number
 
 ;; make ScrollDown and ScrollUp Commands Scroll half a screen
 (defun oxcl/scroll-up-half ()
@@ -182,28 +191,28 @@
   (scroll-up-command
    (floor
     (- (window-height)
-   next-screen-context-lines)
+ next-screen-context-lines)
     2)))
 (defun oxcl/scroll-down-half ()
   (interactive)
   (scroll-down-command
    (floor
     (- (window-height)
-   next-screen-context-lines)
+ next-screen-context-lines)
     2)))
 (defun oxcl/scroll-other-down-half()
   (interactive)
   (scroll-other-window-down
    (floor
     (- (window-height)
-   next-screen-context-lines)
+ next-screen-context-lines)
     2)))
 (defun oxcl/scroll-other-up-half()
   (interactive)
   (scroll-other-window
    (floor
     (- (window-height)
-   next-screen-context-lines)
+ next-screen-context-lines)
     2)))
 (global-set-key (kbd "<next>") 'oxcl/scroll-up-half)
 (global-set-key (kbd "<prior>") 'oxcl/scroll-down-half)
@@ -227,10 +236,10 @@
   (let ((symbol (smartscan-symbol-at-pt 'end))
 	(pos (point)))
     (when (smartscan-symbol-go-forward)
-  (beginning-of-buffer)
-  (smartscan-symbol-goto symbol 'forward)
-  (unless (bobp) (setq pos (point)))
-  (goto-char pos))))
+(beginning-of-buffer)
+(smartscan-symbol-goto symbol 'forward)
+(unless (bobp) (setq pos (point)))
+(goto-char pos))))
 (use-package smartscan
   :config
   (global-smartscan-mode)
@@ -271,7 +280,7 @@
   :config
   (add-to-list 'jinx-exclude-regexps '(t "\\b[a-zA-Z]\\{2\\}\\b"))
   (set 'jinx--predicates
-   (cl-substitute
+ (cl-substitute
 	#'oxcl/jinx-lower-case-word-valid-p
 	#'jinx--word-valid-p
 	jinx--predicates))
@@ -289,9 +298,9 @@
 (add-hook 'minibuffer-setup-hook 'oxcl/set-minibuffer-keybindings)
 
 (setq-default case-fold-search nil ; make search case sensitive by default
-	  char-fold-symmetric t  ; accent character's match the regular character as well
-	  search-ring-max 64
-	  regexp-search-ring-max 64)
+	char-fold-symmetric t  ; accent character's match the regular character as well
+	search-ring-max 64
+	regexp-search-ring-max 64)
 ;; TODO: make sure char-fold-table includes farsi letters
 
 ;; while using incremental search when going from C-s to C-r or from C-r to C-s go to the
@@ -325,7 +334,7 @@
 (defun oxcl/loose-search (&optional arg)
   (interactive)
   (if (bound-and-true-p oxcl/loose-search)
-  (if (bound-and-true-p arg)
+(if (bound-and-true-p arg)
 	  (isearch-repeat-backward)
 	(isearch-repeat-forward))
     (setq oxcl/loose-search t)
@@ -335,13 +344,13 @@
 	  (default-search-mode 'char-fold-to-regexp)
 	  (search-upper-case nil)
 	  (search-whitespace-regexp "[ .\t\n\\(\\)\\.,_-]+")) ; stops uppercase letters to change case sensitivity behavior
-  (set-char-table-range char-fold-table ?_ "-")
-  (set-char-table-range char-fold-table ?- "_")
-  (if (bound-and-true-p arg) (isearch-backward) (isearch-forward))
-  (set-char-table-range char-fold-table ?_ nil)
-  (set-char-table-range char-fold-table ?- nil)
-  (oxcl/disable-loose-color)
-  (setq oxcl/loose-search nil))))
+(set-char-table-range char-fold-table ?_ "-")
+(set-char-table-range char-fold-table ?- "_")
+(if (bound-and-true-p arg) (isearch-backward) (isearch-forward))
+(set-char-table-range char-fold-table ?_ nil)
+(set-char-table-range char-fold-table ?- nil)
+(oxcl/disable-loose-color)
+(setq oxcl/loose-search nil))))
 (defun oxcl/loose-backward-search ()
   (interactive)
   (oxcl/loose-search t))
@@ -351,7 +360,7 @@
   (interactive)
   (unless (featurep 'char-fold) (require 'char-fold))
   (if (bound-and-true-p oxcl/loose-search)
-  (if (bound-and-true-p arg)
+(if (bound-and-true-p arg)
 	  (isearch-repeat-backward)
 	(isearch-repeat-forward))
     (setq oxcl/loose-search t)
@@ -366,7 +375,7 @@
 (define-key isearch-mode-map (kbd "C-S-r") #'oxcl/make-loose-backward)
 
 (setq isearch-lazy-count t
-  lazy-highlight-initial-delay 0)
+lazy-highlight-initial-delay 0)
 
 
 
@@ -382,17 +391,17 @@
 ;;  (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
 
 (setq major-mode-remap-alist '((ruby-mode . ruby-ts-mode)
-			   (c++-mode . c++-ts-mode)
-			   (c-or-c++-mode . c-or-c++-ts-mode)
-			   (c-mode . c-ts-mode)
-			   (java-mode . java-ts-mode)
-			   (js-mode . js-ts-mode)
-			   (csharp-mode . csharp-ts-mode)
-			   (js-json-mode . json-ts-mode)
-			   (css-mode . css-ts-mode)
-			   (python-mode . python-ts-mode)
-			   (conf-toml-mode . toml-ts-mode)
-			   (sh-mode . bash-ts-mode)))
+			 (c++-mode . c++-ts-mode)
+			 (c-or-c++-mode . c-or-c++-ts-mode)
+			 (c-mode . c-ts-mode)
+			 (java-mode . java-ts-mode)
+			 (js-mode . js-ts-mode)
+			 (csharp-mode . csharp-ts-mode)
+			 (js-json-mode . json-ts-mode)
+			 (css-mode . css-ts-mode)
+			 (python-mode . python-ts-mode)
+			 (conf-toml-mode . toml-ts-mode)
+			 (sh-mode . bash-ts-mode)))
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 (add-to-list 'auto-mode-alist '("go\\.mod\\'" . go-mod-ts-mode))
@@ -427,7 +436,7 @@
 (setq show-paren-delay 0)
 (defun my-show-paren-any (orig-fun)
   (or (if (looking-at "\\s(") (funcall orig-fun))
-  (if (looking-at "\\s)") (save-excursion (forward-char 1) (funcall orig-fun)))))
+(if (looking-at "\\s)") (save-excursion (forward-char 1) (funcall orig-fun)))))
 (add-function :around show-paren-data-function #'my-show-paren-any)
 
 ;; since C-* is used also for smart-scan this function will fallback to oxcl/smartscan-wrap if the cursor
@@ -505,11 +514,11 @@
 			    (keymap-local-set "<backspace>" #'oxcl/hexl-backspace)))
 
 (setq oxcl/hexl-val-in-byte ""
-  oxcl/hexl-val-in-short ""
-  oxcl/hexl-val-in-int32 ""
-  oxcl/hexl-val-in-int64 ""
-  oxcl/hexl-val-in-float ""
-  oxcl/hexl-val-in-double "")
+oxcl/hexl-val-in-short ""
+oxcl/hexl-val-in-int32 ""
+oxcl/hexl-val-in-int64 ""
+oxcl/hexl-val-in-float ""
+oxcl/hexl-val-in-double "")
 (defun oxcl/hexl-update-mode-line ()
   ;;    (setq oxcl/hexl-val-in-byte (format "byte: %s" (char-after-point)))
   (force-mode-line-update) "string")
@@ -518,10 +527,10 @@
 	    (setq mode-line-format (append mode-line-format '((:eval oxcl/hexl-val-in-byte))))))
 
 (setq oxcl/hexl-printable-left-regexp "$[2-7][a-zA-Z0-9]\\(?: \\)"
-  oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
-  oxcl/hexl-null-left-regexp  "00\\b"
-  oxcl/hexl-null-right-regexp " 00"
-  oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
+oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
+oxcl/hexl-null-left-regexp  "00\\b"
+oxcl/hexl-null-right-regexp " 00"
+oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
 (font-lock-add-keywords 'hexl-mode `((,oxcl/hexl-ascii-regexp           . 'oxcl/hexl-ascii-face)
 				     (,oxcl/hexl-printable-left-regexp  . 'oxcl/hexl-printable-face)
 				     (,oxcl/hexl-printable-right-regexp . 'oxcl/hexl-printable-face)
@@ -563,7 +572,7 @@
 	restclient-response-body-only t
 	restclient-content-type-modes (append '(("application/json" . json-ts-mode)
 						("application/octet-stream" . oxcl/restclient-hexl-mode))
-					restclient-content-type-modes))
+				restclient-content-type-modes))
   (add-hook 'restclient-response-mode-hook (lambda () (jinx-mode -1) (yas-minor-mode -1))))
 (defun oxcl/restclient-send-current-show-headers ()
   (interactive)
@@ -575,13 +584,13 @@
 (interactive)
 (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
   (when (and ;; if line begins with a http method but it doesn't include a http:// or https://
-   (string-match "^\\(GET\\|POST\\|PUT\\|PATCH\\|DELETE\\|HEAD\\|CONNECT\\|OPTIONS\\|TRACE\\) .*$" line)
-   (not (string-match "^\\w* \\(https:\\|http:\\)" line)))
+ (string-match "^\\(GET\\|POST\\|PUT\\|PATCH\\|DELETE\\|HEAD\\|CONNECT\\|OPTIONS\\|TRACE\\) .*$" line)
+ (not (string-match "^\\w* \\(https:\\|http:\\)" line)))
     (save-excursion
-  (beginning-of-line)
-  (forward-word)
-  (forward-char)
-  (insert "http://"))))
+(beginning-of-line)
+(forward-word)
+(forward-char)
+(insert "http://"))))
 (newline))
 (add-hook 'restclient-mode-hook (lambda () (local-set-key (kbd "<return>") #'oxcl/inject-http-to-url)))
 
@@ -592,14 +601,14 @@
 
 (use-package jq-mode
 :hook (restclient-mode . (lambda () (require 'jq-mode))))
-  (use-package restclient-jq :after jq-mode)
+    (use-package restclient-jq :after jq-mode)
 
 
 
 (add-hook
  'restclient-mode-hook
  (lambda () (add-hook 'restclient-response-loaded-hook
-			  (lambda () (when (eq major-mode 'json-ts-mode) (json-pretty-print-buffer))))))
+			    (lambda () (when (eq major-mode 'json-ts-mode) (json-pretty-print-buffer))))))
 
 (defun oxcl/restclient-hexl-mode ()
   (set-buffer-file-coding-system 'binary)
@@ -608,16 +617,16 @@
 (add-hook 'restclient-mode-hook
 	  (lambda()
 	    (add-hook 'restclient-response-received-hook
-		  (lambda ()  (set-buffer-file-coding-system 'utf-8)
+		(lambda ()  (set-buffer-file-coding-system 'utf-8)
 			(when (eq major-mode 'hexl-mode) (hexl-mode-exit 0))))))
 
 (setq delete-by-moving-to-trash t
-  dired-listing-switches "-Ahl -v --group-directories-first"
-  dired-dwim-target t
-  dired-recursive-deletes t
-  dired-kill-when-opening-new-dired-buffer t
-  dired-create-destination-dirs t
-  dired-auto-revert-buffer t)
+dired-listing-switches "-Ahl -v --group-directories-first"
+dired-dwim-target t
+dired-recursive-deletes t
+dired-kill-when-opening-new-dired-buffer t
+dired-create-destination-dirs t
+dired-auto-revert-buffer t)
 (add-hook 'dired-mode-hook #'dired-hide-details-mode)
 
 ;; toggle a dired buffer in other window for current directory with C-x C-d
@@ -626,12 +635,12 @@
 			     (local-set-key (kbd "C-x C-d") #'quit-window)
 			     ;; home key moves to the first item in list instead of the dired header
 			     (local-set-key (kbd "<C-home>") (lambda ()
-							   (beginning-of-buffer)
-							   (next-line)))
+							 (beginning-of-buffer)
+							 (next-line)))
 			     ;; end key moves to the last item in list instead of the empty line
 			     (local-set-key (kbd "<C-end>") (lambda ()
-							  (end-of-buffer)
-							  (previous-line)))
+							(end-of-buffer)
+							(previous-line)))
 			     ;; replace '% m' with '%' and '% g' with '$'
 			     (local-set-key (kbd "%") #'dired-mark-files-regexp)
 			     (local-set-key (kbd "$") #'dired-mark-files-containing-regexp)))
@@ -643,5 +652,5 @@
 
 (setq org-fold-core-style 'overlays)
      (use-package ctrlf
-   :config
-   (ctrlf-mode 1))
+ :config
+ (ctrlf-mode 1))

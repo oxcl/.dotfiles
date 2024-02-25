@@ -161,13 +161,10 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 ** sane defaults
 #+begin_src emacs-lisp
   (setq ring-bell-function 'ignore ; disable visual or audible ring
-	overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
-;;  (scroll-bar-mode -1)
-;;  (tool-bar-mode -1) ; hide the tool bar (with the icons)
-;;  (menu-bar-mode -1) ; hide the menu bar
-;;  (tooltip-mode -1) ; hide tooltip popup window on mouse hover
-;;  (blink-cursor-mode -1) ; disable cursor blink
-;;  (set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
+        overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
+  (blink-cursor-mode -1) ; disable cursor blink
+  ;;  (tooltip-mode -1) ; hide tooltip popup window on mouse hover
+  ;;  (set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
 #+end_src
 
 ** font
@@ -224,20 +221,34 @@ all-the-icons fonts should be installed for this to work
 
 * editor
 ** Indentation
-*** prefer spaces over tabs
 #+begin_src elisp
-  (setq-default tab-width 4
+  (setq-default tab-width 2
                 indent-tabs-mode nil)
+  (add-hook 'python-ts-mode-hook (lambda () (setq tab-width 4)))
   (setq tab-always-indent nil
         electric-indent-mode nil)
   (global-set-key (kbd "RET") #'newline-and-indent)
-  ;;    (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
   (dolist (command '(yank yank-pop))
     (eval `(defadvice ,command (after indent-region activate)
              (and (not current-prefix-arg)
                   (member major-mode '(org-mode prog-mode conf-mode))
                   (let ((mark-even-if-inactive transient-mark-mode))
                     (indent-region (region-beginning) (region-end) nil))))))
+#+end_src
+
+** Indent Guides
+#+begin_src elisp
+  (use-package indent-bars
+    :ensure (:host github :repo "jdtsmith/indent-bars")
+    :hook (prog-mode conf-mode)
+    :custom
+    (indent-bars-treesit-support t)
+    (indent-bars-width-frac 0.1)
+    (indent-bars-pattern ".")
+    (indent-bars-color '("white" :blend 0.15))
+    (indent-bars-color-by-depth nil)
+    (indent-bars-starting-column 0))
+    ;;(add-hook 'indent-bars-mode-hook (lambda () (setq indent-bars-spacing tab-width))))
 #+end_src
 
 ** text navigation
