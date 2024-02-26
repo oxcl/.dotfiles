@@ -9,21 +9,21 @@ most of theses optimizations are taken from doom emacs [[https://github.com/doom
 #+begin_src elisp
   (unless init-file-debug
     (setq frame-inhibit-implied-size t
-	  inhibit-startup-screen t
-	  inhibit-startup-echo-area-message user-login-name
-	  initial-major-mode 'fundamental-mode
-	  initial-scratch-message nil
-	  inhibit-redisplay t
-	  inhibit-message t
-	  read-process-output-max (* 1024 1024 3))
+    inhibit-startup-screen t
+    inhibit-startup-echo-area-message user-login-name
+    initial-major-mode 'fundamental-mode
+    initial-scratch-message nil
+    inhibit-redisplay t
+    inhibit-message t
+    read-process-output-max (* 1024 1024 3))
     (defun oxcl/reset-inhibited-vars-h ()
       (setq-default inhibit-redisplay nil
-		    inhibit-message nil)
+        inhibit-message nil)
       (redraw-frame))
     (add-hook 'after-init-hook #'oxcl/reset-inhibited-vars-h)
     (define-advice startup--load-user-init-file (:after (&rest _) undo-inhibit-vars)
       (when init-file-had-error
-	(doom--reset-inhibited-vars-h)))
+  (doom--reset-inhibited-vars-h)))
     (advice-add #'display-startup-echo_area-message :override #'ignore)
     (advice-add #'display-startup-screen :override #'ignore)
     (define-advice load-file (:override (file) silence)
@@ -65,34 +65,34 @@ because many packages including builtin ones use ~user-emacs-directory~ i just m
 #+begin_src elisp
   ;; suppress compiler warnings
   (setq native-comp-async-report-warnings-errors init-file-debug
-	native-comp-warning-on-missing-source init-file-debug
-	ad-redefinition-action 'accept)
+  native-comp-warning-on-missing-source init-file-debug
+  ad-redefinition-action 'accept)
 #+end_src
 
 ** Enforce TLS
 make sure internet communications are in TLS.this code is taken from [[https://github.com/doomemacs/doomemacs/blob/master/lisp/doom.el#L646][doomemacs]]
 #+begin_src elisp
   (setq gnutls-verify-error noninteractive
-	gnutls-algorithm-priority
-	(when (boundp 'libgnutls-version)
-	  (concat "SECURE128:+SECURE192:-VERS-ALL"
-		  (if (and (not (memq system-type '(cygwin windows-nt ms-dos)))
-			   (>= libgnutls-version 30605))
-		      ":+VERS-TLS1.3")
-		  ":+VERS-TLS1.2"))
-	;; `gnutls-min-prime-bits' is set based on recommendations from
-	;; https://www.keylength.com/en/4/
-	gnutls-min-prime-bits 3072
-	tls-checktrust gnutls-verify-error
-	;; Emacs is built with gnutls.el by default, so `tls-program' won't
-	;; typically be used, but in the odd case that it does, we ensure a more
-	;; secure default for it (falling back to `openssl' if absolutely
-	;; necessary). See https://redd.it/8sykl1 for details.
-	tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls1 -no_tls1_1 -ign_eof"
-		      "gnutls-cli -p %p --dh-bits=3072 --ocsp --x509cafile=%t \
+  gnutls-algorithm-priority
+  (when (boundp 'libgnutls-version)
+    (concat "SECURE128:+SECURE192:-VERS-ALL"
+      (if (and (not (memq system-type '(cygwin windows-nt ms-dos)))
+         (>= libgnutls-version 30605))
+          ":+VERS-TLS1.3")
+      ":+VERS-TLS1.2"))
+  ;; `gnutls-min-prime-bits' is set based on recommendations from
+  ;; https://www.keylength.com/en/4/
+  gnutls-min-prime-bits 3072
+  tls-checktrust gnutls-verify-error
+  ;; Emacs is built with gnutls.el by default, so `tls-program' won't
+  ;; typically be used, but in the odd case that it does, we ensure a more
+  ;; secure default for it (falling back to `openssl' if absolutely
+  ;; necessary). See https://redd.it/8sykl1 for details.
+  tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls1 -no_tls1_1 -ign_eof"
+          "gnutls-cli -p %p --dh-bits=3072 --ocsp --x509cafile=%t \
   --strict-tofu --priority='SECURE192:+SECURE128:-VERS-ALL:+VERS-TLS1.2:+VERS-TLS1.3' %h"
-		      ;; compatibility fallbacks
-		      "gnutls-cli -p %p %h"))
+          ;; compatibility fallbacks
+          "gnutls-cli -p %p %h"))
 
 #+end_src
 
@@ -182,10 +182,10 @@ make sure internet communications are in TLS.this code is taken from [[https://g
     :demand t
     :config
     (setq doom-themes-enable-bold t
-	doom-themes-enable-italic t
-	custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
-	doom-my-theme-brighter-modeline t
-	doom-my-theme-padded-modeline 4)
+  doom-themes-enable-italic t
+  custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
+  doom-my-theme-brighter-modeline t
+  doom-my-theme-padded-modeline 4)
     (doom-themes-org-config)
     (if (equal (getenv "MY_THEME_LOADED") "1")
       (load-theme 'doom-my t)
@@ -228,7 +228,7 @@ all-the-icons fonts should be installed for this to work
   (setq tab-always-indent nil
         electric-indent-mode nil)
   (defun oxcl/newline-dwim ()
-    (interactive)
+    (interactive)      
     (let ((break-open-pair (or (and (looking-back "{") (looking-at "}"))
                                (and (looking-back ">") (looking-at "<"))
                                (and (looking-back "(") (looking-at ")"))
@@ -254,6 +254,7 @@ all-the-icons fonts should be installed for this to work
   (use-package indent-bars
     :ensure (:host github :repo "jdtsmith/indent-bars" :remotes ("fork" :repo "oxcl/indent-bars"))
     :hook (prog-mode conf-mode)
+    :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1)))
     :custom
     (indent-bars-treesit-support t)
     (indent-bars-width-frac 0.1)
@@ -261,7 +262,15 @@ all-the-icons fonts should be installed for this to work
     (indent-bars-color '("white" :blend 0.15))
     (indent-bars-color-by-depth nil)
     (indent-bars-starting-column 0))
-    ;;(add-hook 'indent-bars-mode-hook (lambda () (setq indent-bars-spacing tab-width))))
+  ;;(add-hook 'indent-bars-mode-hook (lambda () (setq indent-bars-spacing tab-width))))
+
+  (use-package highlight-indent-guides
+    :hook (emacs-lisp-mode . highlight-indent-guides-mode)
+    :custom-face
+    (highlight-indent-guides-character-face ((t :foreground "white")))
+    :custom
+    (highlight-indent-guides-method 'character)
+    (highlight-indent-guides-auto-character-face-perc 38.25))
 #+end_src
 
 ** text navigation
@@ -275,9 +284,9 @@ left arrow should keep the cursor at the end of the line instead of jumping to t
 **** defaults
 #+begin_src elisp
   (setq scroll-error-top-bottom t ; put the cursor at the top or bottom of the window if no more scrolls are possible
-	scroll-conservatively 100 ; only scroll the minimum lines at a time when the cursor goes out the window
-	scroll-margin 5) ; start scrolling the window when the distance between the cursor and the window boundaries are less than this number
-  
+  scroll-conservatively 100 ; only scroll the minimum lines at a time when the cursor goes out the window
+  scroll-margin 5) ; start scrolling the window when the distance between the cursor and the window boundaries are less than this number
+
 #+end_src
 
 **** scroll windows by half a page
@@ -290,28 +299,28 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
     (scroll-up-command
      (floor
       (- (window-height)
-	 next-screen-context-lines)
+   next-screen-context-lines)
       2)))
   (defun oxcl/scroll-down-half ()
     (interactive)
     (scroll-down-command
      (floor
       (- (window-height)
-	 next-screen-context-lines)
+   next-screen-context-lines)
       2)))
   (defun oxcl/scroll-other-down-half()
     (interactive)
     (scroll-other-window-down
      (floor
       (- (window-height)
-	 next-screen-context-lines)
+   next-screen-context-lines)
       2)))
   (defun oxcl/scroll-other-up-half()
     (interactive)
     (scroll-other-window
      (floor
       (- (window-height)
-	 next-screen-context-lines)
+   next-screen-context-lines)
       2)))
   (global-set-key (kbd "<next>") 'oxcl/scroll-up-half)
   (global-set-key (kbd "<prior>") 'oxcl/scroll-down-half)
@@ -345,12 +354,12 @@ C-* jumps to the next occurrence the symbol that is under the cursor.
   (defun oxcl/smartscan-wrap ()
     (interactive)
     (let ((symbol (smartscan-symbol-at-pt 'end))
-	  (pos (point)))
+    (pos (point)))
       (when (smartscan-symbol-go-forward)
-	(beginning-of-buffer)
-	(smartscan-symbol-goto symbol 'forward)
-	(unless (bobp) (setq pos (point)))
-	(goto-char pos))))
+  (beginning-of-buffer)
+  (smartscan-symbol-goto symbol 'forward)
+  (unless (bobp) (setq pos (point)))
+  (goto-char pos))))
   (use-package smartscan
     :config
     (global-smartscan-mode)
@@ -389,11 +398,11 @@ the builtin flyspell package will check each word under the cursor spelling agai
      START is valid, or would be valid if capitalized or upcased."
     (let ((word (buffer-substring-no-properties start (point))))
       (or (member word jinx--session-words)
-	  (cl-loop for dict in jinx--dicts thereis
-		   (or
-		    (jinx--mod-check dict (upcase word))
-		    (jinx--mod-check dict (capitalize word))
-		    (jinx--mod-check dict word))))))
+    (cl-loop for dict in jinx--dicts thereis
+       (or
+        (jinx--mod-check dict (upcase word))
+        (jinx--mod-check dict (capitalize word))
+        (jinx--mod-check dict word))))))
   (defun oxcl/jinx-add-to-personal ()
     (interactive)
     (let ((word (current-word t t)))
@@ -406,14 +415,14 @@ the builtin flyspell package will check each word under the cursor spelling agai
     (jinx-languages "en_US fa_IR")
     (jinx-camel-modes '(prog-mode conf-mode org-mode))
     (jinx-exclude-faces '((org-mode org-block-begin-line org-block-end-line)
-			  (t font-lock-keyword-face font-lock-builtin-face)))
+        (t font-lock-keyword-face font-lock-builtin-face)))
     :config
     (add-to-list 'jinx-exclude-regexps '(t "\\b[a-zA-Z]\\{2\\}\\b"))
     (set 'jinx--predicates
-	 (cl-substitute
-	  #'oxcl/jinx-lower-case-word-valid-p
-	  #'jinx--word-valid-p
-	  jinx--predicates))
+   (cl-substitute
+    #'oxcl/jinx-lower-case-word-valid-p
+    #'jinx--word-valid-p
+    jinx--predicates))
     :bind
     ("C-$" . jinx-correct)
     ("C-@" . oxcl/jinx-add-to-personal))
@@ -441,9 +450,9 @@ the builtin flyspell package will check each word under the cursor spelling agai
 **** sane defaults
 #+begin_src emacs-lisp
   (setq-default case-fold-search nil ; make search case sensitive by default
-		char-fold-symmetric t  ; accent character's match the regular character as well
-		search-ring-max 64
-		regexp-search-ring-max 64)
+    char-fold-symmetric t  ; accent character's match the regular character as well
+    search-ring-max 64
+    regexp-search-ring-max 64)
   ;; TODO: make sure char-fold-table includes farsi letters
 #+end_src
 
@@ -511,23 +520,23 @@ so it's practically a less strict loose version of the normal isearch. it should
   (defun oxcl/loose-search (&optional arg)
     (interactive)
     (if (bound-and-true-p oxcl/loose-search)
-	(if (bound-and-true-p arg)
-	    (isearch-repeat-backward)
-	  (isearch-repeat-forward))
+  (if (bound-and-true-p arg)
+      (isearch-repeat-backward)
+    (isearch-repeat-forward))
       (setq oxcl/loose-search t)
       (or (featurep 'char-fold) (require 'char-fold))
       (oxcl/enable-loose-color)
       (let ((case-fold-search t) ; case insensitive
-	    (default-search-mode 'char-fold-to-regexp)
-	    (search-upper-case nil)
-	    (search-whitespace-regexp "[ .\t\n\\(\\)\\.,_-]+")) ; stops uppercase letters to change case sensitivity behavior
-	(set-char-table-range char-fold-table ?_ "-")
-	(set-char-table-range char-fold-table ?- "_")
-	(if (bound-and-true-p arg) (isearch-backward) (isearch-forward))
-	(set-char-table-range char-fold-table ?_ nil)
-	(set-char-table-range char-fold-table ?- nil)
-	(oxcl/disable-loose-color)
-	(setq oxcl/loose-search nil))))
+      (default-search-mode 'char-fold-to-regexp)
+      (search-upper-case nil)
+      (search-whitespace-regexp "[ .\t\n\\(\\)\\.,_-]+")) ; stops uppercase letters to change case sensitivity behavior
+  (set-char-table-range char-fold-table ?_ "-")
+  (set-char-table-range char-fold-table ?- "_")
+  (if (bound-and-true-p arg) (isearch-backward) (isearch-forward))
+  (set-char-table-range char-fold-table ?_ nil)
+  (set-char-table-range char-fold-table ?- nil)
+  (oxcl/disable-loose-color)
+  (setq oxcl/loose-search nil))))
   (defun oxcl/loose-backward-search ()
     (interactive)
     (oxcl/loose-search t))
@@ -537,9 +546,9 @@ so it's practically a less strict loose version of the normal isearch. it should
     (interactive)
     (unless (featurep 'char-fold) (require 'char-fold))
     (if (bound-and-true-p oxcl/loose-search)
-	(if (bound-and-true-p arg)
-	    (isearch-repeat-backward)
-	  (isearch-repeat-forward))
+  (if (bound-and-true-p arg)
+      (isearch-repeat-backward)
+    (isearch-repeat-forward))
       (setq oxcl/loose-search t)
       (isearch-toggle-case-fold)
       (isearch-toggle-char-fold)
@@ -555,7 +564,7 @@ so it's practically a less strict loose version of the normal isearch. it should
 show total number of matches in the minibuffer
 #+begin_src emacs-lisp
   (setq isearch-lazy-count t
-	lazy-highlight-initial-delay 0)
+  lazy-highlight-initial-delay 0)
 #+end_src
 
 **** more modern regex
@@ -568,8 +577,8 @@ replace emacs regex with a more modern functional regex
     :config
     (which-key-mode)
     (setq which-key-idle-delay 6.0
-	  which-key-idle-secondary-delay 0.05
-	  which-key-show-early-on-C-h t))
+    which-key-idle-secondary-delay 0.05
+    which-key-show-early-on-C-h t))
 #+end_src
 
 * org mode
@@ -585,17 +594,17 @@ replace emacs regex with a more modern functional regex
 replace builtin tree-sitter major modes with the old ones
 #+begin_src elisp
   (setq major-mode-remap-alist '((ruby-mode . ruby-ts-mode)
-				 (c++-mode . c++-ts-mode)
-				 (c-or-c++-mode . c-or-c++-ts-mode)
-				 (c-mode . c-ts-mode)
-				 (java-mode . java-ts-mode)
-				 (js-mode . js-ts-mode)
-				 (csharp-mode . csharp-ts-mode)
-				 (js-json-mode . json-ts-mode)
-				 (css-mode . css-ts-mode)
-				 (python-mode . python-ts-mode)
-				 (conf-toml-mode . toml-ts-mode)
-				 (sh-mode . bash-ts-mode)))
+         (c++-mode . c++-ts-mode)
+         (c-or-c++-mode . c-or-c++-ts-mode)
+         (c-mode . c-ts-mode)
+         (java-mode . java-ts-mode)
+         (js-mode . js-ts-mode)
+         (csharp-mode . csharp-ts-mode)
+         (js-json-mode . json-ts-mode)
+         (css-mode . css-ts-mode)
+         (python-mode . python-ts-mode)
+         (conf-toml-mode . toml-ts-mode)
+         (sh-mode . bash-ts-mode)))
   (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
   (add-to-list 'auto-mode-alist '("go\\.mod\\'" . go-mod-ts-mode))
@@ -652,7 +661,7 @@ match the other pair of a delimiter on cursor hover
   (setq show-paren-delay 0)
   (defun my-show-paren-any (orig-fun)
     (or (if (looking-at "\\s(") (funcall orig-fun))
-	(if (looking-at "\\s)") (save-excursion (forward-char 1) (funcall orig-fun)))))
+  (if (looking-at "\\s)") (save-excursion (forward-char 1) (funcall orig-fun)))))
   (add-function :around show-paren-data-function #'my-show-paren-any)
 #+end_src
 
@@ -665,8 +674,8 @@ taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-
   (defun oxcl/goto-match-paren ()
     (interactive)
     (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-	  ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-	  (t (oxcl/smartscan-wrap))))
+    ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+    (t (oxcl/smartscan-wrap))))
   (keymap-global-set "C-*" #'oxcl/goto-match-paren)
 #+end_src
 
@@ -739,9 +748,9 @@ makes the auto completion smarter by putting more common and more recent complet
 
 #+begin_src elisp
   ;;	(use-package prescient
-  ;;	  :defer t
-  ;;	  :config
-  ;;	  (prescient-persist-mode))
+  ;;    :defer t
+  ;;    :config
+  ;;    (prescient-persist-mode))
 #+end_src
 
 **** prescient for company-mode
@@ -767,7 +776,7 @@ some enhancements to the builtin hex editor in emacs
 automatically detect binary format when opening files and switch to hex editor
 #+begin_src elisp
   (add-hook 'find-file-hook (lambda ()
-			      (when (equal buffer-file-coding-system 'no-conversion) (hexl-mode))))
+            (when (equal buffer-file-coding-system 'no-conversion) (hexl-mode))))
   (add-to-list 'auto-mode-alist '("\\.\\(bin\\|exe\\|dat\\|dll\\|ana\\|anac\\|hex\\)\\'" . hexl-mode))
 #+end_src
 
@@ -780,7 +789,7 @@ add quality of life keybindings
     (hexl-insert-char 0 1)
     (hexl-backward-char 1))
   (add-hook 'hexl-mode-hook (lambda ()
-			      (keymap-local-set "<backspace>" #'oxcl/hexl-backspace)))
+            (keymap-local-set "<backspace>" #'oxcl/hexl-backspace)))
 #+end_src
 
 *** mode-line info
@@ -788,17 +797,17 @@ TODO
 display byte, short, float and integer representations of the value under the cursor in the mode-line
 #+begin_src elisp
   (setq oxcl/hexl-val-in-byte ""
-	oxcl/hexl-val-in-short ""
-	oxcl/hexl-val-in-int32 ""
-	oxcl/hexl-val-in-int64 ""
-	oxcl/hexl-val-in-float ""
-	oxcl/hexl-val-in-double "")
+  oxcl/hexl-val-in-short ""
+  oxcl/hexl-val-in-int32 ""
+  oxcl/hexl-val-in-int64 ""
+  oxcl/hexl-val-in-float ""
+  oxcl/hexl-val-in-double "")
   (defun oxcl/hexl-update-mode-line ()
     ;;    (setq oxcl/hexl-val-in-byte (format "byte: %s" (char-after-point)))
     (force-mode-line-update) "string")
   (add-hook 'hexl-mode-hook
-	    (lambda ()
-	      (setq mode-line-format (append mode-line-format '((:eval oxcl/hexl-val-in-byte))))))
+      (lambda ()
+        (setq mode-line-format (append mode-line-format '((:eval oxcl/hexl-val-in-byte))))))
 #+end_src
 
 *** colorize hexl-mode
@@ -809,15 +818,15 @@ in my implementation of ~gruvbox-material~ i have defined custom faces:
 i will use these to colorize the hexl-mode buffer
 #+begin_src elisp
   (setq oxcl/hexl-printable-left-regexp "$[2-7][a-zA-Z0-9]\\(?: \\)"
-	oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
-	oxcl/hexl-null-left-regexp  "00\\b"
-	oxcl/hexl-null-right-regexp " 00"
-	oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
+  oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
+  oxcl/hexl-null-left-regexp  "00\\b"
+  oxcl/hexl-null-right-regexp " 00"
+  oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
   (font-lock-add-keywords 'hexl-mode `((,oxcl/hexl-ascii-regexp           . 'oxcl/hexl-ascii-face)
-				       (,oxcl/hexl-printable-left-regexp  . 'oxcl/hexl-printable-face)
-				       (,oxcl/hexl-printable-right-regexp . 'oxcl/hexl-printable-face)
-				       (,oxcl/hexl-null-left-regexp       . 'oxcl/hexl-null-face)
-				       (,oxcl/hexl-null-right-regexp      . 'oxcl/hexl-null-face)) 'set)
+               (,oxcl/hexl-printable-left-regexp  . 'oxcl/hexl-printable-face)
+               (,oxcl/hexl-printable-right-regexp . 'oxcl/hexl-printable-face)
+               (,oxcl/hexl-null-left-regexp       . 'oxcl/hexl-null-face)
+               (,oxcl/hexl-null-right-regexp      . 'oxcl/hexl-null-face)) 'set)
 #+end_src
 
 ** GNU poke
@@ -872,10 +881,10 @@ declare GET and POST requests in a http file and fire them up with emacs. simila
       ;; (remove-hook 'restclient-mode-hook 'restclient-outline-mode) ; disable fold in restclient-mode
 
       (setq restclient-inhibit-cookies t
-	    restclient-response-body-only t
-	    restclient-content-type-modes (append '(("application/json" . json-ts-mode)
-						    ("application/octet-stream" . oxcl/restclient-hexl-mode))
-						restclient-content-type-modes))
+      restclient-response-body-only t
+      restclient-content-type-modes (append '(("application/json" . json-ts-mode)
+                ("application/octet-stream" . oxcl/restclient-hexl-mode))
+            restclient-content-type-modes))
       (add-hook 'restclient-response-mode-hook (lambda () (jinx-mode -1) (yas-minor-mode -1))))
     (defun oxcl/restclient-send-current-show-headers ()
       (interactive)
@@ -891,13 +900,13 @@ this function automatically adds a "http://" at the beginning of the url if it's
   (interactive)
   (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
     (when (and ;; if line begins with a http method but it doesn't include a http:// or https://
-	 (string-match "^\\(GET\\|POST\\|PUT\\|PATCH\\|DELETE\\|HEAD\\|CONNECT\\|OPTIONS\\|TRACE\\) .*$" line)
-	 (not (string-match "^\\w* \\(https:\\|http:\\)" line)))
+   (string-match "^\\(GET\\|POST\\|PUT\\|PATCH\\|DELETE\\|HEAD\\|CONNECT\\|OPTIONS\\|TRACE\\) .*$" line)
+   (not (string-match "^\\w* \\(https:\\|http:\\)" line)))
       (save-excursion
-	(beginning-of-line)
-	(forward-word)
-	(forward-char)
-	(insert "http://"))))
+  (beginning-of-line)
+  (forward-word)
+  (forward-char)
+  (insert "http://"))))
   (newline))
   (add-hook 'restclient-mode-hook (lambda () (local-set-key (kbd "<return>") #'oxcl/inject-http-to-url)))
 #+end_src
@@ -915,7 +924,7 @@ use ~#begin_src restclient~ to execute restclient requests inside an org-mode co
 use jq to query and search the response object and store them in restclient variables with ~-> jq-set-var :<var-name> <jq-query>~
 #+begin_src elisp
       (use-package jq-mode
-	:hook (restclient-mode . (lambda () (require 'jq-mode))))
+  :hook (restclient-mode . (lambda () (require 'jq-mode))))
       (use-package restclient-jq :after jq-mode)
 #+end_src
 #+begin_src elisp
@@ -924,10 +933,10 @@ use jq to query and search the response object and store them in restclient vari
 ** json integration
 prettify json files and diplay UTF-8 characters correctly
 #+begin_src elisp
-	(add-hook
-	 'restclient-mode-hook
-	 (lambda () (add-hook 'restclient-response-loaded-hook
-			      (lambda () (when (eq major-mode 'json-ts-mode) (json-pretty-print-buffer))))))
+  (add-hook
+   'restclient-mode-hook
+   (lambda () (add-hook 'restclient-response-loaded-hook
+            (lambda () (when (eq major-mode 'json-ts-mode) (json-pretty-print-buffer))))))
 #+end_src
 
 ** hexl-mode integration
@@ -938,10 +947,10 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
     (setq buffer-undo-list nil)
     (hexl-mode))
   (add-hook 'restclient-mode-hook
-	    (lambda()
-	      (add-hook 'restclient-response-received-hook
-			(lambda ()  (set-buffer-file-coding-system 'utf-8)
-			  (when (eq major-mode 'hexl-mode) (hexl-mode-exit 0))))))
+      (lambda()
+        (add-hook 'restclient-response-received-hook
+      (lambda ()  (set-buffer-file-coding-system 'utf-8)
+        (when (eq major-mode 'hexl-mode) (hexl-mode-exit 0))))))
 
 #+end_src
 
@@ -949,12 +958,12 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 ** sane defaults
 #+begin_src elisp
   (setq delete-by-moving-to-trash t
-	dired-listing-switches "-Ahl -v --group-directories-first"
-	dired-dwim-target t
-	dired-recursive-deletes t
-	dired-kill-when-opening-new-dired-buffer t
-	dired-create-destination-dirs t
-	dired-auto-revert-buffer t)
+  dired-listing-switches "-Ahl -v --group-directories-first"
+  dired-dwim-target t
+  dired-recursive-deletes t
+  dired-kill-when-opening-new-dired-buffer t
+  dired-create-destination-dirs t
+  dired-auto-revert-buffer t)
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
 #+end_src
 
@@ -963,18 +972,18 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
   ;; toggle a dired buffer in other window for current directory with C-x C-d
   ;;  (keymap-global-set "C-x C-d" #'dired-jump-other-window)
   (add-hook 'dired-mode-hook (lambda ()
-			       (local-set-key (kbd "C-x C-d") #'quit-window)
-			       ;; home key moves to the first item in list instead of the dired header
-			       (local-set-key (kbd "<C-home>") (lambda ()
-								 (beginning-of-buffer)
-								 (next-line)))
-			       ;; end key moves to the last item in list instead of the empty line
-			       (local-set-key (kbd "<C-end>") (lambda ()
-								(end-of-buffer)
-								(previous-line)))
-			       ;; replace '% m' with '%' and '% g' with '$'
-			       (local-set-key (kbd "%") #'dired-mark-files-regexp)
-			       (local-set-key (kbd "$") #'dired-mark-files-containing-regexp)))
+             (local-set-key (kbd "C-x C-d") #'quit-window)
+             ;; home key moves to the first item in list instead of the dired header
+             (local-set-key (kbd "<C-home>") (lambda ()
+                 (beginning-of-buffer)
+                 (next-line)))
+             ;; end key moves to the last item in list instead of the empty line
+             (local-set-key (kbd "<C-end>") (lambda ()
+                (end-of-buffer)
+                (previous-line)))
+             ;; replace '% m' with '%' and '% g' with '$'
+             (local-set-key (kbd "%") #'dired-mark-files-regexp)
+             (local-set-key (kbd "$") #'dired-mark-files-containing-regexp)))
 #+end_src
 
 ** icons
@@ -1008,8 +1017,8 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 ;; load package.el
 (require 'package)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-			 ("nongnu"  . "https://elpa.nongnu.org/nongnu/")
-			 ("melpa" . "https://melpa.org/packages/")))
+       ("nongnu"  . "https://elpa.nongnu.org/nongnu/")
+       ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -1042,6 +1051,6 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 #+begin_src elisp
   (setq org-fold-core-style 'overlays)
        (use-package ctrlf
-	 :config
-	 (ctrlf-mode 1))
+   :config
+   (ctrlf-mode 1))
 #+end_src
