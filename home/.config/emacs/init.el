@@ -155,20 +155,33 @@ doom-my-theme-padded-modeline 4)
   :if (display-graphic-p))
 
 (setq-default tab-width 2
-              indent-tabs-mode nil)
-(add-hook 'python-ts-mode-hook (lambda () (setq tab-width 4)))
-(setq tab-always-indent nil
-      electric-indent-mode nil)
-(global-set-key (kbd "RET") #'newline-and-indent)
-(dolist (command '(yank yank-pop))
-  (eval `(defadvice ,command (after indent-region activate)
-           (and (not current-prefix-arg)
-                (member major-mode '(org-mode prog-mode conf-mode))
-                (let ((mark-even-if-inactive transient-mark-mode))
-                  (indent-region (region-beginning) (region-end) nil))))))
+                indent-tabs-mode nil)
+;;  (add-hook 'python-ts-mode-hook (lambda () (setq tab-width 2)))
+  (setq tab-always-indent nil
+        electric-indent-mode nil)
+  (defun oxcl/newline-dwim ()
+    (interactive)
+    (let ((break-open-pair (or (and (looking-back "{") (looking-at "}"))
+                               (and (looking-back ">") (looking-at "<"))
+                               (and (looking-back "(") (looking-at ")"))
+                               (and (looking-back "\\[") (looking-at "\\]")))))
+      (if break-open-pair
+          (progn (newline)
+                 (save-excursion
+                   (newline)
+                   (indent-for-tab-command)))
+        (newline-and-indent))
+      (indent-for-tab-command)))
+    (global-set-key (kbd "RET") #'oxcl/newline-dwim)
+    (dolist (command '(yank yank-pop))
+      (eval `(defadvice ,command (after indent-region activate)
+               (and (not current-prefix-arg)
+                    (member major-mode '(org-mode prog-mode conf-mode))
+                    (let ((mark-even-if-inactive transient-mark-mode))
+                      (indent-region (region-beginning) (region-end) nil))))))
 
 (use-package indent-bars
-  :ensure (:host github :repo "jdtsmith/indent-bars")
+  :ensure (:host github :repo "jdtsmith/indent-bars" :remotes ("fork" :repo "oxcl/indent-bars"))
   :hook (prog-mode conf-mode)
   :custom
   (indent-bars-treesit-support t)
