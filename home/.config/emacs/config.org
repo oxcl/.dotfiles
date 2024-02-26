@@ -265,12 +265,18 @@ all-the-icons fonts should be installed for this to work
   ;;(add-hook 'indent-bars-mode-hook (lambda () (setq indent-bars-spacing tab-width))))
 
   (use-package highlight-indent-guides
-    :hook (emacs-lisp-mode . highlight-indent-guides-mode)
+    :hook (emacs-lisp-mode)
     :custom-face
     (highlight-indent-guides-character-face ((t :foreground "white")))
     :custom
     (highlight-indent-guides-method 'character)
     (highlight-indent-guides-auto-character-face-perc 38.25))
+#+end_src
+
+** Clean whitespace on save
+#+begin_src elisp
+  (use-package ws-butler
+    :hook (prog-mode conf-mode org-mode))
 #+end_src
 
 ** text navigation
@@ -582,12 +588,13 @@ replace emacs regex with a more modern functional regex
 #+end_src
 
 * org mode
-#+begin_src elisp
-;;  (setq org-confirm-babel-evaluate nil)
-;;  (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
-;;  (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
+#+begin_src emacs-lisp
+  (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
+  ;; (setq org-src-tab-acts-natively t)
+  ;; (setq org-confirm-babel-evaluate nil)
+  ;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
+  ;; (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
 #+end_src
-
 * programming
 ** tree-sitter
 *** enable tree-sitter

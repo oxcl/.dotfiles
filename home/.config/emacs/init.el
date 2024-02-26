@@ -192,13 +192,17 @@ doom-my-theme-padded-modeline 4)
   (indent-bars-color-by-depth nil)
   (indent-bars-starting-column 0))
 ;;(add-hook 'indent-bars-mode-hook (lambda () (setq indent-bars-spacing tab-width))))
+
 (use-package highlight-indent-guides
-  :hook (emacs-lisp-mode . highlight-indent-guides-mode)
+  :hook (emacs-lisp-mode)
   :custom-face
   (highlight-indent-guides-character-face ((t :foreground "white")))
   :custom
   (highlight-indent-guides-method 'character)
   (highlight-indent-guides-auto-character-face-perc 38.25))
+
+(use-package ws-butler
+  :hook (prog-mode conf-mode org-mode))
 
 (setq track_eol t)
 
@@ -407,9 +411,11 @@ lazy-highlight-initial-delay 0)
   which-key-idle-secondary-delay 0.05
   which-key-show-early-on-C-h t))
 
-;;  (setq org-confirm-babel-evaluate nil)
-;;  (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
-;;  (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
+(add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
+;; (setq org-src-tab-acts-natively t)
+;; (setq org-confirm-babel-evaluate nil)
+;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
+;; (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
 
 (setq major-mode-remap-alist '((ruby-mode . ruby-ts-mode)
        (c++-mode . c++-ts-mode)
