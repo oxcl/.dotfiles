@@ -226,7 +226,6 @@ all-the-icons fonts should be installed for this to work
     (setq-default tab-width 2
 		  standard-indent 2
 		  indent-tabs-mode nil)
-  ;;  (add-hook 'python-ts-mode-hook (lambda () (setq tab-width 2)))
     (setq tab-always-indent nil
 	  electric-indent-mode nil)
     (defun oxcl/newline-dwim ()
@@ -265,15 +264,26 @@ all-the-icons fonts should be installed for this to work
     (indent-bars-pattern ".")
     (indent-bars-color '("white" :blend 0.1))
     (indent-bars-color-by-depth nil)
-    (indent-bars-starting-column 0))
+    (indent-bars-starting-column 0)
+    :config
+    (add-hook 'before-save-hook (lambda ()
+                                  (when (and indent-bars-mode (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
+                                    (indent-bars-mode -1)
+                                    (setq oxcl/indent-bars-mode-off-for-now t))))
+    (add-hook 'after-save-hook (lambda ()
+                                 (when oxcl/indent-bars-mode-off-for-now
+                                   (indent-bars-mode 1)
+                                   (setq oxcl/indent-bars-mode-off-for-now nil)))))
+#+end_src
 
-  (use-package highlight-indent-guides
-    :hook (emacs-lisp-mode)
-    :custom-face
-    (highlight-indent-guides-character-face ((t :foreground "white")))
-    :custom
-    (highlight-indent-guides-method 'character)
-    (highlight-indent-guides-auto-character-face-perc 38.25))
+#+begin_src elisp
+    (use-package highlight-indent-guides
+      :hook (emacs-lisp-mode)
+      :custom-face
+      (highlight-indent-guides-character-face ((t :foreground "white")))
+      :custom
+      (highlight-indent-guides-method 'character)
+      (highlight-indent-guides-auto-character-face-perc 38.25))
 #+end_src
 
 ** Clean whitespace on save
@@ -281,6 +291,8 @@ all-the-icons fonts should be installed for this to work
   (use-package ws-butler
     :demand t
     :delight
+    ;; :custom
+    ;; (ws-butler-keep-whitespace-before-point nil)
     :config
     (ws-butler-global-mode))
 #+end_src
@@ -604,13 +616,13 @@ replace emacs regex with a more modern functional regex
 
 * org mode
 #+begin_src emacs-lisp
-;;  (use-package poly-org
-;;    :hook (org-mode))
-  ;; (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
-  ;; (setq org-src-tab-acts-natively t)
-  ;; (setq org-confirm-babel-evaluate nil)
-  ;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
-  ;; (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
+  ;;  (use-package poly-org
+  ;;    :hook (org-mode))
+    (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
+    ;; (setq org-src-tab-acts-natively t)
+    ;; (setq org-confirm-babel-evaluate nil)
+    ;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
+    ;; (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
 #+end_src
 
 * programming

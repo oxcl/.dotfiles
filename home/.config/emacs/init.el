@@ -158,7 +158,6 @@ doom-my-theme-padded-modeline 4)
 (setq-default tab-width 2
 		standard-indent 2
 		indent-tabs-mode nil)
-;;  (add-hook 'python-ts-mode-hook (lambda () (setq tab-width 2)))
   (setq tab-always-indent nil
 	electric-indent-mode nil)
   (defun oxcl/newline-dwim ()
@@ -194,7 +193,16 @@ doom-my-theme-padded-modeline 4)
   (indent-bars-pattern ".")
   (indent-bars-color '("white" :blend 0.1))
   (indent-bars-color-by-depth nil)
-  (indent-bars-starting-column 0))
+  (indent-bars-starting-column 0)
+  :config
+  (add-hook 'before-save-hook (lambda ()
+                                (when (and indent-bars-mode (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
+                                  (indent-bars-mode -1)
+                                  (setq oxcl/indent-bars-mode-off-for-now t))))
+  (add-hook 'after-save-hook (lambda ()
+                               (when oxcl/indent-bars-mode-off-for-now
+                                 (indent-bars-mode 1)
+                                 (setq oxcl/indent-bars-mode-off-for-now nil)))))
 
 (use-package highlight-indent-guides
   :hook (emacs-lisp-mode)
@@ -207,6 +215,8 @@ doom-my-theme-padded-modeline 4)
 (use-package ws-butler
   :demand t
   :delight
+  ;; :custom
+  ;; (ws-butler-keep-whitespace-before-point nil)
   :config
   (ws-butler-global-mode))
 
@@ -425,7 +435,7 @@ lazy-highlight-initial-delay 0)
 
 ;;  (use-package poly-org
 ;;    :hook (org-mode))
-  ;; (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
+  (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
   ;; (setq org-src-tab-acts-natively t)
   ;; (setq org-confirm-babel-evaluate nil)
   ;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
