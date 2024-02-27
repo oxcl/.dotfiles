@@ -156,12 +156,13 @@ doom-my-theme-padded-modeline 4)
   :if (display-graphic-p))
 
 (setq-default tab-width 2
+                standard-indent 2
                 indent-tabs-mode nil)
 ;;  (add-hook 'python-ts-mode-hook (lambda () (setq tab-width 2)))
   (setq tab-always-indent nil
         electric-indent-mode nil)
   (defun oxcl/newline-dwim ()
-    (interactive)      
+    (interactive)
     (let ((break-open-pair (or (and (looking-back "{") (looking-at "}"))
                                (and (looking-back ">") (looking-at "<"))
                                (and (looking-back "(") (looking-at ")"))
@@ -422,11 +423,13 @@ lazy-highlight-initial-delay 0)
   which-key-idle-secondary-delay 0.05
   which-key-show-early-on-C-h t))
 
-(add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
-;; (setq org-src-tab-acts-natively t)
-;; (setq org-confirm-babel-evaluate nil)
-;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
-;; (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
+;;  (use-package poly-org
+;;    :hook (org-mode))
+  ;; (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
+  ;; (setq org-src-tab-acts-natively t)
+  ;; (setq org-confirm-babel-evaluate nil)
+  ;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
+  ;; (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
 
 (setq major-mode-remap-alist '((ruby-mode . ruby-ts-mode)
        (c++-mode . c++-ts-mode)

@@ -223,31 +223,32 @@ all-the-icons fonts should be installed for this to work
 * editor
 ** Indentation
 #+begin_src elisp
-  (setq-default tab-width 2
-                indent-tabs-mode nil)
-;;  (add-hook 'python-ts-mode-hook (lambda () (setq tab-width 2)))
-  (setq tab-always-indent nil
-        electric-indent-mode nil)
-  (defun oxcl/newline-dwim ()
-    (interactive)      
-    (let ((break-open-pair (or (and (looking-back "{") (looking-at "}"))
-                               (and (looking-back ">") (looking-at "<"))
-                               (and (looking-back "(") (looking-at ")"))
-                               (and (looking-back "\\[") (looking-at "\\]")))))
-      (if break-open-pair
-          (progn (newline)
-                 (save-excursion
-                   (newline)
-                   (indent-for-tab-command)))
-        (newline-and-indent))
-      (indent-for-tab-command)))
-    (global-set-key (kbd "RET") #'oxcl/newline-dwim)
-    (dolist (command '(yank yank-pop))
-      (eval `(defadvice ,command (after indent-region activate)
-               (and (not current-prefix-arg)
-                    (member major-mode '(org-mode prog-mode conf-mode))
-                    (let ((mark-even-if-inactive transient-mark-mode))
-                      (indent-region (region-beginning) (region-end) nil))))))
+    (setq-default tab-width 2
+                  standard-indent 2
+                  indent-tabs-mode nil)
+  ;;  (add-hook 'python-ts-mode-hook (lambda () (setq tab-width 2)))
+    (setq tab-always-indent nil
+          electric-indent-mode nil)
+    (defun oxcl/newline-dwim ()
+      (interactive)
+      (let ((break-open-pair (or (and (looking-back "{") (looking-at "}"))
+                                 (and (looking-back ">") (looking-at "<"))
+                                 (and (looking-back "(") (looking-at ")"))
+                                 (and (looking-back "\\[") (looking-at "\\]")))))
+        (if break-open-pair
+            (progn (newline)
+                   (save-excursion
+                     (newline)
+                     (indent-for-tab-command)))
+          (newline-and-indent))
+        (indent-for-tab-command)))
+      (global-set-key (kbd "RET") #'oxcl/newline-dwim)
+      (dolist (command '(yank yank-pop))
+        (eval `(defadvice ,command (after indent-region activate)
+                 (and (not current-prefix-arg)
+                      (member major-mode '(org-mode prog-mode conf-mode))
+                      (let ((mark-even-if-inactive transient-mark-mode))
+                        (indent-region (region-beginning) (region-end) nil))))))
 #+end_src
 
 ** Indent Guides
@@ -603,7 +604,9 @@ replace emacs regex with a more modern functional regex
 
 * org mode
 #+begin_src emacs-lisp
-  (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
+;;  (use-package poly-org
+;;    :hook (org-mode))
+  ;; (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
   ;; (setq org-src-tab-acts-natively t)
   ;; (setq org-confirm-babel-evaluate nil)
   ;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
