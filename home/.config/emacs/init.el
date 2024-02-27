@@ -154,6 +154,9 @@ doom-my-theme-padded-modeline 4)
 (use-package all-the-icons
   :if (display-graphic-p))
 
+(use-package editorconfig
+  :hook (prog-mode conf-mode))
+
 (setq-default tab-width 2
                 indent-tabs-mode nil)
 ;;  (add-hook 'python-ts-mode-hook (lambda () (setq tab-width 2)))
@@ -186,9 +189,10 @@ doom-my-theme-padded-modeline 4)
   :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1)))
   :custom
   (indent-bars-treesit-support t)
+  (indent-bars-treesit-wrap '((elisp list)))
   (indent-bars-width-frac 0.1)
   (indent-bars-pattern ".")
-  (indent-bars-color '("white" :blend 0.15))
+  (indent-bars-color '("white" :blend 0.1))
   (indent-bars-color-by-depth nil)
   (indent-bars-starting-column 0))
 ;;(add-hook 'indent-bars-mode-hook (lambda () (setq indent-bars-spacing tab-width))))
@@ -500,10 +504,8 @@ lazy-highlight-initial-delay 0)
                                 (if (file-name-extension item)
                                     (concat "\\." (file-name-extension item) "\\'")
                                   "\\'")
-                              (if (file-name-extension item)
-                                  (concat (file-name-base item) "\\." (file-name-extension item) "\\'")
-                                (concat (file-name-base item) "\\'")))))
-              (add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))))
+                              (concat (file-name-base item) "\\." (file-name-extension item) "\\'"))))
+          (add-to-list 'auto-insert-alist `(,pattern-name . [,item oxcl/yas-insert]) ))))))
 
 (use-package yasnippet
   :demand t
@@ -568,11 +570,6 @@ oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
   :requires (poke-mode))
 
 (use-package poke-mode)
-
-(use-package editorconfig
-  :config
-
-  (editorconfig-mode 1))
 
 ;;  (use-package vterm
 ;;    :custom
