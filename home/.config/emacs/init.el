@@ -111,6 +111,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (use-package delight
   :demand t)
+(elpaca-wait)
 
 (setq ring-bell-function 'ignore ; disable visual or audible ring
       overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
@@ -143,7 +144,7 @@ doom-my-theme-padded-modeline 4)
   (solaire-global-mode +1))
 
 (setq-default display-line-numbers-width 4) ; how many digits for line numbers
-(dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook))
+(dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
   (add-hook mode 'display-line-numbers-mode))
 (setq require-final-newline t)
 
@@ -153,9 +154,6 @@ doom-my-theme-padded-modeline 4)
 
 (use-package all-the-icons
   :if (display-graphic-p))
-
-(use-package editorconfig
-  :hook (prog-mode conf-mode))
 
 (setq-default tab-width 2
                 indent-tabs-mode nil)
@@ -206,7 +204,16 @@ doom-my-theme-padded-modeline 4)
   (highlight-indent-guides-auto-character-face-perc 38.25))
 
 (use-package ws-butler
-  :hook (prog-mode conf-mode org-mode))
+  :demand t
+  :delight
+  :config
+  (ws-butler-global-mode))
+
+(use-package editorconfig
+  :demand t
+  :delight
+  :config
+  (editorconfig-mode 1))
 
 (setq track_eol t)
 

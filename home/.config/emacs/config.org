@@ -155,6 +155,7 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 #+begin_src elisp
   (use-package delight
     :demand t)
+  (elpaca-wait)
 #+end_src
 
 * ui
@@ -200,7 +201,7 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 ** line numbers column
 #+begin_src emacs-lisp
   (setq-default display-line-numbers-width 4) ; how many digits for line numbers
-  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook))
+  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
     (add-hook mode 'display-line-numbers-mode))
   (setq require-final-newline t)
 #+end_src
@@ -220,12 +221,6 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 * editor
-** Editorconfig
-#+begin_src elisp
-  (use-package editorconfig
-    :hook (prog-mode conf-mode))
-#+end_src
-
 ** Indentation
 #+begin_src elisp
   (setq-default tab-width 2
@@ -283,7 +278,19 @@ all-the-icons fonts should be installed for this to work
 ** Clean whitespace on save
 #+begin_src elisp
   (use-package ws-butler
-    :hook (prog-mode conf-mode org-mode))
+    :demand t
+    :delight
+    :config
+    (ws-butler-global-mode))
+#+end_src
+
+** Editorconfig
+#+begin_src elisp
+  (use-package editorconfig
+    :demand t
+    :delight
+    :config
+    (editorconfig-mode 1))
 #+end_src
 
 ** text navigation
@@ -405,40 +412,40 @@ C-x U : emacs  redo
 * spell checking
 the builtin flyspell package will check each word under the cursor spelling against the specified backend.
 #+begin_src elisp
-  ;; ignore case sensitive spell checks
-  (defun oxcl/jinx-lower-case-word-valid-p (start)
-    "Return non-nil if word, that is assumed to be in lower case, at
-     START is valid, or would be valid if capitalized or upcased."
-    (let ((word (buffer-substring-no-properties start (point))))
-      (or (member word jinx--session-words)
-    (cl-loop for dict in jinx--dicts thereis
-       (or
-        (jinx--mod-check dict (upcase word))
-        (jinx--mod-check dict (capitalize word))
-        (jinx--mod-check dict word))))))
-  (defun oxcl/jinx-add-to-personal ()
-    (interactive)
-    (let ((word (current-word t t)))
-      (jinx--save-personal t nil word)
-      (jinx-mode -1)
-      (jinx-mode 1)))
-  (use-package jinx
-    :hook ((text-mode prog-mode conf-mode org-mode) . jinx-mode)
-    :custom
-    (jinx-languages "en_US fa_IR")
-    (jinx-camel-modes '(prog-mode conf-mode org-mode))
-    (jinx-exclude-faces '((org-mode org-block-begin-line org-block-end-line)
-        (t font-lock-keyword-face font-lock-builtin-face)))
-    :config
-    (add-to-list 'jinx-exclude-regexps '(t "\\b[a-zA-Z]\\{2\\}\\b"))
-    (set 'jinx--predicates
-   (cl-substitute
-    #'oxcl/jinx-lower-case-word-valid-p
-    #'jinx--word-valid-p
-    jinx--predicates))
-    :bind
-    ("C-$" . jinx-correct)
-    ("C-@" . oxcl/jinx-add-to-personal))
+    ;; ignore case sensitive spell checks
+    (defun oxcl/jinx-lower-case-word-valid-p (start)
+      "Return non-nil if word, that is assumed to be in lower case, at
+       START is valid, or would be valid if capitalized or upcased."
+      (let ((word (buffer-substring-no-properties start (point))))
+        (or (member word jinx--session-words)
+      (cl-loop for dict in jinx--dicts thereis
+         (or
+          (jinx--mod-check dict (upcase word))
+          (jinx--mod-check dict (capitalize word))
+          (jinx--mod-check dict word))))))
+    (defun oxcl/jinx-add-to-personal ()
+      (interactive)
+      (let ((word (current-word t t)))
+        (jinx--save-personal t nil word)
+        (jinx-mode -1)
+        (jinx-mode 1)))
+    (use-package jinx
+      :hook ((text-mode prog-mode conf-mode org-mode) . jinx-mode)
+      :custom
+      (jinx-languages "en_US fa_IR")
+      (jinx-camel-modes '(prog-mode conf-mode org-mode))
+      (jinx-exclude-faces '((org-mode org-block-begin-line org-block-end-line)
+          (t font-lock-keyword-face font-lock-builtin-face)))
+      :config
+      (add-to-list 'jinx-exclude-regexps '(t "\\b[a-zA-Z]\\{2\\}\\b"))
+      (set 'jinx--predicates
+     (cl-substitute
+      #'oxcl/jinx-lower-case-word-valid-p
+      #'jinx--word-valid-p
+      jinx--predicates))
+      :bind
+      ("C-$" . jinx-correct)
+      ("C-@" . oxcl/jinx-add-to-personal))
 #+end_src
 
 * minibuffer
