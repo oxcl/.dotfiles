@@ -1,7 +1,7 @@
 {
   "include": ["${1:src}/**/*"],
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2017",
     "alwaysStrict": true,
     "noImplicitAny": true,
     "noImplicitOverride": true,

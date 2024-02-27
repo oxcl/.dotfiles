@@ -224,31 +224,31 @@ all-the-icons fonts should be installed for this to work
 ** Indentation
 #+begin_src elisp
     (setq-default tab-width 2
-                  standard-indent 2
-                  indent-tabs-mode nil)
+		  standard-indent 2
+		  indent-tabs-mode nil)
   ;;  (add-hook 'python-ts-mode-hook (lambda () (setq tab-width 2)))
     (setq tab-always-indent nil
-          electric-indent-mode nil)
+	  electric-indent-mode nil)
     (defun oxcl/newline-dwim ()
       (interactive)
       (let ((break-open-pair (or (and (looking-back "{") (looking-at "}"))
-                                 (and (looking-back ">") (looking-at "<"))
-                                 (and (looking-back "(") (looking-at ")"))
-                                 (and (looking-back "\\[") (looking-at "\\]")))))
-        (if break-open-pair
-            (progn (newline)
-                   (save-excursion
-                     (newline)
-                     (indent-for-tab-command)))
-          (newline-and-indent))
-        (indent-for-tab-command)))
+				 (and (looking-back ">") (looking-at "<"))
+				 (and (looking-back "(") (looking-at ")"))
+				 (and (looking-back "\\[") (looking-at "\\]")))))
+	(if break-open-pair
+	    (progn (newline)
+		   (save-excursion
+		     (newline)
+		     (indent-for-tab-command))
+		     (indent-for-tab-command))
+	  (newline-and-indent))))
       (global-set-key (kbd "RET") #'oxcl/newline-dwim)
       (dolist (command '(yank yank-pop))
-        (eval `(defadvice ,command (after indent-region activate)
-                 (and (not current-prefix-arg)
-                      (member major-mode '(org-mode prog-mode conf-mode))
-                      (let ((mark-even-if-inactive transient-mark-mode))
-                        (indent-region (region-beginning) (region-end) nil))))))
+	(eval `(defadvice ,command (after indent-region activate)
+		 (and (not current-prefix-arg)
+		      (member major-mode '(org-mode prog-mode conf-mode))
+		      (let ((mark-even-if-inactive transient-mark-mode))
+			(indent-region (region-beginning) (region-end) nil))))))
 #+end_src
 
 ** Indent Guides
@@ -260,12 +260,12 @@ all-the-icons fonts should be installed for this to work
     :custom
     (indent-bars-treesit-support t)
     (indent-bars-treesit-wrap '((elisp list)))
+    ;; (indent-bars-display-on-blank-lines nil)
     (indent-bars-width-frac 0.1)
     (indent-bars-pattern ".")
     (indent-bars-color '("white" :blend 0.1))
     (indent-bars-color-by-depth nil)
     (indent-bars-starting-column 0))
-  ;;(add-hook 'indent-bars-mode-hook (lambda () (setq indent-bars-spacing tab-width))))
 
   (use-package highlight-indent-guides
     :hook (emacs-lisp-mode)
@@ -288,8 +288,8 @@ all-the-icons fonts should be installed for this to work
 ** Editorconfig
 #+begin_src elisp
   (use-package editorconfig
-    :demand t
-    :delight
+    :custom
+    (editorconfig-trim-whitespaces-mode 'ws-butler-mode)
     :config
     (editorconfig-mode 1))
 #+end_src
