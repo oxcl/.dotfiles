@@ -223,57 +223,99 @@ all-the-icons fonts should be installed for this to work
 * editor
 ** Indentation
 #+begin_src elisp
-    (setq-default tab-width 2
-		  standard-indent 2
-		  indent-tabs-mode nil)
-    (setq tab-always-indent nil
-	  electric-indent-mode nil)
-    (defun oxcl/newline-dwim ()
-      (interactive)
-      (let ((break-open-pair (or (and (looking-back "{") (looking-at "}"))
-				 (and (looking-back ">") (looking-at "<"))
-				 (and (looking-back "(") (looking-at ")"))
-				 (and (looking-back "\\[") (looking-at "\\]")))))
-	(if break-open-pair
-	    (progn (newline)
-		   (save-excursion
-		     (newline)
-		     (indent-for-tab-command))
-		     (indent-for-tab-command))
-	  (newline-and-indent))))
-      (global-set-key (kbd "RET") #'oxcl/newline-dwim)
-      (dolist (command '(yank yank-pop))
-	(eval `(defadvice ,command (after indent-region activate)
-		 (and (not current-prefix-arg)
-		      (member major-mode '(org-mode prog-mode conf-mode))
-		      (let ((mark-even-if-inactive transient-mark-mode))
-			(indent-region (region-beginning) (region-end) nil))))))
+  (setq-default tab-width 2
+                standard-indent 2
+                indent-tabs-mode nil)
+  (setq tab-always-indent nil
+        electric-indent-mode nil)
+  (defun oxcl/newline-dwim ()
+    (interactive)
+    (let ((break-open-pair (or (and (looking-back "{") (looking-at "}"))
+                               (and (looking-back ">") (looking-at "<"))
+                               (and (looking-back "(") (looking-at ")"))
+                               (and (looking-back "\\[") (looking-at "\\]")))))
+      (if break-open-pair
+          (progn (newline)
+                 (save-excursion
+                   (newline)
+                   (indent-for-tab-command))
+                 (indent-for-tab-command))
+        (newline-and-indent))))
+  (global-set-key (kbd "RET") #'oxcl/newline-dwim)
+  (dolist (command '(yank yank-pop))
+    (eval `(defadvice ,command (after indent-region activate)
+             (and (not current-prefix-arg)
+                  (member major-mode '(org-mode prog-mode conf-mode))
+                  (let ((mark-even-if-inactive transient-mark-mode))
+                    (indent-region (region-beginning) (region-end) nil))))))
+#+end_src
+
+** Indent Keymaps
+#+begin_src elisp
+  (defun oxcl/shift-left ()
+    (interactive)
+    (if (use-region-p)
+        (let ((line (line-number-at-pos (mark)))
+              (col (save-excursion (goto-char (mark)) (current-column))))
+          (save-excursion
+            (indent-rigidly-left-to-tab-stop (region-beginning)
+                                             (region-end))
+            (goto-line line)
+            (goto-column col)
+            (push-mark (point) t t))
+          (setq deactivate-mark nil))
+      (if  (string-match-p "\\`\\s-*$" (thing-at-point 'line))
+          (move-to-column (max 0 (- (current-column) tab-width)))
+        (indent-rigidly-left-to-tab-stop (line-beginning-position)
+                                         (line-end-position)))))
+  (defun oxcl/shift-right ()
+    (interactive)
+    (if (use-region-p)
+        (let ((line (line-number-at-pos (mark)))
+              (col (save-excursion (goto-char (mark)) (current-column))))
+          (save-excursion
+            (indent-rigidly-right-to-tab-stop (region-beginning)
+                                              (region-end))
+            (goto-line line)
+            (goto-column col)
+            (push-mark (point) t t))
+            (setq deactivate-mark nil))
+
+      (if  (string-match-p "\\`\\s-*$" (thing-at-point 'line))
+          (tab-to-tab-stop)
+        (indent-rigidly-right-to-tab-stop (line-beginning-position)
+                                          (line-end-position)))))
+  (global-set-key (kbd "M-i") #'oxcl/shift-right)
+  (global-set-key (kbd "M-m") #'oxcl/shift-left)
+
+
 #+end_src
 
 ** Indent Guides
 #+begin_src elisp
-  (use-package indent-bars
-    :ensure (:host github :repo "jdtsmith/indent-bars" :remotes ("fork" :repo "oxcl/indent-bars"))
-    :hook (prog-mode conf-mode)
-    :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1)))
-    :custom
-    (indent-bars-treesit-support t)
-    (indent-bars-treesit-wrap '((elisp list)))
-    ;; (indent-bars-display-on-blank-lines nil)
-    (indent-bars-width-frac 0.1)
-    (indent-bars-pattern ".")
-    (indent-bars-color '("white" :blend 0.1))
-    (indent-bars-color-by-depth nil)
-    (indent-bars-starting-column 0)
-    :config
-    (add-hook 'before-save-hook (lambda ()
-                                  (when (and indent-bars-mode (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
-                                    (indent-bars-mode -1)
-                                    (setq oxcl/indent-bars-mode-off-for-now t))))
-    (add-hook 'after-save-hook (lambda ()
-                                 (when oxcl/indent-bars-mode-off-for-now
-                                   (indent-bars-mode 1)
-                                   (setq oxcl/indent-bars-mode-off-for-now nil)))))
+    (use-package indent-bars
+      :ensure (:host github :repo "jdtsmith/indent-bars" :remotes ("fork" :repo "oxcl/indent-bars"))
+      :hook (prog-mode conf-mode)
+      :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1)))
+      :custom
+      (indent-bars-treesit-support t)
+      (indent-bars-treesit-wrap '((elisp list)))
+      ;; (indent-bars-display-on-blank-lines nil)
+      (indent-bars-width-frac 0.1)
+      (indent-bars-pattern ".")
+      (indent-bars-color '("white" :blend 0.1))
+      (indent-bars-color-by-depth nil)
+      (indent-bars-starting-column 0)
+      :config
+      (add-hook 'before-save-hook (lambda ()
+                                    (when
+                                      (indent-bars-mode -1)
+                                      (setq oxcl/indent-bars-mode-off-for-now t))))
+      (add-hook 'after-save-hook (lambda ()
+                                   (when (and (boundp 'oxcl/indent-bars-mode-off-for-now)
+                                              oxcl/indent-bars-mode-off-for-now)
+                                     (indent-bars-mode 1)
+                                     (setq oxcl/indent-bars-mode-off-for-now nil)))))
 #+end_src
 
 #+begin_src elisp
@@ -304,6 +346,11 @@ all-the-icons fonts should be installed for this to work
     (editorconfig-trim-whitespaces-mode 'ws-butler-mode)
     :config
     (editorconfig-mode 1))
+#+end_src
+
+** Multi Cursor
+#+begin_src elisp
+
 #+end_src
 
 ** text navigation
