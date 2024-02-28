@@ -183,11 +183,13 @@ doom-my-theme-padded-modeline 4)
 
 (defun oxcl/shift-left ()
   (interactive)
+  (undo-auto-amalgamate)
   (if (use-region-p)
       (let ((line (line-number-at-pos (mark)))
             (col (save-excursion (goto-char (mark)) (current-column))))
         (save-excursion
-          (indent-rigidly-left-to-tab-stop (region-beginning)
+          (indent-rigidly-left-to-tab-stop (save-excursion
+                                             (goto-char (region-beginning)) (beginning-of-line) (point))
                                            (region-end))
           (goto-line line)
           (goto-column col)
@@ -199,16 +201,18 @@ doom-my-theme-padded-modeline 4)
                                        (line-end-position)))))
 (defun oxcl/shift-right ()
   (interactive)
+  (undo-auto-amalgamate)
   (if (use-region-p)
       (let ((line (line-number-at-pos (mark)))
             (col (save-excursion (goto-char (mark)) (current-column))))
         (save-excursion
-          (indent-rigidly-right-to-tab-stop (region-beginning)
+          (indent-rigidly-right-to-tab-stop (save-excursion
+                                              (goto-char (region-beginning)) (beginning-of-line) (point))
                                             (region-end))
           (goto-line line)
           (goto-column col)
           (push-mark (point) t t))
-          (setq deactivate-mark nil))
+        (setq deactivate-mark nil))
 
     (if  (string-match-p "\\`\\s-*$" (thing-at-point 'line))
         (tab-to-tab-stop)
@@ -234,8 +238,9 @@ doom-my-theme-padded-modeline 4)
   (setq oxcl/indent-bars-mode-off-for-now nil)
   (make-local-variable 'oxcl/indent-bars-mode-off-for-now)
   (add-hook 'before-save-hook (lambda ()
-                                (indent-bars-mode -1)
-                                (setq oxcl/indent-bars-mode-off-for-now t)))
+                                (when indent-bars-mode
+                                  (indent-bars-mode -1)
+                                  (setq oxcl/indent-bars-mode-off-for-now t))))
   (add-hook 'after-save-hook (lambda ()
                                (when oxcl/indent-bars-mode-off-for-now
                                  (indent-bars-mode 1)
@@ -256,6 +261,12 @@ doom-my-theme-padded-modeline 4)
   (ws-butler-convert-leading-tabs-or-spaces t)
   :config
   (ws-butler-global-mode))
+
+(use-package move-dup
+  :demand t
+  :bind (("M-n" . move-dup-move-lines-down)
+         ("M-e" . move-dup-move-lines-up)
+         ("M-o" . move-dup-duplicate-down)))
 
 (use-package editorconfig
   :custom
@@ -304,11 +315,6 @@ scroll-margin 5) ; start scrolling the window when the distance between the curs
 (global-set-key (kbd "<prior>") 'oxcl/scroll-down-half)
 (global-set-key (kbd "M-<next>") 'oxcl/scroll-other-up-half)
 (global-set-key (kbd "M-<prior>") 'oxcl/scroll-other-down-half)
-
-(use-package ace-window
-  :bind ("M-o" . 'ace-window)
-  :config
-  (setq aw-keys '(?a ?r ?s ?d ?g ?p ?d ?b ?v)))
 
 (use-package idle-highlight-mode
   :hook ((prog-mode text-mode) . idle-highlight-mode)
