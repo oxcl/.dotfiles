@@ -208,7 +208,7 @@ doom-my-theme-padded-modeline 4)
           (goto-line line)
           (goto-column col)
           (push-mark (point) t t))
-    (setq deactivate-mark nil))
+          (setq deactivate-mark nil))
 
     (if  (string-match-p "\\`\\s-*$" (thing-at-point 'line))
         (tab-to-tab-stop)
@@ -231,13 +231,13 @@ doom-my-theme-padded-modeline 4)
   (indent-bars-color-by-depth nil)
   (indent-bars-starting-column 0)
   :config
+  (setq oxcl/indent-bars-mode-off-for-now nil)
+  (make-local-variable 'oxcl/indent-bars-mode-off-for-now)
   (add-hook 'before-save-hook (lambda ()
-                                (when
-                                  (indent-bars-mode -1)
-                                  (setq oxcl/indent-bars-mode-off-for-now t))))
+                                (indent-bars-mode -1)
+                                (setq oxcl/indent-bars-mode-off-for-now t)))
   (add-hook 'after-save-hook (lambda ()
-                               (when (and (boundp 'oxcl/indent-bars-mode-off-for-now)
-                                          oxcl/indent-bars-mode-off-for-now)
+                               (when oxcl/indent-bars-mode-off-for-now
                                  (indent-bars-mode 1)
                                  (setq oxcl/indent-bars-mode-off-for-now nil)))))
 
@@ -252,8 +252,8 @@ doom-my-theme-padded-modeline 4)
 (use-package ws-butler
   :demand t
   :delight
-  ;; :custom
-  ;; (ws-butler-keep-whitespace-before-point nil)
+  :custom
+  (ws-butler-convert-leading-tabs-or-spaces t)
   :config
   (ws-butler-global-mode))
 

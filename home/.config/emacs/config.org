@@ -293,29 +293,29 @@ all-the-icons fonts should be installed for this to work
 
 ** Indent Guides
 #+begin_src elisp
-    (use-package indent-bars
-      :ensure (:host github :repo "jdtsmith/indent-bars" :remotes ("fork" :repo "oxcl/indent-bars"))
-      :hook (prog-mode conf-mode)
-      :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1)))
-      :custom
-      (indent-bars-treesit-support t)
-      (indent-bars-treesit-wrap '((elisp list)))
-      ;; (indent-bars-display-on-blank-lines nil)
-      (indent-bars-width-frac 0.1)
-      (indent-bars-pattern ".")
-      (indent-bars-color '("white" :blend 0.1))
-      (indent-bars-color-by-depth nil)
-      (indent-bars-starting-column 0)
-      :config
-      (add-hook 'before-save-hook (lambda ()
-                                    (when
-                                      (indent-bars-mode -1)
-                                      (setq oxcl/indent-bars-mode-off-for-now t))))
-      (add-hook 'after-save-hook (lambda ()
-                                   (when (and (boundp 'oxcl/indent-bars-mode-off-for-now)
-                                              oxcl/indent-bars-mode-off-for-now)
-                                     (indent-bars-mode 1)
-                                     (setq oxcl/indent-bars-mode-off-for-now nil)))))
+  (use-package indent-bars
+    :ensure (:host github :repo "jdtsmith/indent-bars" :remotes ("fork" :repo "oxcl/indent-bars"))
+    :hook (prog-mode conf-mode)
+    :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1)))
+    :custom
+    (indent-bars-treesit-support t)
+    (indent-bars-treesit-wrap '((elisp list)))
+    ;; (indent-bars-display-on-blank-lines nil)
+    (indent-bars-width-frac 0.1)
+    (indent-bars-pattern ".")
+    (indent-bars-color '("white" :blend 0.1))
+    (indent-bars-color-by-depth nil)
+    (indent-bars-starting-column 0)
+    :config
+    (setq oxcl/indent-bars-mode-off-for-now nil)
+    (make-local-variable 'oxcl/indent-bars-mode-off-for-now)
+    (add-hook 'before-save-hook (lambda ()
+                                  (indent-bars-mode -1)
+                                  (setq oxcl/indent-bars-mode-off-for-now t)))
+    (add-hook 'after-save-hook (lambda ()
+                                 (when oxcl/indent-bars-mode-off-for-now
+                                   (indent-bars-mode 1)
+                                   (setq oxcl/indent-bars-mode-off-for-now nil)))))
 #+end_src
 
 #+begin_src elisp
@@ -333,8 +333,8 @@ all-the-icons fonts should be installed for this to work
   (use-package ws-butler
     :demand t
     :delight
-    ;; :custom
-    ;; (ws-butler-keep-whitespace-before-point nil)
+    :custom
+    (ws-butler-convert-leading-tabs-or-spaces t)
     :config
     (ws-butler-global-mode))
 #+end_src
