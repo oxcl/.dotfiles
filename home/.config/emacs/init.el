@@ -157,6 +157,7 @@ doom-my-theme-padded-modeline 4)
 
 (setq-default tab-width 2
               standard-indent 2
+              js-indent-level 2
               indent-tabs-mode nil)
 (setq tab-always-indent nil
       electric-indent-mode nil)
@@ -267,6 +268,30 @@ doom-my-theme-padded-modeline 4)
   :bind (("M-n" . move-dup-move-lines-down)
          ("M-e" . move-dup-move-lines-up)
          ("M-o" . move-dup-duplicate-down)))
+
+(defun oxcl/backspace-whitespace-to-tab-stop ()
+  "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
+  (interactive)
+  (if (or indent-tabs-mode (use-region-p)
+          (> (point)
+             (save-excursion
+               (back-to-indentation)
+               (point))))
+      (call-interactively 'backward-delete-char)
+    (let ((step (% (current-column) tab-width))
+          (pt (point)))
+      (when (zerop step)
+        (setq step tab-width))
+      ;; Account for edge case near beginning of buffer.
+      (setq step (min (- pt 1) step))
+      (save-match-data
+        (if (string-match "[^\t ]*\\([\t ]+\\)$"
+                          (buffer-substring-no-properties
+                           (- pt step) pt))
+            (backward-delete-char (- (match-end 1)
+                                     (match-beginning 1)))
+          (call-interactively 'backward-delete-char))))))
+(global-set-key (kbd "DEL") #'oxcl/backspace-whitespace-to-tab-stop)
 
 (use-package editorconfig
   :custom
@@ -498,6 +523,7 @@ lazy-highlight-initial-delay 0)
        (python-mode . python-ts-mode)
        (conf-toml-mode . toml-ts-mode)
        (sh-mode . bash-ts-mode)))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 (add-to-list 'auto-mode-alist '("go\\.mod\\'" . go-mod-ts-mode))

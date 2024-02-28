@@ -225,6 +225,7 @@ all-the-icons fonts should be installed for this to work
 #+begin_src elisp
   (setq-default tab-width 2
                 standard-indent 2
+                js-indent-level 2
                 indent-tabs-mode nil)
   (setq tab-always-indent nil
         electric-indent-mode nil)
@@ -346,11 +347,38 @@ all-the-icons fonts should be installed for this to work
 
 ** Move lines
 #+begin_src elisp
-    (use-package move-dup
-      :demand t
-      :bind (("M-n" . move-dup-move-lines-down)
-             ("M-e" . move-dup-move-lines-up)
-             ("M-o" . move-dup-duplicate-down)))
+  (use-package move-dup
+    :demand t
+    :bind (("M-n" . move-dup-move-lines-down)
+           ("M-e" . move-dup-move-lines-up)
+           ("M-o" . move-dup-duplicate-down)))
+#+end_src
+
+** Delete Whitespace by Tab Stop
+#+begin_src elisp
+  (defun oxcl/backspace-whitespace-to-tab-stop ()
+    "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
+    (interactive)
+    (if (or indent-tabs-mode (use-region-p)
+            (> (point)
+               (save-excursion
+                 (back-to-indentation)
+                 (point))))
+        (call-interactively 'backward-delete-char)
+      (let ((step (% (current-column) tab-width))
+            (pt (point)))
+        (when (zerop step)
+          (setq step tab-width))
+        ;; Account for edge case near beginning of buffer.
+        (setq step (min (- pt 1) step))
+        (save-match-data
+          (if (string-match "[^\t ]*\\([\t ]+\\)$"
+                            (buffer-substring-no-properties
+                             (- pt step) pt))
+              (backward-delete-char (- (match-end 1)
+                                       (match-beginning 1)))
+            (call-interactively 'backward-delete-char))))))
+  (global-set-key (kbd "DEL") #'oxcl/backspace-whitespace-to-tab-stop)
 #+end_src
 
 ** Editorconfig
@@ -703,6 +731,7 @@ replace builtin tree-sitter major modes with the old ones
          (python-mode . python-ts-mode)
          (conf-toml-mode . toml-ts-mode)
          (sh-mode . bash-ts-mode)))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
   (add-to-list 'auto-mode-alist '("go\\.mod\\'" . go-mod-ts-mode))
