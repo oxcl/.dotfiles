@@ -545,10 +545,10 @@ lazy-highlight-initial-delay 0)
   :commands (nix-ts-mode)
   :mode "\\.nix\\'")
 
-;;  (use-package lua-ts-mode
-;;    :straight (:host sourcehut :repo "johnmuhl/lua-ts-mode")
-;;    :mode "\\.lua\\'"
-;;    :commands (lua-ts-mode))
+(use-package lua-ts-mode
+  :ensure (:host sourcehut :repo "johnmuhl/lua-ts-mode")
+  :mode "\\.lua\\'"
+  :commands (lua-ts-mode))
 
 (use-package rainbow-delimiters
   :config

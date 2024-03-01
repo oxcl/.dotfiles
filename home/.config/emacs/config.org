@@ -767,10 +767,10 @@ since the builtin support for tree-sitter major modes is limited to few language
 
 **** lua
 #+begin_src elisp
-;;  (use-package lua-ts-mode
-;;    :straight (:host sourcehut :repo "johnmuhl/lua-ts-mode")
-;;    :mode "\\.lua\\'"
-;;    :commands (lua-ts-mode))
+  (use-package lua-ts-mode
+    :ensure (:host sourcehut :repo "johnmuhl/lua-ts-mode")
+    :mode "\\.lua\\'"
+    :commands (lua-ts-mode))
 #+end_src
 
 ** parenthesis and delimiters
