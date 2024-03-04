@@ -79,5 +79,12 @@ config.colors = {
   quick_select_match_fg = { Color = '#ffffff' },
 }
 
+config.font = wezterm.font_with_fallback {
+  "JetBrains Mono",
+  { family = "Vazir Code" }
+}
+
+config.font_size = 11.0
+
 
 return config
