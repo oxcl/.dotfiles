@@ -16,5 +16,6 @@ fi
 command -v gpg-agent &> /dev/null && [[ -z "$GPG_AGENT_INFO" ]] && eval "$(gpg-agent --daemon)"
 
 # run urxvt daemon
-urxvtd -q -o &
-
+if [[ "$TERMINAL" == "urxvt" ]] && command -v urxvtd &>/dev/null; then
+  urxvtd -q -o &
+fi

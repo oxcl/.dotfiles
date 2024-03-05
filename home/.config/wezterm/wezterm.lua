@@ -2,6 +2,8 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 local e = os.getenv
 
+config.enable_tab_bar = false
+
 config.colors = {
   -- The default text color
   foreground = e"MY_THEME_FG",
@@ -81,10 +83,11 @@ config.colors = {
 
 config.font = wezterm.font_with_fallback {
   "JetBrains Mono",
-  { family = "Vazir Code" }
+  {family = "Vazir Code", scale = 1.1 }
 }
 
-config.font_size = 11.0
+config.font_size = 10.5
 
+config.cell_width = 1.1
 
 return config

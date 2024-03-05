@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # this file is sourced by x11 (in .xprofile), zsh (in .zprofile) and bash (in .bash-profile) so it works both in graphical environment and tty
 
 # XDG variables
@@ -23,7 +24,13 @@ export PATH="$XDG_BIN_HOME:$PATH" # add my own scripts and binaries
 export PATH="/test:$PATH"
 
 # set default terminal for window manager and desktop environments that respect it
-export TERMINAL="urxvt"
+if command -v wezterm &>/dev/null; then
+  export TERMINAL="wezterm"
+elif command -v urxvt &>/dev/null; then
+  export TERMINAL="urxvt"
+else
+  export TERMINAL="xterm"
+fi
 
 # set default editor to emacs
 export EDITOR="emacs"
