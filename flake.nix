@@ -14,43 +14,46 @@
     };
     gruvbox-material-gtk = {
       url = "github:oxcl/gruvbox-material-gtk-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+    unstable-nixpkgs.url = "nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs,home-manager, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = import inputs.nixpkgs {
-	inherit system;
-	config = {allowUnfree = true;};
-      };
-    in
-    {
-    
-      nixosConfigurations = {
-	main = nixpkgs.lib.nixosSystem {
-	  inherit pkgs;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./hosts/main/configuration.nix
-          ];
-        };
-        work = nixpkgs.lib.nixosSystem {
-          inherit pkgs;
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./hosts/work/configuration.nix
-          ];
-        };
-      };
-      # this is useful if you want to setup home-manager without nixos
-      homeConfiguration = {
-        main = home-manager.lib.homeManageConfiguration {
-          inherit pkgs;
-          modules = [
-	    ./hosts/main/home.nix
-	  ];
-        };
+  outputs = { self, nixpkgs,unstable-nixpkgs,home-manager, ... }@inputs:
+  let
+    system = "x86_64-linux";
+    unstable-overlay = final: prev: {
+      unstable = import unstable-nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
       };
     };
+    overlays = [
+      unstable-overlay
+      inputs.rofi-blocks.overlay
+      inputs.gruvbox-material-gtk.overlays.default
+    ];
+    pkgs = import inputs.nixpkgs {
+      inherit system overlays;
+      config.allowUnfree = true;
+    };
+  in
+  {
+    nixosConfigurations = {
+      main = nixpkgs.lib.nixosSystem {
+        inherit pkgs;
+        specialArgs = {inherit inputs; };
+        modules = [
+          ./hosts/main/configuration.nix
+        ];
+      };
+      work = nixpkgs.lib.nixosSystem {
+        inherit pkgs;
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/work/configuration.nix
+        ];
+      };
+    };
+  };
 }

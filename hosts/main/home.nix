@@ -3,7 +3,8 @@
 {
   imports = [ ../base/home.nix ];
   home.packages = with pkgs; [
-    wezterm # wezterm is sluggish in VMs
+    unstable.wezterm # wezterm is sluggish in VMs
+    unrar
   ];
   home.sessionVariables = {
     MY_NIX_HOST="main";

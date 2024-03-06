@@ -2,7 +2,9 @@
   "nodes": {
     "gruvbox-material-gtk": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1706689896,
@@ -53,21 +55,6 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1706515015,
-        "narHash": "sha256-eFfY5A7wlYy3jD/75lx6IJRueg4noE+jowl0a8lIlVo=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "f4a8d6d5324c327dcc2d863eb7f3cc06ad630df4",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "ref": "nixos-23.11",
-        "type": "indirect"
-      }
-    },
     "rofi-blocks": {
       "inputs": {
         "nixpkgs": [
@@ -92,8 +79,24 @@
       "inputs": {
         "gruvbox-material-gtk": "gruvbox-material-gtk",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs_2",
-        "rofi-blocks": "rofi-blocks"
+        "nixpkgs": "nixpkgs",
+        "rofi-blocks": "rofi-blocks",
+        "unstable-nixpkgs": "unstable-nixpkgs"
+      }
+    },
+    "unstable-nixpkgs": {
+      "locked": {
+        "lastModified": 1709479366,
+        "narHash": "sha256-n6F0n8UV6lnTZbYPl1A9q1BS0p4hduAv1mGAP17CVd0=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b8697e57f10292a6165a20f03d2f42920dfaf973",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-unstable",
+        "type": "indirect"
       }
     }
   },

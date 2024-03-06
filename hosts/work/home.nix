@@ -3,6 +3,6 @@
 {
   imports = [ ../base/home.nix ];
   home.packages = with pkgs; [
-    wezterm # wezterm is sluggish in VMs
+    # wezterm # wezterm is sluggish in VMs
   ];
 }

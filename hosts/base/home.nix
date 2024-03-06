@@ -4,17 +4,6 @@
   home.username = "user";
   home.homeDirectory = "/home/user";
 
-  
-  # rofi-blocks is an extension to rofi which allows finer control over rofi
-  nixpkgs.overlays = [
-    inputs.rofi-blocks.overlay
-    inputs.gruvbox-material-gtk.overlays.default
-  ];
-  nixpkgs.config = {
-    allowUnfree = true;
-  };
-
-
   home.packages = with pkgs; [
     cmake
     python3
@@ -96,6 +85,9 @@
     gruvbox-material-gtk
     sxiv
     hyperfine
+    unstable.wezterm
+    ffmpeg
+    mpv
   ];
 
   programs.firefox = {
