@@ -345,13 +345,27 @@ all-the-icons fonts should be installed for this to work
     (ws-butler-global-mode))
 #+end_src
 
+** Percise Word Movements
+#+begin_src elisp
+  (global-superword-mode)
+  (use-package subword
+    :ensure nil
+    :bind
+    ("S-<right>" . subword-forward)
+    ("S-<right>" . subword-backward)
+    ("S-<delete>" . subword-kill)
+    ("S-<backspace>" . subword-backward-kill))
+
+#+end_src
+
 ** Move lines
 #+begin_src elisp
   (use-package move-dup
     :demand t
-    :bind (("M-n" . move-dup-move-lines-down)
-           ("M-e" . move-dup-move-lines-up)
-           ("M-o" . move-dup-duplicate-down)))
+    :config
+    (global-set-key (kbd "M-n") 'move-dup-move-lines-down)
+    (global-set-key (kbd "M-e") 'move-dup-move-lines-up)
+    (global-set-key (kbd "M-o") 'move-dup-duplicate-down))
 #+end_src
 
 ** Delete Whitespace by Tab Stop

@@ -263,11 +263,21 @@ doom-my-theme-padded-modeline 4)
   :config
   (ws-butler-global-mode))
 
+(global-superword-mode)
+(use-package subword
+  :ensure nil
+  :bind
+  ("S-<right>" . subword-forward)
+  ("S-<right>" . subword-backward)
+  ("S-<delete>" . subword-kill)
+  ("S-<backspace>" . subword-backward-kill))
+
 (use-package move-dup
   :demand t
-  :bind (("M-n" . move-dup-move-lines-down)
-         ("M-e" . move-dup-move-lines-up)
-         ("M-o" . move-dup-duplicate-down)))
+  :config
+  (global-set-key (kbd "M-n") 'move-dup-move-lines-down)
+  (global-set-key (kbd "M-e") 'move-dup-move-lines-up)
+  (global-set-key (kbd "M-o") 'move-dup-duplicate-down))
 
 (defun oxcl/backspace-whitespace-to-tab-stop ()
   "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
