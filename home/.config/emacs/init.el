@@ -263,12 +263,12 @@ doom-my-theme-padded-modeline 4)
   :config
   (ws-butler-global-mode))
 
-(global-superword-mode)
+;;(global-superword-mode)
 (use-package subword
   :ensure nil
   :bind
   ("S-<right>" . subword-forward)
-  ("S-<right>" . subword-backward)
+  ("S-<left>" . subword-backward)
   ("S-<delete>" . subword-kill)
   ("S-<backspace>" . subword-backward-kill))
 
