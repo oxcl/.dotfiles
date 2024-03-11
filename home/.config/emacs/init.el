@@ -263,14 +263,46 @@ doom-my-theme-padded-modeline 4)
   :config
   (ws-butler-global-mode))
 
-;;(global-superword-mode)
-(use-package subword
-  :ensure nil
-  :bind
-  ("S-<right>" . subword-forward)
-  ("S-<left>" . subword-backward)
-  ("S-<delete>" . subword-kill)
-  ("S-<backspace>" . subword-backward-kill))
+(defun oxcl/boundary-p ()
+  (or (and (= (char-syntax (char-before)) ?w  )
+           (not (= (char-syntax (char-after)) ?w  )))
+      (and (= (char-syntax (char-before)) ?\) )
+           (not (= (char-syntax (char-after)) ?\) )))
+      (and (= (char-syntax (char-before)) ?\( )
+           (not (= (char-syntax (char-after)) ?\( )))
+      (and (= (char-syntax (char-before)) ?\( )
+           (not (= (char-syntax (char-after)) ?  )))
+      (and (= (char-syntax (char-before)) ?\( )
+           (not (= (char-syntax (char-after)) ?\( )))
+      (and (= (char-syntax (char-before)) ?\( )
+           (not (= (char-syntax (char-after)) ?\( )))
+      (and (= (char-syntax (char-before)) ?.  )
+           (= (char-syntax (char-after)) ?\  ))))
+(defun oxcl/forward-word ()
+  (interactive)
+  (while (progn (forward-char)  (not (oxcl/boundary-p)))))
+(defun oxcl/backward-word ()
+  (interactive)
+  (while (progn (backward-char) (not (oxcl/boundary-p)))))
+
+(global-set-key (kbd "C-<left>") #'oxcl/backward-word)
+(global-set-key (kbd "C-<right>") #'oxcl/forward-word)
+;;      (defun oxcl/beginning-of-line ()
+;;        (interactive)
+;;        (if (<= (point) (save-excursion (back-to-indentation) (point)))
+;;            (beginning-of-line)
+;;          (back-to-indentation)))
+;;
+;;      (global-set-key (kbd "C-a") #'oxcl/beginning-of-line)
+;;      (global-set-key (kbd "<home>") #'oxcl/beginning-of-line)
+;;      ;;(global-superword-mode)
+;;      (use-package subword
+;;        :ensure nil
+;;        :bind
+;;        ("S-<right>" . subword-forward)
+;;        ("S-<left>" . subword-backward)
+;;        ("S-<delete>" . subword-kill)
+;;        ("S-<backspace>" . subword-backward-kill))
 
 (use-package move-dup
   :demand t
