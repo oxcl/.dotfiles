@@ -21,6 +21,7 @@ xset r 111 # up arrow
 xset r 116 # down arrow
 xset r 117 # page down
 xset r 112 # page up
+xset r 23  # backspace
 
 # run ssh-agent daemon
 [[ -z "$SSH_AGENT_PID" ]] && eval "$(ssh-agent)"
