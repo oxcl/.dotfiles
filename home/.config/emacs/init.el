@@ -273,10 +273,11 @@ doom-my-theme-padded-modeline 4)
       ;; stop after a group of open parenthesis
       (and (= (char-syntax (char-before)) ?\( )
            (not (= (char-syntax (char-after)) ?\( )))
-      ;; stop after punctuation if has space or newline after it
-      (and (= (char-syntax (char-before)) ?.  )
-           (or (= (char-syntax (char-after)) ?\  )
-               (= (char-syntax (char-after)) ?> )))
+      ;; stop after group of punctuations or other symbols
+      (and (or  (= (char-syntax (char-before)) ?.  )
+                (= (char-syntax (char-before)) ?_ ))
+           (and (not (= (char-syntax (char-after)) ?_ ))
+                (not (= (char-syntax (char-after)) ?. ))))
       (= (point) (save-excursion (back-to-indentation) (point)))))
 
 (defun oxcl/forward-word ()
