@@ -264,29 +264,41 @@ doom-my-theme-padded-modeline 4)
   (ws-butler-global-mode))
 
 (defun oxcl/boundary-p ()
+  ;; stop after words
   (or (and (= (char-syntax (char-before)) ?w  )
            (not (= (char-syntax (char-after)) ?w  )))
+      ;; stop after a group of closed parenthesis
       (and (= (char-syntax (char-before)) ?\) )
            (not (= (char-syntax (char-after)) ?\) )))
+      ;; stop after a group of open parenthesis
       (and (= (char-syntax (char-before)) ?\( )
            (not (= (char-syntax (char-after)) ?\( )))
-      (and (= (char-syntax (char-before)) ?\( )
-           (not (= (char-syntax (char-after)) ?  )))
-      (and (= (char-syntax (char-before)) ?\( )
-           (not (= (char-syntax (char-after)) ?\( )))
-      (and (= (char-syntax (char-before)) ?\( )
-           (not (= (char-syntax (char-after)) ?\( )))
+      ;; stop after punctuation if has space or newline after it
       (and (= (char-syntax (char-before)) ?.  )
-           (= (char-syntax (char-after)) ?\  ))))
+           (or (= (char-syntax (char-after)) ?\  )
+               (= (char-syntax (char-after)) ?> )))
+      (= (point) (save-excursion (back-to-indentation) (point)))))
+
 (defun oxcl/forward-word ()
   (interactive)
-  (while (progn (forward-char)  (not (oxcl/boundary-p)))))
+  (while (progn (forward-char) (not (oxcl/boundary-p)))))
 (defun oxcl/backward-word ()
   (interactive)
   (while (progn (backward-char) (not (oxcl/boundary-p)))))
 
+(defun oxcl/kill-word ()
+  (interactive)
+  (kill-region (point) (save-excursion (oxcl/forward-word) (point))))
+(defun oxcl/kill-backward-word ()
+  (interactive)
+  (kill-region (point) (save-excursion (oxcl/backward-word) (point))))
+
 (global-set-key (kbd "C-<left>") #'oxcl/backward-word)
 (global-set-key (kbd "C-<right>") #'oxcl/forward-word)
+(global-set-key (kbd "C-<delete>") #'oxcl/kill-word)
+(global-set-key (kbd "C-<backspace>") #'oxcl/kill-backward-word)
+
+
 ;;      (defun oxcl/beginning-of-line ()
 ;;        (interactive)
 ;;        (if (<= (point) (save-excursion (back-to-indentation) (point)))
