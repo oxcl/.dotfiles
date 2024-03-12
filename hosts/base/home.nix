@@ -88,6 +88,7 @@
     unstable.wezterm
     ffmpeg
     mpv
+    xorg.xev
   ];
 
   programs.firefox = {
@@ -131,11 +132,11 @@
     ];
   };
 
-  systemd.user.services.witchcraft-server = {
-    Unit.Description = "local http server to host user-script files in ~/.config/chromium/user-scripts for witchcraft and new tab redirect chrome extensions to use";
+  systemd.user.services.tridactyl-server = {
+    Unit.Description = "local http server to host rc files in ~/.config/firefox/tridactyl for firefox with tridactyl extension";
     Install.WantedBy = [ "graphical-session.target" ];
     Service = {
-      WorkingDirectory = "%h/.config/chromium/user-scripts";
+      WorkingDirectory = "%h/.config/firefox/tridactyl";
       ExecStart = "${pkgs.python3}/bin/python3 -m http.server 5743 --bind 127.0.0.1";
     };
   };

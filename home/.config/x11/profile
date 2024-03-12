@@ -5,13 +5,26 @@ if [ ! -z $_XPROFILE_SOURCED ]; then return; else export _XPROFILE_SOURCED=1; fi
 source "${XDG_CONFIG:-$HOME/.config}/env"
 source "${XDG_CONFIG:-$HOME/.config}/themes/default"
 
-# load settings related to xterm, urxvt and programs that respect x11 settings
+# load settings related to xterm, urxvt, emacs and other programs that respect x11 settings
 if [ -n "$MY_THEME_LOADED" ]; then
-   xrdb $(eval echo "$(echo ${!MY_THEME_*} | xargs -n1 | xargs -I{} printf '-D{}=${} ' )") "${XDG_CONFIG_HOME:-$HOME/.config}/x11/resources"
+  xrdb $(eval echo "$(echo ${!MY_THEME_*} | xargs -n1 | xargs -I{} printf '-D{}=${} ' )") "${XDG_CONFIG_HOME:-$HOME/.config}/x11/resources"
 fi
+
+# set keyboard repeat delay and frequency
+xset r rate 140 25
+for keycode in {9..130}; do
+    xset -r ${keycode};
+done
+xset r 113 # left arrow
+xset r 114 # right arrow
+xset r 111 # up arrow
+xset r 116 # down arrow
+xset r 117 # page down
+xset r 112 # page up
 
 # run ssh-agent daemon
 [[ -z "$SSH_AGENT_PID" ]] && eval "$(ssh-agent)"
+
 # run gpg-agent daemon
 command -v gpg-agent &> /dev/null && [[ -z "$GPG_AGENT_INFO" ]] && eval "$(gpg-agent --daemon)"
 

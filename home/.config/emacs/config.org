@@ -347,59 +347,65 @@ all-the-icons fonts should be installed for this to work
 
 ** Percise Word Movements
 #+begin_src emacs-lisp
-  (defun oxcl/boundary-p ()
-    ;; stop after words
-    (or (and (= (char-syntax (char-before)) ?w  )
-             (not (= (char-syntax (char-after)) ?w  )))
-        ;; stop after a group of closed parenthesis
-        (and (= (char-syntax (char-before)) ?\) )
-             (not (= (char-syntax (char-after)) ?\) )))
-        ;; stop after a group of open parenthesis
-        (and (= (char-syntax (char-before)) ?\( )
-             (not (= (char-syntax (char-after)) ?\( )))
-        ;; stop after group of punctuations or other symbols
-        (and (or  (= (char-syntax (char-before)) ?.  )
-                  (= (char-syntax (char-before)) ?_ ))
-             (and (not (= (char-syntax (char-after)) ?_ ))
-                  (not (= (char-syntax (char-after)) ?. ))))
-        (= (point) (save-excursion (back-to-indentation) (point)))))
+              (defun oxcl/boundary-p ()
+                ;; stop after words
+                (or (and (= (char-syntax (char-before)) ?w  )
+                         (not (= (char-syntax (char-after)) ?w  ))
+                         (not (= (char-after) ?/ ))
+                         (not (= (char-after) ?\\)))
+                    ;; stop after a group of closed parenthesis
+                    (and (= (char-syntax (char-before)) ?\) )
+                         (not (= (char-syntax (char-after)) ?\) )))
+                    ;; stop after a group of open parenthesis
+                    (and (= (char-syntax (char-before)) ?\( )
+                         (not (= (char-syntax (char-after)) ?\( )))
+                    ;; stop after group of punctuations or other symbols
+                    (and (or  (= (char-syntax (char-before)) ?.  )
+                              (= (char-syntax (char-before)) ?_ )
+                              (= (char-syntax (char-before)) ?< )
+                              (= (char-syntax (char-before)) ?> ))
+                         (and (not (= (char-syntax (char-after)) ?_ ))
+                              (not (= (char-syntax (char-after)) ?. ))
+                              (not (= (char-syntax (char-after)) ?< ))
+                              (not (= (char-syntax (char-after)) ?> ))))
+                    (= (point) (save-excursion (back-to-indentation) (point)))))
 
-  (defun oxcl/forward-word ()
-    (interactive)
-    (while (progn (forward-char) (not (oxcl/boundary-p)))))
-  (defun oxcl/backward-word ()
-    (interactive)
-    (while (progn (backward-char) (not (oxcl/boundary-p)))))
+              (defun oxcl/forward-word ()
+                (interactive)
+                (while (progn (forward-char) (not (oxcl/boundary-p)))))
+              (defun oxcl/backward-word ()
+                (interactive)
+                (while (progn (backward-char) (not (oxcl/boundary-p)))))
 
-  (defun oxcl/kill-word ()
-    (interactive)
-    (kill-region (point) (save-excursion (oxcl/forward-word) (point))))
-  (defun oxcl/kill-backward-word ()
-    (interactive)
-    (kill-region (point) (save-excursion (oxcl/backward-word) (point))))
+              (defun oxcl/kill-word ()
+                (interactive)
+                (kill-region (point) (save-excursion (oxcl/forward-word) (point))))
+              (defun oxcl/kill-backward-word ()
+                (interactive)
+                (kill-region (point) (save-excursion (oxcl/backward-word) (point))))
 
-  (global-set-key (kbd "C-<left>") #'oxcl/backward-word)
-  (global-set-key (kbd "C-<right>") #'oxcl/forward-word)
-  (global-set-key (kbd "C-<delete>") #'oxcl/kill-word)
-  (global-set-key (kbd "C-<backspace>") #'oxcl/kill-backward-word)
+              (global-set-key (kbd "C-<left>") #'oxcl/backward-word)
+              (global-set-key (kbd "C-<right>") #'oxcl/forward-word)
+              (global-set-key (kbd "C-<delete>") #'oxcl/kill-word)
+              (global-set-key (kbd "C-<backspace>") #'oxcl/kill-backward-word)
 
 
-  ;;      (defun oxcl/beginning-of-line ()
-  ;;        (interactive)
-  ;;        (if (<= (point) (save-excursion (back-to-indentation) (point)))
-  ;;            (beginning-of-line)
-  ;;          (back-to-indentation)))
-  ;;
-  ;;      (global-set-key (kbd "C-a") #'oxcl/beginning-of-line)
-  ;;      (global-set-key (kbd "<home>") #'oxcl/beginning-of-line)
-  ;;      ;;(global-superword-mode)
-  ;;      (use-package subword
-  ;;        :ensure nil
-  ;;        :bind
-  ;;        ("S-<right>" . subword-forward)
-  ;;        ("S-<left>" . subword-backward)
-  ;;        ("S-<delete>" . subword-kill)
-  ;;        ("S-<backspace>" . subword-backward-kill))
+              ;;      (defun oxcl/beginning-of-line ()
+              ;;        (interactive)
+              ;;        (if (<= (point) (save-excursion (back-to-indentation) (point)))
+              ;;            (beginning-of-line)
+              ;;          (back-to-indentation)))
+              ;;
+              ;;      (global-set-key (kbd "C-a") #'oxcl/beginning-of-line)
+              ;;      (global-set-key (kbd "<home>") #'oxcl/beginning-of-line)
+              ;;      ;;(global-superword-mode)
+              ;;      (use-package subword
+              ;;        :ensure nil
+              ;;        :bind
+              ;;        ("S-<right>" . subword-forward)
+              ;;        ("S-<left>" . subword-backward)
+              ;;        ("S-<delete>" . subword-kill)
+              ;;        ("S-<backspace>" . subword-backward-kill))
 #+end_src
 
 ** Move lines
