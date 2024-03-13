@@ -3,3 +3,4 @@ powerlevel10k;d70eedb345a9cc54b4f3e9ae09b0dbbb4edc9a39;git;https://github.com/ro
 ohmyzsh;48ccc7b36de8efb2bd7beb9bd6e0a6f6fe03b95d;framework;https://github.com/ohmyzsh/ohmyzsh
 zsh-better-npm-completion;47e5987ca422de43784f9d76311d764f82af2717;git;https://github.com/lukechilds/zsh-better-npm-completion
 zsh-autosuggestions;c3d4e576c9c86eac62884bd47c01f6faed043fc5;git;https://github.com/zsh-users/zsh-autosuggestions
+zsh-autocomplete;c7b65508fd3a016dc9cdb410af9ee7806b3f9be1;git;https://github.com/marlonrichert/zsh-autocomplete

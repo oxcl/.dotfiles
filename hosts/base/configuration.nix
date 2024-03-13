@@ -21,7 +21,10 @@
     shell = pkgs.zsh;
    extraGroups = [ "wheel" "vboxsf" "networkmanager" "docker" ]; # Enable ‘sudo’ for the user.
   };
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    enableCompletion = false;
+  };
 
   
   time.timeZone = "Asia/Tehran";

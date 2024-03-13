@@ -1,8 +1,22 @@
 unbind <C-x>
 set allowautofocus false
 set editorcmd emacs
+set smoothscroll true
+set scrollduration 25
 bind <C-x><C-c> composite sanitise tridactyllocal; qall
 bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; qall
 bind <C-x><C-c> composite sanitise tridactyllocal; qall
-bind <ArrowDown> scrollline 2
-bind <ArrowUp> scrollline -2
+unbind j
+bind <ArrowDown> scrollpx 0 50
+unbind k
+bind <ArrowUp> scrollpx 0  -50
+unbind h
+bind <ArrowLeft> scrollpx -50 0
+unbind l
+bind <ArrowRight> scrollpx 50 0
+unbind H
+bind <S-ArrowLeft> back
+unbind L
+bind <S-ArrowRight> forward
+bind <PageDown> scrollpage 0.5
+bind <PageUp> scrollpage -0.5

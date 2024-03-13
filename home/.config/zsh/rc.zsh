@@ -113,8 +113,7 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
 ZSH_AUTOSUGGEST_MANUAL_REBIND=true # boosts performance but makes the plugin more unstable
 ZSH_AUTOSUGGEST_COMPLETION_IGNORE="npm *"
 
-# prepped sudo to current or previous command by pressing  <esc> twice
-zert-load-omz plugin sudo
+
 
 # load simple plugins that are either only for completion or aliases and don't need configuration
 local simple_plugins=(docker-compose dotnet fancy-ctrl-z gitfast git-extras flutter golang gh lxd pylint redis-cli)
@@ -163,6 +162,8 @@ WORDCHARS=""
 # use ls colors for zsh file completion aswell
 zstyle ":completion:*" menu select
 zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"
+zmodload -i zsh/complist
+bindkey -M menuselect '^M' .accept-line
 
 # emulate emacs keybindings
 bindkey -e
