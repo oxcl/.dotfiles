@@ -682,8 +682,7 @@ the builtin flyspell package will check each word under the cursor spelling agai
 *** make isearch better
 **** sane defaults
 #+begin_src emacs-lisp
-  (setq-default case-fold-search nil ; make search case sensitive by default
-    char-fold-symmetric t  ; accent character's match the regular character as well
+  (setq-default char-fold-symmetric t  ; accent character's match the regular character as well
     search-ring-max 64
     regexp-search-ring-max 64)
   ;; TODO: make sure char-fold-table includes farsi letters

@@ -519,8 +519,7 @@ scroll-margin 5) ; start scrolling the window when the distance between the curs
   (local-set-key (kbd "M-<down>") #'next-history-element))
 (add-hook 'minibuffer-setup-hook 'oxcl/set-minibuffer-keybindings)
 
-(setq-default case-fold-search nil ; make search case sensitive by default
-  char-fold-symmetric t  ; accent character's match the regular character as well
+(setq-default char-fold-symmetric t  ; accent character's match the regular character as well
   search-ring-max 64
   regexp-search-ring-max 64)
 ;; TODO: make sure char-fold-table includes farsi letters

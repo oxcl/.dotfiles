@@ -1,2 +1,8 @@
 unbind <C-x>
+set allowautofocus false
+set editorcmd emacs
 bind <C-x><C-c> composite sanitise tridactyllocal; qall
+bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; qall
+bind <C-x><C-c> composite sanitise tridactyllocal; qall
+bind <ArrowDown> scrollline 2
+bind <ArrowUp> scrollline -2
