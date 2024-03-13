@@ -62,7 +62,7 @@
     pixz
     lzip
     lz4
-    rar
+    # rar
     zip
     cabextract
     p7zip
@@ -94,6 +94,9 @@
   programs.firefox = {
     enable = true;
     package = pkgs.firefox-bin;
+    nativeMessagingHosts = with pkgs; [
+      tridactyl-native
+    ];
     policies = (builtins.fromJSON (builtins.readFile ../../home/.config/firefox/policies.json)).policies;
   };
 
@@ -132,14 +135,14 @@
     ];
   };
 
-  systemd.user.services.tridactyl-server = {
-    Unit.Description = "local http server to host rc files in ~/.config/firefox/tridactyl for firefox with tridactyl extension";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Service = {
-      WorkingDirectory = "%h/.config/firefox/tridactyl";
-      ExecStart = "${pkgs.python3}/bin/python3 -m http.server 5743 --bind 127.0.0.1";
-    };
-  };
+  # systemd.user.services.tridactyl-server = {
+  #   Unit.Description = "local http server to host rc files in ~/.config/firefox/tridactyl for firefox with tridactyl extension";
+  #   Install.WantedBy = [ "graphical-session.target" ];
+  #   Service = {
+  #     WorkingDirectory = "%h/.config/firefox/tridactyl";
+  #     ExecStart = "${pkgs.python3}/bin/python3 -m http.server 5743 --bind 127.0.0.1";
+  #   };
+  # };
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";

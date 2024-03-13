@@ -11,7 +11,7 @@ if [ -n "$MY_THEME_LOADED" ]; then
 fi
 
 # set keyboard repeat delay and frequency
-xset r rate 140 25
+xset r rate 140 30
 for keycode in {9..130}; do
     xset -r ${keycode};
 done
