@@ -472,6 +472,8 @@ scroll-margin 5) ; start scrolling the window when the distance between the curs
 (keymap-global-set "C-_" #'undo-only)
 (keymap-global-set "C--" #'undo-redo)
 
+(global-set-key (kbd "<escape>") (kbd "C-g"))
+
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
 

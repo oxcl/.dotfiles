@@ -616,6 +616,11 @@ C-x U : emacs  redo
 
 *** undo tree and branching
 
+** <Esc> is <C-g>
+#+begin_src elisp
+  (global-set-key (kbd "<escape>") (kbd "C-g"))
+#+end_src
+
 ** persistent cursor position across sessions
 #+begin_src elisp
   (save-place-mode 1)

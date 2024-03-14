@@ -18,5 +18,18 @@ unbind H
 bind <S-ArrowLeft> back
 unbind L
 bind <S-ArrowRight> forward
+unbind <C-d>
 bind <PageDown> scrollpage 0.5
+unbind <C-u>
 bind <PageUp> scrollpage -0.5
+bind <C-g> composite mode normal; hidecmdline
+bind --mode=insert <C-g> composite mode normal; hidecmdline
+bind --mode=ex <C-g> composite mode normal; hidecmdline
+bind --mode=hint <C-g> composite mode normal; hidecmdline
+bind --mode=input <C-g> composite mode normal; hidecmdline
+unbind yy
+bind <A-w> clipboard yank
+unbind p
+unbind P
+bind <C-y> clipboard tabopen
+bind --mode=browser <C-w> clipboard yank
