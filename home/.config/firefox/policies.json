@@ -56,6 +56,9 @@
       "Locked": true,
       "SkipOnboarding": true
     },
+    "Preferences": {
+      "ui.key.accelKey": 91
+    },
     "ExtensionSettings": {
       "*": {
       "installation_mode": "blocked",

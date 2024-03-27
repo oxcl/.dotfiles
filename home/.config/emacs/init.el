@@ -268,16 +268,16 @@ doom-my-theme-padded-modeline 4)
   ;; it stops on the first character of a word instead of stopping in the space between two words
   (let ((char-before (if (eq is-delete t) (char-after)  (char-before)))
         (char-after  (if (eq is-delete t) (char-before) (char-after))))
-  ;; stop after words
+      ;; stop after words
   (or (and (= (char-syntax char-before) ?w  )
-           (not (= (char-syntax char-after) ?w  )))
+           (not (= (char-syntax char-after) ?w )))
       ;; stop after a group of closed parenthesis
       (and (= (char-syntax char-before) ?\) )
            (not (= (char-syntax char-after) ?\) )))
       ;; stop after a group of open parenthesis
       (and (= (char-syntax char-before) ?\( )
            (not (= (char-syntax char-after) ?\( )))
-      ;; stop after test of punctuations or other symbols
+      ;; stop after group of punctuations or other symbols
       (and (or  (= (char-syntax char-before) ?.  )
                 (= (char-syntax char-before) ?_ )
                 (= (char-syntax char-before) ?< )
@@ -305,11 +305,18 @@ doom-my-theme-padded-modeline 4)
                        (progn (backward-char) (= (char-syntax (char-before)) ?\ ))))
     (kill-region (point) (save-excursion (oxcl/backward-word nil) (point)))
   (kill-region (point) (save-excursion (oxcl/backward-word t) (point)))))
+;; delete a trailing / character when deleting parts of paths in the minibuffer
+(defun oxcl/kill-backward-word-minibuffer ()
+  (interactive)
+  (when (= (char-before) ?/ ) (delete-backward-char 1))
+  (oxcl/kill-backward-word))
 
 (global-set-key (kbd "C-<left>") #'oxcl/backward-word)
 (global-set-key (kbd "C-<right>") #'oxcl/forward-word)
 (global-set-key (kbd "C-<delete>") #'oxcl/kill-word)
 (global-set-key (kbd "C-<backspace>") #'oxcl/kill-backward-word)
+(add-hook 'minibuffer-mode-hook (lambda () (local-set-key (kbd "C-<backspace>") #'oxcl/kill-backward-word-minibuffer)))
+
 
 
 ;;      (defun oxcl/beginning-of-line ()
