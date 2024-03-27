@@ -57,7 +57,15 @@
       "SkipOnboarding": true
     },
     "Preferences": {
-      "ui.key.accelKey": 91
+      "*": {
+        "Type": "locked"
+      },
+      "ui.key.accelKey": {
+        "Value": 91
+      },
+      "browser.autofocus": {
+        "Value": false
+      }
     },
     "ExtensionSettings": {
       "*": {

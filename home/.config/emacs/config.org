@@ -462,6 +462,12 @@ all-the-icons fonts should be installed for this to work
         (org-at-table-p))))
 #+end_src
 
+** Better Jumping
+#+begin_src elisp
+  (use-package back-button
+    :demand t)
+#+end_src
+
 ** Move lines
 #+begin_src elisp
   (use-package move-dup
@@ -636,7 +642,7 @@ C-x U : emacs  redo
 
 * spell checking
 the builtin flyspell package will check each word under the cursor spelling against the specified backend.
-#+begin_src elisp
+#+begin_src elisp :tangle no
     ;; ignore case sensitive spell checks
     (defun oxcl/jinx-lower-case-word-valid-p (start)
       "Return non-nil if word, that is assumed to be in lower case, at
@@ -1094,6 +1100,12 @@ poke integration with emacs comes in two packages: ~poke.el~ a user interface fo
 *** poke-mode
 #+begin_src elisp
   (use-package poke-mode)
+#+end_src
+
+** vimrc
+#+begin_src elisp
+  (use-package vimrc-mode
+    :mode ("\\.vim\\(rc\\)?\\'" "\\(.\\)?tridactylrc\\'"))
 #+end_src
 
 ** terminal emulator

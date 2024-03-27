@@ -1,35 +1,94 @@
-unbind <C-x>
-set allowautofocus false
+" tridactyl configuration to mimic emacs
+" some of the options are taken from https://github.com/jumper047/tridactyl_emacs_config
+
+" Ctrl-g is your friend (and hardcoded <C-,> of course)
+unbind <C-g>
+bind --mode=browser <C-g> escapehatch
+bind --mode=ex <C-g> composite ex.hide_and_clear; nohlsearch
+
+" set external editor to emacs
 set editorcmd emacs
-set smoothscroll true
-set scrollduration 25
-bind <C-x><C-c> composite sanitise tridactyllocal; qall
-bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; qall
-bind <C-x><C-c> composite sanitise tridactyllocal; qall
-unbind j
-bind <ArrowDown> scrollpx 0 50
-unbind k
-bind <ArrowUp> scrollpx 0  -50
-unbind h
-bind <ArrowLeft> scrollpx -50 0
-unbind l
-bind <ArrowRight> scrollpx 50 0
-unbind H
-bind <S-ArrowLeft> back
-unbind L
-bind <S-ArrowRight> forward
-unbind <C-d>
-bind <PageDown> scrollpage 0.5
+" set editorcmd emacsclient -a \"\" -c -e '(progn (find-file "%f") (forward-line (1- %l)) (forward-char %c))'
+
+" back and forward movements
+bind <A-Space> jumpprev
+bind <A-Escape> jumpnext
+
+" try to guess the next or previous page and jump to it
+set followpagepatterns.next ^(next|newer|prochain|بعد(ی)?)\b|»|>>
+set followpagepatterns.prev ^(prev(ious)?|older|précédent|قبل(ی)?)\b|«|<<
+unbind [[
+unbind ]]
+bind n followpage next
+bind p followpage prev
+
+" Commands
+unbind :
+bind <A-x> fillcmdline_notrail
+
+" Searching
+" mimic emacs C-s and C-r behaviour (not very good)
+" Fallback solution is / for find and win-G/win-g to select result
+bind <C-s> composite fillcmdline find; bind --mode=ex <C-s> oxcl_accept_and_reopen; bind --mode=ex <C-r> oxcl_accept_and_reopen
+bind <C-r> composite fillcmdline find; bind --mode=ex <C-s> oxcl_accept_and_reopen; bind --mode=ex <C-r> oxcl_accept_and_reopen
+command oxcl_accept_and_reopen composite ex.accept_line; fillcmdline find; ex.prev_history; bind --mode=ex <C-s> findnext; bind --mode=ex <C-r> findnext --reverse
+
+" Hinting
+set hintchars neiomtsraghpldkvufcwqzuy
+set hintdelay 0
+
 unbind <C-u>
-bind <PageUp> scrollpage -0.5
-bind <C-g> composite mode normal; hidecmdline
-bind --mode=insert <C-g> composite mode normal; hidecmdline
-bind --mode=ex <C-g> composite mode normal; hidecmdline
-bind --mode=hint <C-g> composite mode normal; hidecmdline
-bind --mode=input <C-g> composite mode normal; hidecmdline
-unbind yy
-bind <A-w> clipboard yank
-unbind p
-unbind P
-bind <C-y> clipboard tabopen
-bind --mode=browser <C-w> clipboard yank
+" open in foreground tab
+bind <C-u>f hint -t
+" close hint mode
+bind --mode=hint <C-g> hint.reset
+
+
+" Navigation
+bind r forward
+bind l back
+bind u urlparent
+bind t urlroot
+
+
+
+
+
+unbind <C-x>
+bind <C-x><C-c> composite sanitise tridactyllocal; qall
+
+
+"set allowautofocus false
+"set smoothscroll true
+"set scrollduration 25
+"bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; qall
+"bind <C-x><C-c> composite sanitise tridactyllocal; qall
+"unbind j
+"bind <ArrowDown> scrollpx 0 50
+"unbind k
+"bind <ArrowUp> scrollpx 0  -50
+"unbind h
+"bind <ArrowLeft> scrollpx -50 0
+"unbind l
+"bind <ArrowRight> scrollpx 50 0
+"unbind H
+"bind <S-ArrowLeft> back
+"unbind L
+"bind <S-ArrowRight> forward
+"unbind <C-d>
+"bind <PageDown> scrollpage 0.5
+"unbind <C-u>
+"bind <PageUp> scrollpage -0.5
+"bind <C-g> composite mode normal; hidecmdline
+"bind --mode=insert <C-g> composite mode normal; hidecmdline
+"bind --mode=ex <C-g> composite mode normal; hidecmdline
+"bind --mode=hint <C-g> composite mode normal; hidecmdline
+"bind --mode=input <C-g> composite mode normal; hidecmdline
+"unbind yy
+"bind <A-w> clipboard yank
+"unbind p
+"unbind P
+"bind <C-y> clipboard tabopen
+"bind --mode=browser <C-w> clipboard yank
+
+set allowautofocus false

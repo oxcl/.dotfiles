@@ -374,6 +374,9 @@ doom-my-theme-padded-modeline 4)
       (org-at-property-p)
       (org-at-table-p))))
 
+(use-package back-button
+  :demand t)
+
 (use-package move-dup
   :demand t
   :config
@@ -483,41 +486,6 @@ scroll-margin 5) ; start scrolling the window when the distance between the curs
 
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
-
-;; ignore case sensitive spell checks
-(defun oxcl/jinx-lower-case-word-valid-p (start)
-  "Return non-nil if word, that is assumed to be in lower case, at
-   START is valid, or would be valid if capitalized or upcased."
-  (let ((word (buffer-substring-no-properties start (point))))
-    (or (member word jinx--session-words)
-  (cl-loop for dict in jinx--dicts thereis
-     (or
-      (jinx--mod-check dict (upcase word))
-      (jinx--mod-check dict (capitalize word))
-      (jinx--mod-check dict word))))))
-(defun oxcl/jinx-add-to-personal ()
-  (interactive)
-  (let ((word (current-word t t)))
-    (jinx--save-personal t nil word)
-    (jinx-mode -1)
-    (jinx-mode 1)))
-(use-package jinx
-  :hook ((text-mode prog-mode conf-mode org-mode) . jinx-mode)
-  :custom
-  (jinx-languages "en_US fa_IR")
-  (jinx-camel-modes '(prog-mode conf-mode org-mode))
-  (jinx-exclude-faces '((org-mode org-block-begin-line org-block-end-line)
-      (t font-lock-keyword-face font-lock-builtin-face)))
-  :config
-  (add-to-list 'jinx-exclude-regexps '(t "\\b[a-zA-Z]\\{2\\}\\b"))
-  (set 'jinx--predicates
- (cl-substitute
-  #'oxcl/jinx-lower-case-word-valid-p
-  #'jinx--word-valid-p
-  jinx--predicates))
-  :bind
-  ("C-$" . jinx-correct)
-  ("C-@" . oxcl/jinx-add-to-personal))
 
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))
@@ -774,6 +742,9 @@ oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
   :requires (poke-mode))
 
 (use-package poke-mode)
+
+(use-package vimrc-mode
+  :mode ("\\.vim\\(rc\\)?\\'" "\\(.\\)?tridactylrc\\'"))
 
 ;;  (use-package vterm
 ;;    :custom
