@@ -1,10 +1,24 @@
 " tridactyl configuration to mimic emacs
 " some of the options are taken from https://github.com/jumper047/tridactyl_emacs_config
 
-" Ctrl-g is your friend (and hardcoded <C-,> of course)
+" unbind useless or overlapping default bindings
+unbind <C-x>
+unbind <C-d>
 unbind <C-g>
+unbind [[
+unbind ]]
+unbind :
+unbind <C-u>
+unbind h
+unbind j
+unbind k
+unbind l
+
+" Ctrl-g is your friend (and hardcoded <C-,> of course)
 bind --mode=browser <C-g> escapehatch
 bind --mode=ex <C-g> composite ex.hide_and_clear; nohlsearch
+bind --mode=insert <C-g> composite mode normal; hidecmdline
+bind --mode=hint <C-g> hint.reset
 
 " set external editor to emacs
 set editorcmd emacs
@@ -17,13 +31,10 @@ bind <A-Escape> jumpnext
 " try to guess the next or previous page and jump to it
 set followpagepatterns.next ^(next|newer|prochain|بعد(ی)?)\b|»|>>
 set followpagepatterns.prev ^(prev(ious)?|older|précédent|قبل(ی)?)\b|«|<<
-unbind [[
-unbind ]]
 bind n followpage next
 bind p followpage prev
 
 " Commands
-unbind :
 bind <A-x> fillcmdline_notrail
 
 " Searching
@@ -36,12 +47,8 @@ command oxcl_accept_and_reopen composite ex.accept_line; fillcmdline find; ex.pr
 " Hinting
 set hintchars neiomtsraghpldkvufcwqzuy
 set hintdelay 0
-
-unbind <C-u>
 " open in foreground tab
 bind <C-u>f hint -t
-" close hint mode
-bind --mode=hint <C-g> hint.reset
 
 
 " Navigation
@@ -54,37 +61,16 @@ bind t urlroot
 
 
 
-unbind <C-x>
-bind <C-x><C-c> composite sanitise tridactyllocal; qall
+" Scroll
+set smoothscroll true
+set scrollduration 25
+bind <ArrowDown> scrollpx 0  50
+bind <ArrowUp> scrollpx   0 -50
+bind <ArrowLeft> scrollpx -50 0
+bind <ArrowRight> scrollpx 50 0
+bind <PageDown> scrollpage 0.5
+bind <PageUp> scrollpage  -0.5
 
-
-"set allowautofocus false
-"set smoothscroll true
-"set scrollduration 25
-"bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; qall
-"bind <C-x><C-c> composite sanitise tridactyllocal; qall
-"unbind j
-"bind <ArrowDown> scrollpx 0 50
-"unbind k
-"bind <ArrowUp> scrollpx 0  -50
-"unbind h
-"bind <ArrowLeft> scrollpx -50 0
-"unbind l
-"bind <ArrowRight> scrollpx 50 0
-"unbind H
-"bind <S-ArrowLeft> back
-"unbind L
-"bind <S-ArrowRight> forward
-"unbind <C-d>
-"bind <PageDown> scrollpage 0.5
-"unbind <C-u>
-"bind <PageUp> scrollpage -0.5
-"bind <C-g> composite mode normal; hidecmdline
-"bind --mode=insert <C-g> composite mode normal; hidecmdline
-"bind --mode=ex <C-g> composite mode normal; hidecmdline
-"bind --mode=hint <C-g> composite mode normal; hidecmdline
-"bind --mode=input <C-g> composite mode normal; hidecmdline
-"unbind yy
 "bind <A-w> clipboard yank
 "unbind p
 "unbind P
@@ -92,3 +78,6 @@ bind <C-x><C-c> composite sanitise tridactyllocal; qall
 "bind --mode=browser <C-w> clipboard yank
 
 set allowautofocus false
+
+bind <C-x><C-c> composite sanitise tridactyllocal; qall
+bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; qall

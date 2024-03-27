@@ -46,8 +46,8 @@
     "PasswordManagerEnabled": false,
     "Permissions": {
       "Notifications": {
-	"BlockNewRequests": true,
-	"Locked" : true
+        "BlockNewRequests": true,
+        "Locked" : true
       }
     },
     "UserMessaging": {
@@ -57,14 +57,13 @@
       "SkipOnboarding": true
     },
     "Preferences": {
-      "*": {
-        "Type": "locked"
-      },
       "ui.key.accelKey": {
-        "Value": 91
+        "Value": 91,
+        "Status": "locked"
       },
       "browser.autofocus": {
-        "Value": false
+        "Value": false,
+        "Status": "locked"
       }
     },
     "ExtensionSettings": {
