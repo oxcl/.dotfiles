@@ -155,6 +155,12 @@ doom-my-theme-padded-modeline 4)
 (use-package all-the-icons
   :if (display-graphic-p))
 
+;; will not work properly without the after-init-hook idk why
+(add-hook 'after-init-hook (lambda ()
+                             (global-set-key (kbd "C-+") #'text-scale-increase)
+                             (global-set-key (kbd "C--") #'text-scale-decrease)
+                             (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
+
 (setq-default tab-width 2
               standard-indent 2
               js-indent-level 2
@@ -479,10 +485,14 @@ scroll-margin 5) ; start scrolling the window when the distance between the curs
 
 (keymap-global-unset "C-/")
 (keymap-global-unset "C-?")
-(keymap-global-set "C-_" #'undo-only)
-(keymap-global-set "C--" #'undo-redo)
+(keymap-global-unset "C--")
+(keymap-global-unset "C-_")
+(keymap-global-set "C-$" #'undo-only)
+(keymap-global-set "C-~" #'undo-redo)
 
 (global-set-key (kbd "<escape>") (kbd "C-g"))
+
+(global-set-key (kbd "C-d") #'bookmark-set)
 
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)

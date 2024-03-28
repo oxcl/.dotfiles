@@ -26,6 +26,9 @@ xset r 22  # backspace
 xset r 20  # underscore and minus
 xset r 57  # n
 xset r 26  # e
+xset r 31  # i
+xset r 58  # m
+xset r 21  # plus
 
 # run ssh-agent daemon
 [[ -z "$SSH_AGENT_PID" ]] && eval "$(ssh-agent)"

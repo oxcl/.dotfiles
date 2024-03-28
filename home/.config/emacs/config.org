@@ -220,6 +220,15 @@ all-the-icons fonts should be installed for this to work
     :if (display-graphic-p))
 #+end_src
 
+** zoom-in/zoom-out
+#+begin_src elisp
+  ;; will not work properly without the after-init-hook idk why
+  (add-hook 'after-init-hook (lambda ()
+                               (global-set-key (kbd "C-+") #'text-scale-increase)
+                               (global-set-key (kbd "C--") #'text-scale-decrease)
+                               (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
+#+end_src
+
 * editor
 ** Indentation
 #+begin_src elisp
@@ -623,8 +632,10 @@ C-x U : emacs  redo
 #+begin_src elisp
   (keymap-global-unset "C-/")
   (keymap-global-unset "C-?")
-  (keymap-global-set "C-_" #'undo-only)
-  (keymap-global-set "C--" #'undo-redo)
+  (keymap-global-unset "C--")
+  (keymap-global-unset "C-_")
+  (keymap-global-set "C-$" #'undo-only)
+  (keymap-global-set "C-~" #'undo-redo)
 #+end_src
 
 *** undo tree and branching
@@ -632,6 +643,11 @@ C-x U : emacs  redo
 ** <Esc> is <C-g>
 #+begin_src elisp
   (global-set-key (kbd "<escape>") (kbd "C-g"))
+#+end_src
+
+** Bookmarks
+#+begin_src elisp
+  (global-set-key (kbd "C-d") #'bookmark-set)
 #+end_src
 
 ** persistent cursor position across sessions

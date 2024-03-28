@@ -50,16 +50,11 @@ set hintdelay 0
 " open in foreground tab
 bind <C-u>f hint -t
 
-
 " Navigation
 bind r forward
 bind l back
 bind u urlparent
 bind t urlroot
-
-
-
-
 
 " Scroll
 set smoothscroll true
@@ -70,6 +65,17 @@ bind <ArrowLeft> scrollpx -50 0
 bind <ArrowRight> scrollpx 50 0
 bind <PageDown> scrollpage 0.5
 bind <PageUp> scrollpage  -0.5
+
+" Bookmarks
+command bm composite get_current_url | fillcmdline bmark
+bind <C-d> bm
+bind <C-x>rb fillcmdline bmarks
+bind <C-x>rB fillcmdline bmarks -t
+
+" Zoom
+bind <C--> zoom -10 true
+bind <C-+> zoom +10 true
+bind <C-=> zoom 100
 
 "bind <A-w> clipboard yank
 "unbind p
