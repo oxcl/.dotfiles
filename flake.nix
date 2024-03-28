@@ -16,6 +16,10 @@
       url = "github:oxcl/gruvbox-material-gtk-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    apple-emoji-nix = {
+      url = "github:oxcl/apple-emoji-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     unstable-nixpkgs.url = "nixpkgs/nixos-unstable";
   };
 
@@ -32,6 +36,7 @@
       unstable-overlay
       inputs.rofi-blocks.overlay
       inputs.gruvbox-material-gtk.overlays.default
+      inputs.apple-emoji-nix.overlays.default
     ];
     pkgs = import inputs.nixpkgs {
       inherit system overlays;

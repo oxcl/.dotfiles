@@ -68,6 +68,38 @@
       "browser.display.use_system_colors": {
         "Value": true,
         "Status": "locked"
+      },
+      "font.default.ar":{
+        "Value": "serif",
+        "Status": "locked"
+      },
+      "font.language.group":{
+        "Value": "x-western",
+        "Status": "locked"
+      },
+      "font.name.monospace.ar":{
+        "Value": "Vazir Code",
+        "Status": "locked"
+      },
+      "font.name.monospace.x-western":{
+        "Value": "JetBrains Mono",
+        "Status": "locked"
+      },
+      "font.name.sans-serif.ar": {
+        "Value": "Vazirmatn UI",
+        "Status": "locked"
+      },
+      "font.name.sans-serif.x-western":{
+        "Value": "Noto Sans",
+        "Status": "locked"
+      },
+      "font.name.serif.ar": {
+        "Value": "Vazirmatn",
+        "Status": "locked"
+      },
+      "font.name.serif.x-western": {
+        "Value": "Noto Serif",
+        "Status": "locked"
       }
     },
     "ExtensionSettings": {

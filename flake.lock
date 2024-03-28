@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "apple-emoji-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1711624089,
+        "narHash": "sha256-Glk61yudkHfUaTMlfUPLay/d6R/prmIt37oEWtVh+Qw=",
+        "owner": "oxcl",
+        "repo": "apple-emoji-nix",
+        "rev": "5b1a9d2513af73b5a23c7656e34d54a6bf76b34d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxcl",
+        "repo": "apple-emoji-nix",
+        "type": "github"
+      }
+    },
     "gruvbox-material-gtk": {
       "inputs": {
         "nixpkgs": [
@@ -77,6 +97,7 @@
     },
     "root": {
       "inputs": {
+        "apple-emoji-nix": "apple-emoji-nix",
         "gruvbox-material-gtk": "gruvbox-material-gtk",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",

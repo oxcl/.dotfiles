@@ -19,7 +19,6 @@
     nix-direnv
     unzip
     ncdu
-    noto-fonts-color-emoji
     (rofi.override { plugins = [ rofi-blocks ]; })
     bat
     # pspg # tui table viewer for databases like postgress and .csv files
@@ -31,11 +30,13 @@
       jinx
     ]))
     jetbrains-mono
-    noto-fonts-emoji
+    noto-fonts-lgc-plus
+    noto-fonts-color-emoji
+    libertinus
     vazir-fonts
     vazir-code-font
     emacs-all-the-icons-fonts
-    (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" ]; })
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     gnupg
     # navi
     stow
@@ -73,10 +74,7 @@
     ffmpeg
     mpv
     xorg.xev
-    iosevka
-    open-sans
-    fira-code
-    cascadia-code
+    apple-emoji-nix
   ];
 
   programs.firefox = {
@@ -85,7 +83,14 @@
     nativeMessagingHosts = with pkgs; [
       tridactyl-native
     ];
-    policies = (builtins.fromJSON (builtins.readFile ../../home/.config/firefox/policies.json)).policies;
+    policies = (builtins.fromJSON (builtins.readFile ../../home/.mozilla/firefox/default/policies.json)).policies;
+    profiles = {
+      default = {
+        isDefault =  true;
+        name = "default";
+        path = "default";
+      };
+    };
   };
 
   # services.gpg-agent = {
@@ -112,7 +117,7 @@
   
   home.activation = {
     # automatically run my stow script to setup dotfiles in home directory after every home-manager/nixos rebuild
-    myActivationAction = lib.hm.dag.entryAfter ["writeBoundary"] ''PATH="$PATH:${pkgs.stow}/bin" ${../../home/.local/bin/stowhome} '';
+    stowHome = lib.hm.dag.entryAfter ["writeBoundary"] ''PATH="$PATH:${pkgs.stow}/bin" ${../../home/.local/bin/stowhome} '';
   };
 
   # This value determines the Home Manager release that your configuration is
