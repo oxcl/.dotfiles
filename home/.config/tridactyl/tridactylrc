@@ -13,6 +13,18 @@ unbind h
 unbind j
 unbind k
 unbind l
+unbind g
+unbind z
+unbind zz
+unbind zr
+unbind zo
+unbind zm
+unbind zi
+unbind zR
+unbind zO
+unbind zM
+unbind zI
+unbind ZZ
 
 " Ctrl-g is your friend (and hardcoded <C-,> of course)
 bind --mode=browser <C-g> escapehatch

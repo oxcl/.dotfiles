@@ -64,6 +64,10 @@
       "browser.autofocus": {
         "Value": false,
         "Status": "locked"
+      },
+      "browser.display.use_system_colors": {
+        "Value": true,
+        "Status": "locked"
       }
     },
     "ExtensionSettings": {

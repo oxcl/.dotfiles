@@ -35,7 +35,7 @@
     vazir-fonts
     vazir-code-font
     emacs-all-the-icons-fonts
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" ]; })
     gnupg
     # navi
     stow
@@ -73,6 +73,10 @@
     ffmpeg
     mpv
     xorg.xev
+    iosevka
+    open-sans
+    fira-code
+    cascadia-code
   ];
 
   programs.firefox = {
