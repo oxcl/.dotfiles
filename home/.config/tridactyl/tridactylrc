@@ -25,6 +25,8 @@ unbind zO
 unbind zM
 unbind zI
 unbind ZZ
+unbind <A-m>
+unbind .
 
 " Ctrl-g is your friend (and hardcoded <C-,> of course)
 bind --mode=browser <C-g> escapehatch
@@ -56,8 +58,7 @@ bind <C-s> composite fillcmdline find; bind --mode=ex <C-s> oxcl_accept_and_reop
 bind <C-r> composite fillcmdline find; bind --mode=ex <C-s> oxcl_accept_and_reopen; bind --mode=ex <C-r> oxcl_accept_and_reopen
 command oxcl_accept_and_reopen composite ex.accept_line; fillcmdline find; ex.prev_history; bind --mode=ex <C-s> findnext; bind --mode=ex <C-r> findnext --reverse
 
-" Hinting
-set hintchars neiomtsraghpldkvufcwqzuy
+set hintchars neiomtsraghpldkvufcwqzy
 set hintdelay 0
 " open in foreground tab
 bind <C-u>f hint -t
@@ -88,6 +89,20 @@ bind <C-x>rB fillcmdline bmarks -t
 bind <C--> zoom -10 true
 bind <C-+> zoom +10 true
 bind <C-=> zoom 100
+
+" Tabs
+bind <A-m> tabmove -1
+bind <A-i> tabmove +1
+bind <C-x>b fillcmdline buffer
+bind <C-x>k tabclose
+bind <C-x>0 tabclose
+bind q tabclose
+bind <C-x>1 tabonly
+bind <C-$> undo
+
+
+" Other
+
 
 "bind <A-w> clipboard yank
 "unbind p

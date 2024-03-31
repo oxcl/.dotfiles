@@ -2,6 +2,7 @@
   "policies": {
     "DisableAppUpdates": true,
     "DisableFirefoxStudies": true,
+    "DisableFeedbackCommands": true,
     "DisablePocket" : true,
     "DisableSetDesktopBackground": true,
     "DisableTelemetry": true,
@@ -102,10 +103,14 @@
         "Status": "locked"
       }
     },
+    "Homepage": {
+      "URL": "localhost:5743",
+      "Locked": true
+    },
     "ExtensionSettings": {
       "*": {
-      "installation_mode": "blocked",
-      "updates_disabled": true
+        "installation_mode": "blocked",
+        "updates_disabled": true
       },
       "uBlock0@raymondhill.net": {
         "installation_mode": "force_installed",
