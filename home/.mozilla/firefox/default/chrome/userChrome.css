@@ -1,1 +1,22 @@
+@import url(firefox-csshacks/chrome/autohide_bookmarks_and_main_toolbars.css);
+@import url(firefox-csshacks/chrome/compact_proton.css);
 @import url(firefox-csshacks/chrome/tab_close_button_always_on_hover.css);
+@import url(firefox-csshacks/chrome/newtab_button_always_on_hover.css);
+@import url(firefox-csshacks/chrome/non_floating_sharp_tabs.css);
+@import url(firefox-csshacks/chrome/sharp_menupopup_corners.css);
+@import url(firefox-csshacks/chrome/compact_urlbar_megabar.css);
+@import url(firefox-csshacks/chrome/inline_tab_audio_icons.css);
+@import url(firefox-csshacks/chrome/tab_loading_progress_bar.css);
+@import url(firefox-csshacks/chrome/tab_separator_lines.css);
+@import url(firefox-csshacks/chrome/compact_extensions_panel.css);
+
+#titlebar .titlebar-spacer {
+  width : 0 !important;
+  display: none !important;
+}
+:root {
+    --tab-min-height: 5px !important;
+}
+#tabbrowser-tabs .tab-label-container {
+  height: 2em !important;
+}

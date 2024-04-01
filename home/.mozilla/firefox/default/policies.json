@@ -90,6 +90,10 @@
       "toolkit.legacyUserProfileCustomizations.stylesheets": {
         "Value": true,
         "Status": "locked"
+      },
+      "layout.css.color-mix.enabled": {
+        "Value": true,
+        "Status": "locked"
       }
     },
     "Homepage": {
