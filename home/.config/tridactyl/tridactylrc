@@ -1,69 +1,79 @@
 " tridactyl configuration to mimic emacs
 " some of the options are taken from https://github.com/jumper047/tridactyl_emacs_config
 
-" unbind useless or overlapping default bindings
+" Commands
+bind <A-x> fillcmdline_notrail
+
+" Tabs
 unbind <C-x>
-unbind <C-d>
-unbind <C-g>
-unbind [[
-unbind ]]
-unbind :
-unbind <C-u>
-unbind h
-unbind j
-unbind k
-unbind l
-unbind g
-unbind gi
-unbind z
-unbind zz
-unbind zr
-unbind zo
-unbind zm
-unbind zi
-unbind zR
-unbind zO
-unbind zM
-unbind zI
-unbind ZZ
-unbind <A-m>
-unbind .
+bind <C-x><C-f> fillcmdline tabopen
+bind <C-x>f fillcmdline tabopen
+bind <C-x><C-v> fillcmdline open
+bind <C-x>v fillcmdline open
+bind --mode=insert <C-x><C-f> fillcmdline tabopen
+bind --mode=insert <C-x>f fillcmdline tabopen
+bind --mode=insert <C-x><C-v> fillcmdline open
+bind --mode=insert <C-x>v fillcmdline open
+bind <A-m> tabmove -1
+bind <A-i> tabmove +1
+bind <C-x>b fillcmdline buffer
+bind <C-x>k tabclose
+bind <C-x>0 tabclose
+bind <C-q> tabclose
+bind <C-x>1 tabonly
+bind <C-$> undo
+bind --mode=insert <A-m> tabmove -1
+bind --mode=insert <A-i> tabmove +1
+bind --mode=insert <C-x>b fillcmdline buffer
+bind --mode=insert <C-x>k tabclose
+bind --mode=insert <C-x>0 tabclose
+bind --mode=insert <C-q> tabclose
+bind --mode=insert <C-x>1 tabonly
+bind --mode=insert <C-$> undo
+
+" Exitting
+bind <C-x><C-c> composite sanitise tridactyllocal; qall
+bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; qall
+bind --mode=input <C-x><C-c> composite sanitise tridactyllocal; qall
+bind --mode=insert <C-x><C-c> composite sanitise tridactyllocal; qall
 
 " Ctrl-g is your friend (and hardcoded <C-,> of course)
+unbind <C-g>
 bind --mode=browser <C-g> escapehatch
 bind --mode=ex <C-g> composite ex.hide_and_clear; nohlsearch
 bind --mode=ex <Escape> composite ex.hide_and_clear; nohlsearch
 bind --mode=insert <C-g> composite mode normal; hidecmdline
 bind --mode=hint <C-g> hint.reset
 
-" set external editor to emacs
-set editorcmd emacs
-" set editorcmd emacsclient -a \"\" -c -e '(progn (find-file "%f") (forward-line (1- %l)) (forward-char %c))'
-
-" back and forward movements
-bind <A-Space> jumpprev
-bind <A-Escape> jumpnext
-
-" try to guess the next or previous page and jump to it
-set followpagepatterns.next ^(next|newer|prochain|بعد(ی)?)\b|»|>>
-set followpagepatterns.prev ^(prev(ious)?|older|précédent|قبل(ی)?)\b|«|<<
-bind n followpage next
-bind p followpage prev
-
-" Commands
-bind <A-x> fillcmdline_notrail
+" Hinting
+set hintchars neiomtsraghpldkvufcwqzy
+set hintdelay 0
+unbind <C-u>
+bind <C-u>f hint -t
+bind --mode=insert <C-u>f hint -t
+bind <C-f> hint
+bind --mode=insert <C-f> hint
 
 " Searching
 " mimic emacs C-s and C-r behaviour (not very good)
 " Fallback solution is / for find and win-G/win-g to select result
 bind <C-s> composite fillcmdline find; bind --mode=ex <C-s> oxcl_accept_and_reopen; bind --mode=ex <C-r> oxcl_accept_and_reopen
 bind <C-r> composite fillcmdline find; bind --mode=ex <C-s> oxcl_accept_and_reopen; bind --mode=ex <C-r> oxcl_accept_and_reopen
+bind --mode=insert <C-s> composite fillcmdline find; bind --mode=ex <C-s> oxcl_accept_and_reopen; bind --mode=ex <C-r> oxcl_accept_and_reopen
+bind --mode=insert <C-r> composite fillcmdline find; bind --mode=ex <C-s> oxcl_accept_and_reopen; bind --mode=ex <C-r> oxcl_accept_and_reopen
 command oxcl_accept_and_reopen composite ex.accept_line; fillcmdline find; ex.prev_history; bind --mode=ex <C-s> findnext; bind --mode=ex <C-r> findnext --reverse
 
-set hintchars neiomtsraghpldkvufcwqzy
-set hintdelay 0
-" open in foreground tab
-bind <C-u>f hint -t
+" back and forward movements
+bind <A-Space> jumpprev
+bind <A-Escape> jumpnext
+bind --mode=insert <A-Space> jumpprev
+bind --mode=insert <A-Escape> jumpnext
+
+" try to guess the next or previous page and jump to it
+set followpagepatterns.next ^(next|newer|prochain|بعد(ی)?)\b|»|>>
+set followpagepatterns.prev ^(prev(ious)?|older|précédent|قبل(ی)?)\b|«|<<
+bind n followpage next
+bind p followpage prev
 
 " Navigation
 bind r forward
@@ -92,21 +102,6 @@ bind <C--> zoom -10 true
 bind <C-+> zoom +10 true
 bind <C-=> zoom 100
 
-" Tabs
-bind <A-m> tabmove -1
-bind <A-i> tabmove +1
-bind <C-x>b fillcmdline buffer
-bind <C-x>k tabclose
-bind <C-x>0 tabclose
-bind q tabclose
-bind <C-q> tabclose
-bind <C-x>1 tabonly
-bind <C-$> undo
-bind <C-x><C-f> fillcmdline tabopen
-bind <C-x>f fillcmdline tabopen
-bind <C-x><C-v> fillcmdline open
-bind <C-x>v fillcmdline open
-
 " Search Engines
 set searchurls.g goole
 set searchurls.b bing
@@ -132,5 +127,29 @@ bind <C-i> focusinput -l
 
 set allowautofocus false
 
-bind <C-x><C-c> composite sanitise tridactyllocal; qall
-bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; qall
+" set external editor to emacs
+set editorcmd emacs
+" set editorcmd emacsclient -a \"\" -c -e '(progn (find-file "%f") (forward-line (1- %l)) (forward-char %c))'
+
+" unbind useless bindings
+unbind :
+unbind z
+unbind zz
+unbind zr
+unbind zo
+unbind zm
+unbind zi
+unbind zR
+unbind zO
+unbind zM
+unbind zI
+unbind ZZ
+unbind gi
+unbind [[
+unbind ]]
+unbind h
+unbind j
+unbind k
+unbind l
+unbind d
+unbind R

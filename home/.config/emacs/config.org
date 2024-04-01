@@ -1397,12 +1397,6 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 (require 'move-lines)
 (move-lines-binding)
 * test
-#+begin_src elisp
-  (use-package mini-modeline
-    :demand t
-    :config
-    (mini-modeline-mode t))
-#+end_src
 
 #+begin_src elisp
   (setq org-fold-core-style 'overlays)

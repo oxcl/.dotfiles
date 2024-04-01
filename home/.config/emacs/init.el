@@ -929,11 +929,6 @@ dired-auto-revert-buffer t)
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
 
-(use-package mini-modeline
-  :demand t
-  :config
-  (mini-modeline-mode t))
-
 (setq org-fold-core-style 'overlays)
      (use-package ctrlf
  :config
