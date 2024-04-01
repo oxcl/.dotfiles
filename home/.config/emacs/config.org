@@ -1215,6 +1215,38 @@ poke integration with emacs comes in two packages: ~poke.el~ a user interface fo
 ;;    (add-hook 'vterm-mode-hook (lambda () )))
 #+end_src
 
+** expand region
+#+begin_src elisp
+    (defun oxcl/expand-region ()
+      (interactive)
+      (if (bound-and-true-p combobulate-mode)
+          (let ((combobulate-proffer-allow-numeric-selection nil)) (combobulate-mark-node-dwim 1 t))
+        (er/expand-region 1)))
+    (defun oxcl/contract-region ()
+      (interactive)
+      (if (bound-and-true-p combobulate-mode)
+          (let ((combobulate-proffer-allow-numberic-selection nil)) (combobulate-mark-node-dwim 1 t))
+        (er/contract-region 1)))
+    (use-package expand-region
+      :bind ("C-;" . oxcl/expand-region)
+      :bind ("C-:" . oxcl/contract-region))
+    (use-package combobulate
+      :ensure (:host github :repo "mickeynp/combobulate")
+      :bind ("C-;" . oxcl/expand-region)
+
+      :hook
+      ((python-ts-mode . combobulate-mode)
+       (js-ts-mode . combobulate-mode)
+       (html-ts-mode . combobulate-mode)
+       (css-ts-mode . combobulate-mode)
+       (yaml-ts-mode . combobulate-mode)
+       (typescript-ts-mode . combobulate-mode)
+       (json-ts-mode . combobulate-mode)
+       (tsx-ts-mode . combobulate-mode))
+      :config
+      (define-key combobulate-proffer-map (kbd "C-:") 'prev))
+#+end_src
+
 * rest client
 ** defaults
 declare GET and POST requests in a http file and fire them up with emacs. similar to postman

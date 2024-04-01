@@ -836,6 +836,35 @@ oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
 ;;    :config
 ;;    (add-hook 'vterm-mode-hook (lambda () )))
 
+(defun oxcl/expand-region ()
+  (interactive)
+  (if (bound-and-true-p combobulate-mode)
+      (let ((combobulate-proffer-allow-numeric-selection nil)) (combobulate-mark-node-dwim 1 t))
+    (er/expand-region 1)))
+(defun oxcl/contract-region ()
+  (interactive)
+  (if (bound-and-true-p combobulate-mode)
+      (let ((combobulate-proffer-allow-numberic-selection nil)) (combobulate-mark-node-dwim 1 t))
+    (er/contract-region 1)))
+(use-package expand-region
+  :bind ("C-;" . oxcl/expand-region)
+  :bind ("C-:" . oxcl/contract-region))
+(use-package combobulate
+  :ensure (:host github :repo "mickeynp/combobulate")
+  :bind ("C-;" . oxcl/expand-region)
+
+  :hook
+  ((python-ts-mode . combobulate-mode)
+   (js-ts-mode . combobulate-mode)
+   (html-ts-mode . combobulate-mode)
+   (css-ts-mode . combobulate-mode)
+   (yaml-ts-mode . combobulate-mode)
+   (typescript-ts-mode . combobulate-mode)
+   (json-ts-mode . combobulate-mode)
+   (tsx-ts-mode . combobulate-mode))
+  :config
+  (define-key combobulate-proffer-map (kbd "C-:") 'prev))
+
 (use-package restclient
   :mode ("\\.http\\'" . restclient-mode)
   :commands restclient-mode
