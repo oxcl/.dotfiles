@@ -30,12 +30,14 @@ bind --mode=insert <C-x>0 tabclose
 bind --mode=insert <C-q> tabclose
 bind --mode=insert <C-x>1 tabonly
 bind --mode=insert <C-$> undo
+bind <C-o> fillcmdline open
+bind <C-O> fillcmdline tabopen
 
 " Exitting
-bind <C-x><C-c> composite sanitise tridactyllocal; qall
-bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; qall
-bind --mode=input <C-x><C-c> composite sanitise tridactyllocal; qall
-bind --mode=insert <C-x><C-c> composite sanitise tridactyllocal; qall
+bind <C-x><C-c> composite sanitise tridactyllocal; winclose
+bind --mode=ex <C-x><C-c> composite sanitise tridactyllocal; winclose
+bind --mode=input <C-x><C-c> composite sanitise tridactyllocal; winclose
+bind --mode=insert <C-x><C-c> composite sanitise tridactyllocal; winclose
 
 " Ctrl-g is your friend (and hardcoded <C-,> of course)
 unbind <C-g>
@@ -114,7 +116,6 @@ set searchurls.yt youtube
 set searchurls.git github
 set searchurls.maps https://maps.google.com/?q=
 set searchurls.map maps
-
 
 " Input Mode
 bind <C-i> focusinput -l

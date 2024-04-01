@@ -229,8 +229,6 @@ doom-my-theme-padded-modeline 4)
                              (global-set-key (kbd "C--") #'text-scale-decrease)
                              (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
 
-(global-set-key (kbd "C-q") #'delete-window)
-
 (setq-default tab-width 2
               standard-indent 2
               js-indent-level 2
@@ -567,6 +565,10 @@ scroll-margin 5) ; start scrolling the window when the distance between the curs
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
 
+(global-set-key (kbd "C-q") #'delete-window)
+
+(use-package multiple-cursors)
+
 (global-set-key (kbd "C-x f") #'find-file)
 
 (savehist-mode 1)
@@ -660,6 +662,7 @@ lazy-highlight-initial-delay 0)
 
 
 (use-package which-key
+  :demand t
   :config
   (which-key-mode)
   (setq which-key-idle-delay 6.0
@@ -837,33 +840,34 @@ oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
 ;;    (add-hook 'vterm-mode-hook (lambda () )))
 
 (defun oxcl/expand-region ()
-  (interactive)
-  (if (bound-and-true-p combobulate-mode)
-      (let ((combobulate-proffer-allow-numeric-selection nil)) (combobulate-mark-node-dwim 1 t))
-    (er/expand-region 1)))
-(defun oxcl/contract-region ()
-  (interactive)
-  (if (bound-and-true-p combobulate-mode)
-      (let ((combobulate-proffer-allow-numberic-selection nil)) (combobulate-mark-node-dwim 1 t))
-    (er/contract-region 1)))
-(use-package expand-region
-  :bind ("C-;" . oxcl/expand-region)
-  :bind ("C-:" . oxcl/contract-region))
-(use-package combobulate
-  :ensure (:host github :repo "mickeynp/combobulate")
-  :bind ("C-;" . oxcl/expand-region)
-
-  :hook
-  ((python-ts-mode . combobulate-mode)
-   (js-ts-mode . combobulate-mode)
-   (html-ts-mode . combobulate-mode)
-   (css-ts-mode . combobulate-mode)
-   (yaml-ts-mode . combobulate-mode)
-   (typescript-ts-mode . combobulate-mode)
-   (json-ts-mode . combobulate-mode)
-   (tsx-ts-mode . combobulate-mode))
-  :config
-  (define-key combobulate-proffer-map (kbd "C-:") 'prev))
+   (interactive)
+   (if (bound-and-true-p combobulate-mode)
+       (let ((combobulate-proffer-allow-numeric-selection nil)) (combobulate-mark-node-dwim 1 t))
+     (er/expand-region 1)))
+ (defun oxcl/contract-region ()
+   (interactive)
+   (if (bound-and-true-p combobulate-mode)
+       (let ((combobulate-proffer-allow-numberic-selection nil)) (combobulate-mark-node-dwim 1 t))
+     (er/contract-region 1)))
+ (use-package expand-region
+   :bind ("C-;" . oxcl/expand-region)
+   :bind ("C-:" . oxcl/contract-region)
+   :custom
+   (expand-region-fast-keys-enabled nil))
+ (use-package combobulate
+   :ensure (:host github :repo "mickeynp/combobulate")
+   :bind ("C-;" . oxcl/expand-region)
+   :hook
+   ((python-ts-mode . combobulate-mode)
+    (js-ts-mode . combobulate-mode)
+    (html-ts-mode . combobulate-mode)
+    (css-ts-mode . combobulate-mode)
+    (yaml-ts-mode . combobulate-mode)
+    (typescript-ts-mode . combobulate-mode)
+    (json-ts-mode . combobulate-mode)
+    (tsx-ts-mode . combobulate-mode))
+   :config
+   (define-key combobulate-proffer-map (kbd "C-:") 'prev))
 
 (use-package restclient
   :mode ("\\.http\\'" . restclient-mode)
