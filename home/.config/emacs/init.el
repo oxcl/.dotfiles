@@ -565,6 +565,8 @@ scroll-margin 5) ; start scrolling the window when the distance between the curs
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
 
+(global-set-key (kbd "C-x f") #'find-file)
+
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))
 

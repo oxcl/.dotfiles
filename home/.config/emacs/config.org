@@ -766,6 +766,11 @@ the builtin flyspell package will check each word under the cursor spelling agai
 #+end_src
 
 * minibuffer
+** find-file
+#+begin_src elisp
+  (global-set-key (kbd "C-x f") #'find-file)
+#+end_src
+
 ** history
 *** persistent history across sessions
 #+begin_src emacs-lisp

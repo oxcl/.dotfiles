@@ -6,6 +6,7 @@
     "DisablePocket" : true,
     "DisableSetDesktopBackground": true,
     "DisableTelemetry": true,
+    "DisableProfileImport": true,
     "DNSOverHTTPS": {
       "Enabled": false,
       "Locked": true
@@ -52,11 +53,19 @@
       }
     },
     "UserMessaging": {
+      "WhatsNew": false,
       "ExtensionRecommendations": false,
       "FeatureRecommendations": false,
-      "Locked": true,
-      "SkipOnboarding": true
+      "UrlbarInterventions": false,
+      "SkipOnboarding": true,
+      "MoreFromMozilla": false,
+      "Locked": true
     },
+    "NetworkPrediction": false,
+    "NoDefaultBookmarks": true,
+    "OfferToSaveLogins": false,
+    "PasswordManagerEnabled": false,
+    "ShowHomeButton": false,
     "Preferences": {
       "ui.key.accelKey": {
         "Value": 91,
@@ -70,42 +79,28 @@
         "Value": true,
         "Status": "locked"
       },
-      "font.default.ar":{
-        "Value": "serif",
+      "dom.security.https_only_mode": {
+        "Value": true,
         "Status": "locked"
       },
-      "font.language.group":{
-        "Value": "x-western",
+      "dom.security.https_only_mode_ever_enabled": {
+        "Value": true,
         "Status": "locked"
       },
-      "font.name.monospace.ar":{
-        "Value": "Vazir Code",
-        "Status": "locked"
-      },
-      "font.name.monospace.x-western":{
-        "Value": "JetBrains Mono",
-        "Status": "locked"
-      },
-      "font.name.sans-serif.ar": {
-        "Value": "Vazirmatn UI",
-        "Status": "locked"
-      },
-      "font.name.sans-serif.x-western":{
-        "Value": "Noto Sans",
-        "Status": "locked"
-      },
-      "font.name.serif.ar": {
-        "Value": "Vazirmatn",
-        "Status": "locked"
-      },
-      "font.name.serif.x-western": {
-        "Value": "Noto Serif",
+      "toolkit.legacyUserProfileCustomizations.stylesheets": {
+        "Value": true,
         "Status": "locked"
       }
     },
     "Homepage": {
       "URL": "localhost:5743",
+      "StartPage": "homepage-locked",
       "Locked": true
+    },
+    "Permissions": {
+      "Notifications": {
+        "BlockNewRequests": true
+      }
     },
     "ExtensionSettings": {
       "*": {

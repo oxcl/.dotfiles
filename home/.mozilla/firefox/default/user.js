@@ -6,3 +6,6 @@ user_pref("font.name.sans-serif.ar", "Value");
 user_pref("font.name.sans-serif.x-western", "Noto Sans");
 user_pref("font.name.serif.ar", "Vazirmatn");
 user_pref("font.name.serif.x-western", "Noto Serif");
+user_pref("font.name.sans-serif.ar", "Vazirmatn UI");
+
+user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);

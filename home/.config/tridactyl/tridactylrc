@@ -31,6 +31,7 @@ unbind .
 " Ctrl-g is your friend (and hardcoded <C-,> of course)
 bind --mode=browser <C-g> escapehatch
 bind --mode=ex <C-g> composite ex.hide_and_clear; nohlsearch
+bind --mode=ex <Escape> composite ex.hide_and_clear; nohlsearch
 bind --mode=insert <C-g> composite mode normal; hidecmdline
 bind --mode=hint <C-g> hint.reset
 
@@ -99,7 +100,8 @@ bind <C-x>0 tabclose
 bind q tabclose
 bind <C-x>1 tabonly
 bind <C-$> undo
-
+bind <C-x><C-f> fillcmdline open
+bind <C-x>f fillcmdline open
 
 " Other
 
