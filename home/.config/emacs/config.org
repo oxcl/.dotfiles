@@ -300,6 +300,11 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 * editor
+** Windows
+#+begin_src elisp
+  (global-set-key (kbd "C-q") #'delete-window)
+#+end_src
+
 ** Indentation
 #+begin_src elisp
   (setq-default tab-width 2
@@ -1393,6 +1398,10 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 (move-lines-binding)
 * test
 #+begin_src elisp
+  (use-package mini-modeline
+    :demand t
+    :config
+    (mini-modeline-mode t))
 #+end_src
 
 #+begin_src elisp

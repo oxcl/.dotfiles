@@ -1,5 +1,5 @@
 #+TITLE: $1
-#+AUTHOR: ${2:oxcl}
+#+AUTHOR: ${2:`(string-trim (shell-command-to-string "git config user.name"))`}
 #+DESCRIPTION: $3
 
 $0

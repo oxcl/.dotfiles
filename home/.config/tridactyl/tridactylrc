@@ -14,6 +14,7 @@ unbind j
 unbind k
 unbind l
 unbind g
+unbind gi
 unbind z
 unbind zz
 unbind zr
@@ -98,13 +99,30 @@ bind <C-x>b fillcmdline buffer
 bind <C-x>k tabclose
 bind <C-x>0 tabclose
 bind q tabclose
+bind <C-q> tabclose
 bind <C-x>1 tabonly
 bind <C-$> undo
-bind <C-x><C-f> fillcmdline open
-bind <C-x>f fillcmdline open
+bind <C-x><C-f> fillcmdline tabopen
+bind <C-x>f fillcmdline tabopen
+bind <C-x><C-v> fillcmdline open
+bind <C-x>v fillcmdline open
 
-" Other
+" Search Engines
+set searchurls.g goole
+set searchurls.b bing
+set searchurls.duck duckduckgo
+set searchurls.d duckduckgo
+set searchurls.y yahoo
+set searchurls.wiki wikipedia
+set searchurls.w wikipedia
+set searchurls.yt youtube
+set searchurls.git github
+set searchurls.maps https://maps.google.com/?q=
+set searchurls.map maps
 
+
+" Input Mode
+bind <C-i> focusinput -l
 
 "bind <A-w> clipboard yank
 "unbind p

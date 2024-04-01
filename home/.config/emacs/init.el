@@ -229,6 +229,8 @@ doom-my-theme-padded-modeline 4)
                              (global-set-key (kbd "C--") #'text-scale-decrease)
                              (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
 
+(global-set-key (kbd "C-q") #'delete-window)
+
 (setq-default tab-width 2
               standard-indent 2
               js-indent-level 2
@@ -927,7 +929,10 @@ dired-auto-revert-buffer t)
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
 
-
+(use-package mini-modeline
+  :demand t
+  :config
+  (mini-modeline-mode t))
 
 (setq org-fold-core-style 'overlays)
      (use-package ctrlf

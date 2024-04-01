@@ -10,6 +10,6 @@
     "test": "echo \\"Error: no test specified\\" && exit 1"
   },
   "keywords": [],
-  "author": "oxcl",
+  "author": "`(string-trim (shell-command-to-string "git config user.name"))`",
   "license": ""
 }
