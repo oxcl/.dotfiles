@@ -76,6 +76,7 @@
     xorg.xev
     apple-emoji-nix
     entr
+    yarn
   ];
 
   programs.firefox = {

@@ -866,6 +866,8 @@ oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
     (typescript-ts-mode . combobulate-mode)
     (json-ts-mode . combobulate-mode)
     (tsx-ts-mode . combobulate-mode))
+   :custom
+   (combobulate-flash-node nil)
    :config
    (define-key combobulate-proffer-map (kbd "C-:") 'prev))
 
