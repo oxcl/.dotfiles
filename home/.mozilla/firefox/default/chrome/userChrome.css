@@ -20,3 +20,7 @@
 #tabbrowser-tabs .tab-label-container {
   height: 2em !important;
 }
+
+#statusbar-display {
+  opacity: 0 !important;
+}

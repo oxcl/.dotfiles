@@ -75,6 +75,7 @@
     mpv
     xorg.xev
     apple-emoji-nix
+    entr
   ];
 
   programs.firefox = {
