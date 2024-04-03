@@ -24,3 +24,10 @@
 #statusbar-display {
   opacity: 0 !important;
 }
+
+
+/* remove maximum/minimum width restriction of sidebar */
+#sidebar-box {
+  max-width: none !important;
+  min-width: 0px !important;
+}
