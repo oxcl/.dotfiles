@@ -29,14 +29,6 @@
       treesit-grammars.with-all-grammars
       jinx
     ]))
-    jetbrains-mono
-    noto-fonts-lgc-plus
-    noto-fonts-color-emoji
-    libertinus
-    vazir-fonts
-    vazir-code-font
-    emacs-all-the-icons-fonts
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     gnupg
     # navi
     stow
@@ -66,7 +58,6 @@
     pup
     ttyper
     dconf
-    overpass
     gruvbox-material-gtk
     sxiv
     hyperfine
@@ -74,9 +65,25 @@
     ffmpeg
     mpv
     xorg.xev
-    apple-emoji-nix
     entr
     yarn
+    # microsoft fonts
+    vistafonts
+    corefonts
+    # metric compatible fonts
+    liberation_ttf
+    # default font
+    vazir-fonts
+    noto-fonts
+    # monospace fonts
+    # TODO: custom iozevka
+    vazir-code-font
+    jetbrains-mono
+    # emoji fonts
+    apple-emoji-nix
+    # icon fonts
+    emacs-all-the-icons-fonts
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
 
   programs.firefox = {

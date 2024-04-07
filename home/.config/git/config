@@ -4,6 +4,7 @@
 	name = oxcl
 	email = oxcl@proton.me
 [alias]
+  commmit = commit
 	amend = commit --amend
 	clone-light = clone --filter=blob:none
 [core]

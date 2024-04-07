@@ -81,6 +81,18 @@
     home-manager
   ];
 
+  fonts = {
+    fontconfig = {
+      # this is required to stop nixos from overriding user configs in ~/.config/fontconfig/fonts.conf
+      defaultFonts = {
+        sansSerif = [];
+        serif = [];
+        monospace = [];
+        emoji = ["Apple Color Emoji"];
+      };
+    };
+  };
+
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
   #

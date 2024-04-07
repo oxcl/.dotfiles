@@ -10,5 +10,6 @@ function ensure_dir(){
 ensure_dir "${XDG_DATA_HOME:-$HOME/.local}"
 ensure_dir "${XDG_CONFIG_HOME:-$HOME/.config}/chromium"
 ensure_dir "${XDG_CONFIG_HOME:-$HOME/.config}/asciinema"
+ensure_dir "${XDG_CONFIG_HOME:-$HOME/.config}/fontconfig/conf.d"
 ensure_dir "$HOME/.mozilla/firefox/default"
 (cd $HOME/.dotfiles/home && stow . --target=$HOME)
