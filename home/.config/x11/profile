@@ -31,6 +31,7 @@ xset r 58  # m
 xset r 21  # plus and equal
 xset r 13  # dollar sign
 xset r 49  # tild sign
+xset r 65  # space
 
 # run ssh-agent daemon
 [[ -z "$SSH_AGENT_PID" ]] && eval "$(ssh-agent)"
