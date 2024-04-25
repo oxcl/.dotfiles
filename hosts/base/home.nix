@@ -84,6 +84,7 @@
     # icon fonts
     emacs-all-the-icons-fonts
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    poetry
   ];
 
   programs.firefox = {

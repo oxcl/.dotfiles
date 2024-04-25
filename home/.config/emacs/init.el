@@ -119,7 +119,9 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 ;;  (tooltip-mode -1) ; hide tooltip popup window on mouse hover
 ;;  (set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
 
-(set-frame-font "JetBrainsMono 11")
+(set-face-attribute 'default nil
+               :family "JetBrainsMono"
+               :height 100)
 (setq-default line-spacing 1) ; small padding between each line
 
 (use-package ligature
