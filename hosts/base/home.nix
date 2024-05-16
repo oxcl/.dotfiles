@@ -9,7 +9,6 @@
     python3
     git
     git-extras
-    qmk
     rxvt-unicode-emoji # urxvt
     xclip
     lsd
@@ -19,12 +18,11 @@
     nix-direnv
     unzip
     ncdu
-    (rofi.override { plugins = [ rofi-blocks ]; })
+    # (rofi.override { plugins = [ rofi-blocks ]; })
     bat
     # pspg # tui table viewer for databases like postgress and .csv files
     # w3m # terminal browser
     tldr
-    # ccls
     ((emacsPackagesFor emacs29).emacsWithPackages ( epkgs: with epkgs; [
       treesit-grammars.with-all-grammars
       jinx
@@ -36,12 +34,12 @@
     nix-output-monitor
     # gh
     # archive and compression tools
+    unrar
     pigz
     pbzip2
     pixz
     lzip
     lz4
-    # rar
     zip
     cabextract
     p7zip
@@ -55,7 +53,7 @@
     # thefuck
     # expect
     fq
-    pup
+    # pup
     ttyper
     dconf
     gruvbox-material-gtk
@@ -66,7 +64,6 @@
     mpv
     xorg.xev
     entr
-    yarn
     # microsoft fonts
     vistafonts
     corefonts
@@ -79,8 +76,6 @@
     # TODO: custom iozevka
     vazir-code-font
     jetbrains-mono
-    # emoji fonts
-    apple-emoji-nix
     # icon fonts
     emacs-all-the-icons-fonts
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })

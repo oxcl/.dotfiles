@@ -66,12 +66,12 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (add-to-list 'load-path (expand-file-name "lisp" real-user-emacs-directory))
 
-(defvar elpaca-installer-version 0.6)
+(defvar elpaca-installer-version 0.7)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil
+                              :ref nil :depth 1
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
                               :build (:not elpaca--activate-package)))
 (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
@@ -84,8 +84,10 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
     (when (< emacs-major-version 28) (require 'subr-x))
     (condition-case-unless-debug err
         (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                 ((zerop (call-process "git" nil buffer t "clone"
-                                       (plist-get order :repo) repo)))
+                 ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                 ,@(when-let ((depth (plist-get order :depth)))
+                                                     (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                 ,(plist-get order :repo) ,repo))))
                  ((zerop (call-process "git" nil buffer t "checkout"
                                        (or (plist-get order :ref) "--"))))
                  (emacs (concat invocation-directory invocation-name))
@@ -102,6 +104,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
     (load "./elpaca-autoloads")))
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
+
+(setq elpaca-queue-limit 5)
 
 (elpaca elpaca-use-package
   (elpaca-use-package-mode)
@@ -121,7 +125,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (set-face-attribute 'default nil
                :family "JetBrainsMono"
-               :height 100)
+               :height 110)
 (setq-default line-spacing 1) ; small padding between each line
 
 (use-package ligature
@@ -582,6 +586,8 @@ scroll-margin 5) ; start scrolling the window when the distance between the curs
   (local-set-key (kbd "M-<down>") #'next-history-element))
 (add-hook 'minibuffer-setup-hook 'oxcl/set-minibuffer-keybindings)
 
+
+
 (setq-default char-fold-symmetric t  ; accent character's match the regular character as well
   search-ring-max 64
   regexp-search-ring-max 64)
@@ -841,37 +847,37 @@ oxcl/hexl-ascii-regexp ".\\{1,16\\}$")
 ;;    :config
 ;;    (add-hook 'vterm-mode-hook (lambda () )))
 
-(defun oxcl/expand-region ()
-   (interactive)
-   (if (bound-and-true-p combobulate-mode)
-       (let ((combobulate-proffer-allow-numeric-selection nil)) (combobulate-mark-node-dwim 1 t))
-     (er/expand-region 1)))
- (defun oxcl/contract-region ()
-   (interactive)
-   (if (bound-and-true-p combobulate-mode)
-       (let ((combobulate-proffer-allow-numberic-selection nil)) (combobulate-mark-node-dwim 1 t))
-     (er/contract-region 1)))
- (use-package expand-region
-   :bind ("C-;" . oxcl/expand-region)
-   :bind ("C-:" . oxcl/contract-region)
-   :custom
-   (expand-region-fast-keys-enabled nil))
- (use-package combobulate
-   :ensure (:host github :repo "mickeynp/combobulate")
-   :bind ("C-;" . oxcl/expand-region)
-   :hook
-   ((python-ts-mode . combobulate-mode)
-    (js-ts-mode . combobulate-mode)
-    (html-ts-mode . combobulate-mode)
-    (css-ts-mode . combobulate-mode)
-    (yaml-ts-mode . combobulate-mode)
-    (typescript-ts-mode . combobulate-mode)
-    (json-ts-mode . combobulate-mode)
-    (tsx-ts-mode . combobulate-mode))
-   :custom
-   (combobulate-flash-node nil)
-   :config
-   (define-key combobulate-proffer-map (kbd "C-:") 'prev))
+;;  (defun oxcl/expand-region ()
+;;     (interactive)
+;;     (if (bound-and-true-p combobulate-mode)
+;;         (let ((combobulate-proffer-allow-numeric-selection nil)) (combobulate-mark-node-dwim 1 t))
+;;       (er/expand-region 1)))
+;;   (defun oxcl/contract-region ()
+;;     (interactive)
+;;     (if (bound-and-true-p combobulate-mode)
+;;         (let ((combobulate-proffer-allow-numberic-selection nil)) (combobulate-mark-node-dwim 1 t))
+;;       (er/contract-region 1)))
+;;   (use-package expand-region
+;;     :bind ("C-;" . oxcl/expand-region)
+;;     :bind ("C-:" . oxcl/contract-region)
+;;     :custom
+;;     (expand-region-fast-keys-enabled nil))
+;;   (use-package combobulate
+;;     :ensure (:host github :repo "mickeynp/combobulate")
+;;     :bind ("C-;" . oxcl/expand-region)
+;;     :hook
+;;     ((python-ts-mode . combobulate-mode)
+;;      (js-ts-mode . combobulate-mode)
+;;      (html-ts-mode . combobulate-mode)
+;;      (css-ts-mode . combobulate-mode)
+;;      (yaml-ts-mode . combobulate-mode)
+;;      (typescript-ts-mode . combobulate-mode)
+;;      (json-ts-mode . combobulate-mode)
+;;      (tsx-ts-mode . combobulate-mode))
+;;     :custom
+;;     (combobulate-flash-node nil)
+;;     :config
+;;     (define-key combobulate-proffer-map (kbd "C-:") 'prev))
 
 (use-package restclient
   :mode ("\\.http\\'" . restclient-mode)
