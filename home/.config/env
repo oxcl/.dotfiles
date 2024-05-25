@@ -41,9 +41,8 @@ export SAVEHIST=4000 # maximum size for $HISTFILE
 export DIRENV_LOG_FORMAT=""
 
 
-# load environment variables for themeing. these environment variables can be used by other
-# programs to make a universal theme that applies to the whole system
-source "${XDG_CONFIG_HOME}/themes/default.sh"
+# load environment variables for themeing via pelz (~/.local/bin/pelz)
+eval $(pelz env $MY_THEME)
 
 # xdg
 export GTK_THEME=Gruvbox-Material-Dark

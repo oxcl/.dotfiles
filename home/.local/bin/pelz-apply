@@ -2,3 +2,4 @@
 [[ -z "$MY_THEME" ]] && export MY_THEME="gruvbox_material_dark_soft"
 
 pelz alacritty $MY_THEME > $HOME/.dotfiles/home/.config/alacritty/theme.toml
+pelz Xresources $MY_THEME > $HOME/.dotfiles/home/.config/x11/resources

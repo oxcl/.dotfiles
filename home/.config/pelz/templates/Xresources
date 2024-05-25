@@ -1,41 +1,41 @@
 ! Theme
 !----------------------------------
 
-*.cursor:                #c5b18d
-*.background:            #32302f
-*.foreground:            #d4be98
+*.cursor:                #{{fgDim}}
+*.background:            #{{bg}}
+*.foreground:            #{{fg}}
 
 ! Black
-*.color0:                #181919
-*.color8:                #181919
+*.color0:                #{{black}}
+*.color8:                #{{blackBright}}
 
 ! Red
-*.color1:                #ea6962
-*.color9:                #ea6962
+*.color1:                #{{red}}
+*.color9:                #{{redBright}}
 
 ! Green
-*.color2:                #a9b665
-*.color10:               #a9b665
+*.color2:                #{{green}}
+*.color10:               #{{greenBright}}
 
 ! Yellow
-*.color3:                #d8a657
-*.color11:               #d8a657
+*.color3:                #{{yellow}}
+*.color11:               #{{yellowBright}}
 
 ! Blue
-*.color4:                #7daea3
-*.color12:               #7daea3
+*.color4:                #{{blue}}
+*.color12:               #{{blueBright}}
 
 ! Magenta
-*.color5:                #d3869b
-*.color13:               #d3869b
+*.color5:                #{{magenta}}
+*.color13:               #{{magentaBright}}
 
 ! Cyan
-*.color6:                #89b482
-*.color14:               #89b482
+*.color6:                #{{cyan}}
+*.color14:               #{{cyanBright}}
 
 ! White
-*.color7:                #ddc7a1
-*.color15:               #ddc7a1
+*.color7:                #{{white}}
+*.color15:               #{{whiteBright}}
 
 
 ! Text
