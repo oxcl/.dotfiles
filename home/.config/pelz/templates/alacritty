@@ -1,0 +1,37 @@
+[colors.primary]
+foreground = "#{{fg}}"
+background = "#{{bg}}"
+
+[colors.normal]
+black = "#{{black}}"
+red = "#{{red}}"
+green = "#{{green}}"
+yellow = "#{{yellow}}"
+blue = "#{{blue}}"
+magenta = "#{{magenta}}"
+cyan = "#{{cyan}}"
+white = "#{{white}}"
+
+[colors.bright]
+black = "#{{blackBright}}"
+red = "#{{redBright}}"
+green = "#{{greenBright}}"
+yellow = "#{{yellowBright}}"
+blue = "#{{blueBright}}"
+magenta = "#{{magentaBright}}"
+cyan = "#{{cyanBright}}"
+white = "#{{whiteBright}}"
+
+[colors.dim]
+black = "#{{blackDim}}"
+red = "#{{redDim}}"
+green = "#{{greenDim}}"
+yellow = "#{{yellowDim}}"
+blue = "#{{blueDim}}"
+magenta = "#{{magentaDim}}"
+cyan = "#{{cyanDim}}"
+white = "#{{whiteDim}}"
+
+[colors.search]
+matches = { foreground = "#{{fg}}", background = "#{{bg2}}" }
+focused_match = { foreground = "#{{fgBright}}", background = "#{{bg4}}" }

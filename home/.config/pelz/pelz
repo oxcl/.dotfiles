@@ -1,0 +1,129 @@
+#!/usr/bin/env sh
+PELZ_DIR=${XDG_CONFIG_HOME:-$HOME/.config/pelz}
+set -e
+
+# get template file path
+TEMPLATE="$1"
+if [ -z "$TEMPLATE" ]; then
+    echo "first argument of script should be the template name or path" >&2
+    exit -1
+elif [ -f "$PELZ_DIR/templates/$TEMPLATE" ]; then
+    TEMPLATE_FILE="$PELZ_DIR/templates/$TEMPLATE"
+elif [ -f "$TEMPLATE" ]; then
+    TEMPLATE_FILE="$TEMPLATE"
+else
+    echo "template '${TEMPLATE}' does not exist." >&2
+    exit -1
+fi
+
+# parse the theme 
+if [ -n "$2" ]; then
+    THEME_TOML=$(cat "$PELZ_DIR/templates/$2")
+else
+    THEME_TOML=$(cat)
+fi
+
+get_name(){
+    echo "$THEME_TOML" | grep -E "^ *name *= *\"[^\"]*\" *$" | grep -oP '(?<=")[^\"]*(?=")'
+}
+
+look_for_prop(){
+    LINE=$(echo "$THEME_TOML" | grep -E "^ *$1 *= *\"#[0-9a-fA-F]{6}\" *$")
+    if [ -z "$LINE" ]; then
+        return -1
+    fi
+    echo "$LINE" | grep -oP '(?<="#)[0-9a-fA-Z]{6}(?=")'
+    return 0
+}
+
+get_prop(){
+    look_for_prop "$1" || ([ -n "$2" ] && echo "$2") || (echo "$1 color doesn't exist or is invalid." >&2 && exit -1)
+}
+
+name=$(get_name)
+
+black=$(get_prop black)
+red=$(get_prop red)
+green=$(get_prop green)
+yellow=$(get_prop yellow)
+blue=$(get_prop blue)
+magenta=$(get_prop magenta)
+cyan=$(get_prop cyan)
+white=$(get_prop white)
+
+fg=$(get_prop fg $white)
+bg=$(get_prop bg $black)
+
+blackDim=$(get_prop blackDim $black)
+redDim=$(get_prop redDim $red)
+greenDim=$(get_prop greenDim $green)
+yellowDim=$(get_prop yellowDim $yellow)
+blueDim=$(get_prop blueDim $blue)
+magentaDim=$(get_prop magentaDim $magenta)
+cyanDim=$(get_prop cyanDim $cyan)
+whiteDim=$(get_prop witheDim $white)
+
+blackBright=$(get_prop blackBright $black)
+redBright=$(get_prop redBright $red)
+greenBright=$(get_prop greenBright $green)
+yellowBright=$(get_prop yellowBright $yellow)
+blueBright=$(get_prop blueBright $blue)
+magentaBright=$(get_prop magentaBright $magenta)
+cyanBright=$(get_prop cyanBright $cyan)
+whiteBright=$(get_prop witheBright $white)
+
+fgDim=$(get_prop fgDim $fg)
+fgBright=$(get_prop fgBright $fg)
+
+bgDim=$(get_prop bgDim $bg)
+bg0=$(get_prop bg0 $bgDim)
+bg1=$(get_prop bg1 $bg0)
+bg2=$(get_prop bg2 $bg1)
+bg3=$(get_prop bg3 $bg2)
+bg4=$(get_prop bg4 $bg3)
+bg5=$(get_prop bg5 $bg4)
+bg6=$(get_prop bg6 $bg5)
+bg7=$(get_prop bg7 $bg6)
+bg8=$(get_prop bg8 $bg7)
+
+
+cat $TEMPLATE_FILE \
+| sed "s/{{name}}/$name/g"\
+| sed "s/{{bg}}/$bg/g"\
+| sed "s/{{fg}}/$fg/g"\
+| sed "s/{{black}}/$black/g"\
+| sed "s/{{red}}/$red/g"\
+| sed "s/{{green}}/$green/g"\
+| sed "s/{{yellow}}/$yellow/g"\
+| sed "s/{{blue}}/$blue/g"\
+| sed "s/{{magenta}}/$magenta/g"\
+| sed "s/{{cyan}}/$cyan/g"\
+| sed "s/{{white}}/$white/g"\
+| sed "s/{{bgDim}}/$bgDim/g"\
+| sed "s/{{bg0}}/$bg0/g"\
+| sed "s/{{bg1}}/$bg1/g"\
+| sed "s/{{bg2}}/$bg2/g"\
+| sed "s/{{bg3}}/$bg3/g"\
+| sed "s/{{bg4}}/$bg4/g"\
+| sed "s/{{bg5}}/$bg5/g"\
+| sed "s/{{bg6}}/$bg6/g"\
+| sed "s/{{bg7}}/$bg7/g"\
+| sed "s/{{bg8}}/$bg8/g"\
+| sed "s/{{fgDim}}/$fgDim/g"\
+| sed "s/{{fgBright}}/$fgBright/g"\
+| sed "s/{{whiteDim}}/$whiteDim/g"\
+| sed "s/{{redDim}}/$redDim/g"\
+| sed "s/{{greenDim}}/$greenDim/g"\
+| sed "s/{{yellowDim}}/$yellowDim/g"\
+| sed "s/{{blueDim}}/$blueDim/g"\
+| sed "s/{{magentaDim}}/$magentaDim/g"\
+| sed "s/{{cyanDim}}/$cyanDim/g"\
+| sed "s/{{blackDim}}/$blackDim/g"\
+| sed "s/{{blackBright}}/$blackBright/g"\
+| sed "s/{{redBright}}/$redBright/g"\
+| sed "s/{{greenBright}}/$greenBright/g"\
+| sed "s/{{yellowBright}}/$yellowBright/g"\
+| sed "s/{{blueBright}}/$blueBright/g"\
+| sed "s/{{magentaBright}}/$magentaBright/g"\
+| sed "s/{{cyanBright}}/$cyanBright/g"\
+| sed "s/{{whiteBright}}/$whiteBright/g"
