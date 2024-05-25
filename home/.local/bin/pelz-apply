@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+[[ -z "$MY_THEME" ]] && export MY_THEME="gruvbox_material_dark_soft"
+
+pelz alacritty $MY_THEME > $HOME/.dotfiles/home/.config/alacritty/theme.toml

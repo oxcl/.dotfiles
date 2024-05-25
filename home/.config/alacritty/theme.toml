@@ -1,0 +1,37 @@
+[colors.primary]
+foreground = "#d4be98"
+background = "#32302f"
+
+[colors.normal]
+black = "#181919"
+red = "#ea6962"
+green = "#a9b665"
+yellow = "#d8a657"
+blue = "#7daea3"
+magenta = "#d3869b"
+cyan = "#89b482"
+white = "#ddc7a1"
+
+[colors.bright]
+black = "#181919"
+red = "#ea6962"
+green = "#a9b665"
+yellow = "#d8a657"
+blue = "#7daea3"
+magenta = "#d3869b"
+cyan = "#89b482"
+white = "#ddc7a1"
+
+[colors.dim]
+black = "#181919"
+red = "#b85651"
+green = "#8f9a52"
+yellow = "#c18f41"
+blue = "#68948a"
+magenta = "#ab6c7d"
+cyan = "#72966c"
+white = "#ddc7a1"
+
+[colors.search]
+matches = { foreground = "#d4be98", background = "#403c3a" }
+focused_match = { foreground = "#ddc7a1", background = "#504945" }

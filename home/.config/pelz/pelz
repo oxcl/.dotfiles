@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-PELZ_DIR=${XDG_CONFIG_HOME:-$HOME/.config/pelz}
+PELZ_DIR=${XDG_CONFIG_HOME:-$HOME/.config}/pelz
 set -e
 
 # get template file path
@@ -18,7 +18,7 @@ fi
 
 # parse the theme 
 if [ -n "$2" ]; then
-    THEME_TOML=$(cat "$PELZ_DIR/templates/$2")
+    THEME_TOML=$(cat "$PELZ_DIR/themes/$2.toml")
 else
     THEME_TOML=$(cat)
 fi

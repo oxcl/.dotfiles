@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-PELZ_DIR=${XDG_CONFIG_HOME:-$HOME/.config/pelz}
+PELZ_DIR=${XDG_CONFIG_HOME:-$HOME/.config}/pelz
 set -e
 
 # get template file path
@@ -18,7 +18,7 @@ fi
 
 # parse the theme 
 if [ -n "$2" ]; then
-    THEME_TOML=$(cat "$PELZ_DIR/templates/$2")
+    THEME_TOML=$(cat "$PELZ_DIR/themes/$2.toml")
 else
     THEME_TOML=$(cat)
 fi
@@ -88,42 +88,42 @@ bg8=$(get_prop bg8 $bg7)
 
 
 cat $TEMPLATE_FILE \
-| sed "s/{{name}}/$name/g"\
-| sed "s/{{bg}}/$bg/g"\
-| sed "s/{{fg}}/$fg/g"\
-| sed "s/{{black}}/$black/g"\
-| sed "s/{{red}}/$red/g"\
-| sed "s/{{green}}/$green/g"\
-| sed "s/{{yellow}}/$yellow/g"\
-| sed "s/{{blue}}/$blue/g"\
-| sed "s/{{magenta}}/$magenta/g"\
-| sed "s/{{cyan}}/$cyan/g"\
-| sed "s/{{white}}/$white/g"\
-| sed "s/{{bgDim}}/$bgDim/g"\
-| sed "s/{{bg0}}/$bg0/g"\
-| sed "s/{{bg1}}/$bg1/g"\
-| sed "s/{{bg2}}/$bg2/g"\
-| sed "s/{{bg3}}/$bg3/g"\
-| sed "s/{{bg4}}/$bg4/g"\
-| sed "s/{{bg5}}/$bg5/g"\
-| sed "s/{{bg6}}/$bg6/g"\
-| sed "s/{{bg7}}/$bg7/g"\
-| sed "s/{{bg8}}/$bg8/g"\
-| sed "s/{{fgDim}}/$fgDim/g"\
-| sed "s/{{fgBright}}/$fgBright/g"\
-| sed "s/{{whiteDim}}/$whiteDim/g"\
-| sed "s/{{redDim}}/$redDim/g"\
-| sed "s/{{greenDim}}/$greenDim/g"\
-| sed "s/{{yellowDim}}/$yellowDim/g"\
-| sed "s/{{blueDim}}/$blueDim/g"\
-| sed "s/{{magentaDim}}/$magentaDim/g"\
-| sed "s/{{cyanDim}}/$cyanDim/g"\
-| sed "s/{{blackDim}}/$blackDim/g"\
-| sed "s/{{blackBright}}/$blackBright/g"\
-| sed "s/{{redBright}}/$redBright/g"\
-| sed "s/{{greenBright}}/$greenBright/g"\
-| sed "s/{{yellowBright}}/$yellowBright/g"\
-| sed "s/{{blueBright}}/$blueBright/g"\
-| sed "s/{{magentaBright}}/$magentaBright/g"\
-| sed "s/{{cyanBright}}/$cyanBright/g"\
-| sed "s/{{whiteBright}}/$whiteBright/g"
+| sed -e "s/{{name}}/$name/g"\
+ -e "s/{{bg}}/$bg/g"\
+ -e "s/{{fg}}/$fg/g"\
+ -e "s/{{black}}/$black/g"\
+ -e "s/{{red}}/$red/g"\
+ -e "s/{{green}}/$green/g"\
+ -e "s/{{yellow}}/$yellow/g"\
+ -e "s/{{blue}}/$blue/g"\
+ -e "s/{{magenta}}/$magenta/g"\
+ -e "s/{{cyan}}/$cyan/g"\
+ -e "s/{{white}}/$white/g"\
+ -e "s/{{bgDim}}/$bgDim/g"\
+ -e "s/{{bg0}}/$bg0/g"\
+ -e "s/{{bg1}}/$bg1/g"\
+ -e "s/{{bg2}}/$bg2/g"\
+ -e "s/{{bg3}}/$bg3/g"\
+ -e "s/{{bg4}}/$bg4/g"\
+ -e "s/{{bg5}}/$bg5/g"\
+ -e "s/{{bg6}}/$bg6/g"\
+ -e "s/{{bg7}}/$bg7/g"\
+ -e "s/{{bg8}}/$bg8/g"\
+ -e "s/{{fgDim}}/$fgDim/g"\
+ -e "s/{{fgBright}}/$fgBright/g"\
+ -e "s/{{whiteDim}}/$whiteDim/g"\
+ -e "s/{{redDim}}/$redDim/g"\
+ -e "s/{{greenDim}}/$greenDim/g"\
+ -e "s/{{yellowDim}}/$yellowDim/g"\
+ -e "s/{{blueDim}}/$blueDim/g"\
+ -e "s/{{magentaDim}}/$magentaDim/g"\
+ -e "s/{{cyanDim}}/$cyanDim/g"\
+ -e "s/{{blackDim}}/$blackDim/g"\
+ -e "s/{{blackBright}}/$blackBright/g"\
+ -e "s/{{redBright}}/$redBright/g"\
+ -e "s/{{greenBright}}/$greenBright/g"\
+ -e "s/{{yellowBright}}/$yellowBright/g"\
+ -e "s/{{blueBright}}/$blueBright/g"\
+ -e "s/{{magentaBright}}/$magentaBright/g"\
+ -e "s/{{cyanBright}}/$cyanBright/g"\
+ -e "s/{{whiteBright}}/$whiteBright/g"

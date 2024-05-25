@@ -1,0 +1,3 @@
+import = ["~/.config/alacritty/theme.toml"]
+
+shell = "bash"
