@@ -19,24 +19,24 @@ local colors = {
   split = '#131414',
 
   ansi = {
-    '#181919',
+    '#070808',
     '#ea6962',
     '#a9b665',
     '#d8a657',
     '#7daea3',
     '#d3869b',
     '#89b482',
-    '#ddc7a1',
+    '#e7d7bc',
   },
   brights = {
-    '#181919',
-    '#ea6962',
-    '#a9b665',
-    '#d8a657',
-    '#7daea3',
-    '#d3869b',
-    '#89b482',
-    '#ddc7a1'
+    '#7c6f64',
+    '#ef8f8a',
+    '#b6c17c',
+    '#deb472',
+    '#94bcb3',
+    '#dc9eaf',
+    '#a5c69f',
+    '#f1e9da'
   },
 
   -- Arbitrary colors of the palette in the range from 16 to 255

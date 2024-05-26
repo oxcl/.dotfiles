@@ -70,7 +70,7 @@ yellowBright=$(get_prop yellowBright $yellow)
 blueBright=$(get_prop blueBright $blue)
 magentaBright=$(get_prop magentaBright $magenta)
 cyanBright=$(get_prop cyanBright $cyan)
-whiteBright=$(get_prop witheBright $white)
+whiteBright=$(get_prop whiteBright $white)
 
 fgDim=$(get_prop fgDim $fg)
 fgBright=$(get_prop fgBright $fg)
@@ -88,6 +88,7 @@ bg8=$(get_prop bg8 $bg7)
 
 orange=$(get_prop orange $yellowDim)
 orangeDim=$(get_prop orangeDim $orange)
+orangeBright=$(get_prop orangeBright $orange)
 
 
 cat $TEMPLATE_FILE \
@@ -131,4 +132,5 @@ cat $TEMPLATE_FILE \
  -e "s/{{cyanBright}}/$cyanBright/g"\
  -e "s/{{whiteBright}}/$whiteBright/g"\
  -e "s/{{orange}}/$orange/g"\
- -e "s/{{orangeDim}}/$orangeDim/g"
+ -e "s/{{orangeDim}}/$orangeDim/g"\
+ -e "s/{{orangeBright}}/$orangeBright/g"

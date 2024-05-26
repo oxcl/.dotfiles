@@ -3,24 +3,24 @@ foreground = "#d4be98"
 background = "#202020"
 
 [colors.normal]
-black = "#181919"
+black = "#070808"
 red = "#ea6962"
 green = "#a9b665"
 yellow = "#d8a657"
 blue = "#7daea3"
 magenta = "#d3869b"
 cyan = "#89b482"
-white = "#ddc7a1"
+white = "#e7d7bc"
 
 [colors.bright]
-black = "#181919"
-red = "#ea6962"
-green = "#a9b665"
-yellow = "#d8a657"
-blue = "#7daea3"
-magenta = "#d3869b"
-cyan = "#89b482"
-white = "#ddc7a1"
+black = "#7c6f64"
+red = "#ef8f8a"
+green = "#b6c17c"
+yellow = "#deb472"
+blue = "#94bcb3"
+magenta = "#dc9eaf"
+cyan = "#a5c69f"
+white = "#f1e9da"
 
 [colors.dim]
 black = "#181919"
@@ -30,7 +30,7 @@ yellow = "#c18f41"
 blue = "#68948a"
 magenta = "#ab6c7d"
 cyan = "#72966c"
-white = "#ddc7a1"
+white = "#e7d7bc"
 
 [colors.search]
 matches = { foreground = "#d4be98", background = "#2e2c2b" }
