@@ -199,23 +199,10 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   ;; per mode with `ligature-mode'.
   (global-ligature-mode t))
 
-(use-package doom-themes
+(use-package modus-themes
   :demand t
   :config
-  (setq doom-themes-enable-bold t
-doom-themes-enable-italic t
-custom-theme-directory (expand-file-name "themes/" real-user-emacs-directory)
-doom-my-theme-brighter-modeline t
-doom-my-theme-padded-modeline 4)
-  (doom-themes-org-config)
-  (if (equal (getenv "MY_THEME_LOADED") "1")
-    (load-theme 'doom-my t)
-    (load-theme 'doom-gruvbox t)))
-
-(use-package solaire-mode
-  :after doom-themes
-  :config
-  (solaire-global-mode +1))
+  (load-theme 'modus-vivendi :no-confirm))
 
 (setq-default display-line-numbers-width 4) ; how many digits for line numbers
 (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))

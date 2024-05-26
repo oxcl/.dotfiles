@@ -1,6 +1,6 @@
 [colors.primary]
 foreground = "#d4be98"
-background = "#32302f"
+background = "#202020"
 
 [colors.normal]
 black = "#181919"
@@ -33,5 +33,5 @@ cyan = "#72966c"
 white = "#ddc7a1"
 
 [colors.search]
-matches = { foreground = "#d4be98", background = "#403c3a" }
-focused_match = { foreground = "#ddc7a1", background = "#504945" }
+matches = { foreground = "#d4be98", background = "#2e2c2b" }
+focused_match = { foreground = "#ddc7a1", background = "#3d3835" }

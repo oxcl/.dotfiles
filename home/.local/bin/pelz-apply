@@ -3,3 +3,4 @@
 
 pelz alacritty $MY_THEME > $HOME/.dotfiles/home/.config/alacritty/theme.toml
 pelz Xresources $MY_THEME > $HOME/.dotfiles/home/.config/x11/resources
+pelz wezterm $MY_THEME > $HOME/.dotfiles/home/.config/wezterm/theme.lua

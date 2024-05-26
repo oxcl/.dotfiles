@@ -42,6 +42,7 @@ export DIRENV_LOG_FORMAT=""
 
 
 # load environment variables for themeing via pelz (~/.local/bin/pelz)
+export MY_THEME="gruvbox_material_dark_hard"
 eval $(pelz env $MY_THEME)
 
 # xdg

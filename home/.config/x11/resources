@@ -2,7 +2,7 @@
 !----------------------------------
 
 *.cursor:                #c5b18d
-*.background:            #32302f
+*.background:            #202020
 *.foreground:            #d4be98
 
 ! Black
