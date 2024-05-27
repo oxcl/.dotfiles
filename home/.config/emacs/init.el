@@ -75,9 +75,14 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (add-hook 'org-mode-hook #'oxcl/add-tangle-and-reload-hook)
 
 (setq ring-bell-function 'ignore ; disable visual or audible ring
-      overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
+      overflow-newline-into-fringe nil  ; stop cursor & chars from going in fringe zone
+      uniquify-buffer-name-style 'forward) ; display name of files with the same name similar to vscode
 (blink-cursor-mode -1) ; disable cursor blink
 (tooltip-mode -1) ; hide tooltip popup window on mouse hover
 (set-fringe-mode '(5 . 10)) ; add small margin to the right of the editor
-;;(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
+
+(save-place-mode 1)
+(setq save-place-forget-unreadable-files nil)
+
+(savehist-mode 1)
+(add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))

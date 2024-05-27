@@ -101,13 +101,25 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 * Better Defaults
 #+begin_src elisp
   (setq ring-bell-function 'ignore ; disable visual or audible ring
-	overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
+	overflow-newline-into-fringe nil  ; stop cursor & chars from going in fringe zone
+        uniquify-buffer-name-style 'forward) ; display name of files with the same name similar to vscode
   (blink-cursor-mode -1) ; disable cursor blink
   (tooltip-mode -1) ; hide tooltip popup window on mouse hover
   (set-fringe-mode '(5 . 10)) ; add small margin to the right of the editor
-  ;;(require 'uniquify)
-  (setq uniquify-buffer-name-style 'forward)
 #+end_src
+* Simple Enhancements
+** persistent cursor position across sessions
+#+begin_src elisp
+  (save-place-mode 1)
+  (setq save-place-forget-unreadable-files nil)
+#+end_src
+
+** persistent minibuffer history across sessions
+#+begin_src elisp
+  (savehist-mode 1)
+  (add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))
+#+end_src
+
 * Ido Mode
 #+begin_src elisp :tangle no
   (setq ido-enable-flex-matching t)
@@ -728,12 +740,6 @@ C-x U : emacs  redo
   (global-set-key (kbd "C-d") #'bookmark-set)
 #+end_src
 
-** persistent cursor position across sessions
-#+begin_src elisp :tangle no
-  (save-place-mode 1)
-  (setq save-place-forget-unreadable-files nil)
-#+end_src
-
 ** Windows
 #+begin_src elisp :tangle no
   (global-set-key (kbd "C-q") #'delete-window)
@@ -790,12 +796,6 @@ the builtin flyspell package will check each word under the cursor spelling agai
 #+end_src
 
 ** history
-*** persistent history across sessions
-#+begin_src elisp :tangle no
-  (savehist-mode 1)
-  (add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))
-#+end_src
-
 *** keybindings
 #+begin_src elisp :tangle no
   (defun oxcl/set-minibuffer-keybindings ()
