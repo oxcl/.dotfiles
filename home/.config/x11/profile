@@ -6,6 +6,7 @@ source "${XDG_CONFIG:-$HOME/.config}/env"
 
 # load settings related to xterm, urxvt, emacs and other programs that respect x11 settings
 xrdb "${XDG_CONFIG_HOME:-$HOME/.config}/x11/resources"
+xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/theme"
 
 # set keyboard repeat delay and frequency
 xset r rate 140 30

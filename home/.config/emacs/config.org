@@ -9,64 +9,55 @@ most of theses optimizations are taken from doom emacs [[https://github.com/doom
 #+begin_src elisp
   (unless init-file-debug
     (setq frame-inhibit-implied-size t
-    inhibit-startup-screen t
-    inhibit-startup-echo-area-message user-login-name
-    initial-major-mode 'fundamental-mode
-    initial-scratch-message nil
-    inhibit-redisplay t
-    inhibit-message t
-    read-process-output-max (* 1024 1024 3))
-    (defun oxcl/reset-inhibited-vars-h ()
-      (setq-default inhibit-redisplay nil
-        inhibit-message nil)
-      (redraw-frame))
-    (add-hook 'after-init-hook #'oxcl/reset-inhibited-vars-h)
-    (define-advice startup--load-user-init-file (:after (&rest _) undo-inhibit-vars)
-      (when init-file-had-error
-  (doom--reset-inhibited-vars-h)))
-    (advice-add #'display-startup-echo_area-message :override #'ignore)
-    (advice-add #'display-startup-screen :override #'ignore)
-    (define-advice load-file (:override (file) silence)
-      (load file nil 'nomessage))
-    (define-advice startup--load-user-init-file (:before (&rest _) undo-silence)
-      (advice-remove #'load-file #'load-file@silence))
+	  inhibit-startup-screen t
+	  inhibit-startup-echo-area-message user-login-name
+	  initial-major-mode 'fundamental-mode
+	  initial-scratch-message nil
+	  read-process-output-max (* 1024 1024 3))
 
-    (advice-add #'tool-bar-setup :override #'ignore)
-    (define-advice startup--load-user-init-file (:before (&rest _) defer-tool-bar-setup)
-      (advice-remove #'tool-bar-setup #'ignore)
-      (add-transient-hook! 'tool-bar-mode (tool-bar-setup))))
+    (unless after-init-time
+      (setq inhibit-redisplay t
+	    inhibit-message nil)
+      (defun oxcl/reset-inhibited-vars-h ()
+	(setq-default inhibit-redisplay nil
+		      inhibit-message nil)
+	(redraw-frame))
+      (add-hook 'after-init-hook #'oxcl/reset-inhibited-vars-h)
+      (define-advice startup--load-user-init-file (:after (&rest _) undo-inhibit-vars)
+	(when init-file-had-error
+	  (doom--reset-inhibited-vars-h)))
+      (advice-add #'display-startup-echo_area-message :override #'ignore)
+      (advice-add #'display-startup-screen :override #'ignore)
+      (define-advice load-file (:override (file) silence)
+	(load file nil 'nomessage))
+      (define-advice startup--load-user-init-file (:before (&rest _) undo-silence)
+	(advice-remove #'load-file #'load-file@silence))
+      (advice-add #'tool-bar-setup :override #'ignore)
+      (define-advice startup--load-user-init-file (:before (&rest _) defer-tool-bar-setup)
+	(advice-remove #'tool-bar-setup #'ignore)
+	(add-transient-hook! 'tool-bar-mode (tool-bar-setup)))))
 #+end_src
 
 ** Unclutter Working Directory
-*** relocate emacs user directory
 because many packages including builtin ones use ~user-emacs-directory~ i just move the folder to cache
 #+begin_src elisp
-  (setq real-user-emacs-directory user-emacs-directory)
-  (setq user-emacs-directory oxcl/cache-dir)
-  (setq server-auth-dir (expand-file-name "server" real-user-emacs-directory))
-#+end_src
-
-*** relocate backup files directory
-#+begin_src emacs-lisp
-  (setq backup-directory-alist `((".*" . ,(expand-file-name "emacs/backups" oxcl/cache-dir))))
-#+end_src
-
-*** relocate auto-save files directory
-#+begin_src emacs-lisp
-  (setq auto-save-file-name-transforms `((".*" ,(expand-file-name "save" oxcl/cache-dir) t)))
-#+end_src
-
-*** disable lockfiles
-#+begin_src elisp
-  (setq create-lockfiles nil)
+  (setq real-user-emacs-directory user-emacs-directory
+	user-emacs-directory oxcl/cache-dir
+	server-auth-dir (expand-file-name "server" real-user-emacs-directory)
+	;; relocate backup files
+	backup-directory-alist `((".*" . ,(expand-file-name "emacs/backups" oxcl/cache-dir)))
+	;; relocate auto-save files
+	auto-save-file-name-transforms `((".*" ,(expand-file-name "save" oxcl/cache-dir) t))
+	;; disable lockfiles
+	create-lockfiles nil)
 #+end_src
 
 ** Reduce Verbosity
 #+begin_src elisp
   ;; suppress compiler warnings
   (setq native-comp-async-report-warnings-errors init-file-debug
-  native-comp-warning-on-missing-source init-file-debug
-  ad-redefinition-action 'accept)
+	native-comp-warning-on-missing-source init-file-debug
+	ad-redefinition-action 'accept)
 #+end_src
 
 ** Enforce TLS
@@ -96,14 +87,44 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 
 #+end_src
 
+* Emacs Config Auto Reload
+#+begin_src elisp
+  (defun oxcl/add-tangle-and-reload-hook ()
+    (when (equal (file-truename (concat real-user-emacs-directory "config.org"))
+		 (buffer-file-name))
+      (add-hook 'after-save-hook #'oxcl/tangle-and-reload nil t)))
+  (defun oxcl/tangle-and-reload ()
+    (org-babel-tangle)
+    (load-file user-init-file))
+  (add-hook 'org-mode-hook #'oxcl/add-tangle-and-reload-hook)
+#+end_src
+* Better Defaults
+#+begin_src elisp
+  (setq ring-bell-function 'ignore ; disable visual or audible ring
+	overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
+  (blink-cursor-mode -1) ; disable cursor blink
+  (tooltip-mode -1) ; hide tooltip popup window on mouse hover
+  (set-fringe-mode '(5 . 10)) ; add small margin to the right of the editor
+  ;;(require 'uniquify)
+  (setq uniquify-buffer-name-style 'forward)
+#+end_src
+* Ido Mode
+#+begin_src elisp :tangle no
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (ido-mode t)
+  (setq ido-use-filename-at-point 'guess
+	ido-use-url-at-point nil)
+  (setq ido-ignore-extensions t)
+#+end_src
 * Package Management
-** add local scripts to path
-#+begin_src emacs-lisp
+** Add local scripts to path
+#+begin_src emacs-lisp :tangle no
   (add-to-list 'load-path (expand-file-name "lisp" real-user-emacs-directory))
 #+end_src
 
-** elpaca
-#+begin_src emacs-lisp
+** elpaca Package Manager
+#+begin_src emacs-lisp :tangle no
   (defvar elpaca-installer-version 0.7)
   (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
   (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -144,12 +165,12 @@ make sure internet communications are in TLS.this code is taken from [[https://g
   (elpaca `(,@elpaca-order))
 #+end_src
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq elpaca-queue-limit 5)
 #+end_src
 
-** use-package
-#+begin_src emacs-lisp
+** Integrate use-package with elpaca
+#+begin_src elisp :tangle no
   (elpaca elpaca-use-package
     (elpaca-use-package-mode)
     (setq use-package-always-ensure t
@@ -158,31 +179,23 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 #+end_src
 
 ** delight
-#+begin_src elisp
+delight is a package that can hide package names from minibuffer
+#+begin_src elisp :tangle no
   (use-package delight
     :demand t)
   (elpaca-wait)
 #+end_src
 
-* ui
-** sane defaults
-#+begin_src emacs-lisp
-  (setq ring-bell-function 'ignore ; disable visual or audible ring
-        overflow-newline-into-fringe nil)  ; stop cursor & chars from going in fringe zone
-  (blink-cursor-mode -1) ; disable cursor blink
-  ;;  (tooltip-mode -1) ; hide tooltip popup window on mouse hover
-  ;;  (set-fringe-mode '(0 . 10)) ; add small margin to the right of the editor
-#+end_src
-
+* UI
 ** font
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
       (set-face-attribute 'default nil
                      :family "JetBrainsMono"
                      :height 110)
       (setq-default line-spacing 1) ; small padding between each line
 #+end_src
 *** font ligature
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package ligature
     :demand t
     :config
@@ -256,7 +269,7 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 #+end_src
 
 ** theme
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
   (use-package modus-themes
     :demand t
     :config
@@ -264,7 +277,7 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 #+end_src
 
 ** line numbers column
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
   (setq-default display-line-numbers-width 4) ; how many digits for line numbers
   (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
     (add-hook mode 'display-line-numbers-mode))
@@ -272,7 +285,7 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 #+end_src
 
 ** highlight current line
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
   (global-hl-line-mode)
   (dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode-hook))
     (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
@@ -280,13 +293,13 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 
 ** icons
 all-the-icons fonts should be installed for this to work
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package all-the-icons
     :if (display-graphic-p))
 #+end_src
 
 ** zoom-in/zoom-out
-#+begin_src elisp
+#+begin_src elisp :tangle no
   ;; will not work properly without the after-init-hook idk why
   (add-hook 'after-init-hook (lambda ()
                                (global-set-key (kbd "C-+") #'text-scale-increase)
@@ -296,7 +309,7 @@ all-the-icons fonts should be installed for this to work
 
 * editor
 ** Indentation
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq-default tab-width 2
                 standard-indent 2
                 js-indent-level 2
@@ -326,7 +339,7 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 ** Indent Keymaps
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (defun oxcl/shift-left ()
     (interactive)
     (undo-auto-amalgamate)
@@ -371,7 +384,7 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 ** Indent Guides
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package indent-bars
     :ensure (:host github :repo "jdtsmith/indent-bars" :remotes ("fork" :repo "oxcl/indent-bars"))
     :hook (prog-mode conf-mode)
@@ -398,7 +411,7 @@ all-the-icons fonts should be installed for this to work
                                    (setq oxcl/indent-bars-mode-off-for-now nil)))))
 #+end_src
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
     (use-package highlight-indent-guides
       :hook (emacs-lisp-mode)
       :custom-face
@@ -409,7 +422,7 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 ** Clean whitespace on save
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package ws-butler
     :demand t
     :delight
@@ -420,7 +433,7 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 ** Percise Word Movements
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
   (defun oxcl/boundary-p (is-delete)
     ;; when boundaries are checked for deleting or killing the behavior of this function is a bit different
     ;; it stops on the first character of a word instead of stopping in the space between two words
@@ -496,7 +509,7 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 ** Move By CamelCase
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq shift-select-mode nil)
   (use-package subword
     :ensure nil
@@ -537,13 +550,13 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 ** Better Jumping
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package back-button
     :demand t)
 #+end_src
 
 ** Move lines
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package move-dup
     :demand t
     :config
@@ -553,7 +566,7 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 ** Delete Whitespace by Tab Stop
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (defun oxcl/backspace-whitespace-to-tab-stop ()
     "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
     (interactive)
@@ -580,7 +593,7 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 ** Editorconfig
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package editorconfig
     :custom
     (editorconfig-trim-whitespaces-mode 'ws-butler-mode)
@@ -589,20 +602,20 @@ all-the-icons fonts should be installed for this to work
 #+end_src
 
 ** Multi Cursor
-#+begin_src elisp
+#+begin_src elisp :tangle no
 
 #+end_src
 
 ** text navigation
 left arrow should keep the cursor at the end of the line instead of jumping to the next line
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq track_eol t)
 #+end_src
 
 ** window management
 *** scrolling
 **** defaults
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq scroll-error-top-bottom t ; put the cursor at the top or bottom of the window if no more scrolls are possible
   scroll-conservatively 100 ; only scroll the minimum lines at a time when the cursor goes out the window
   scroll-margin 5) ; start scrolling the window when the distance between the cursor and the window boundaries are less than this number
@@ -612,7 +625,7 @@ left arrow should keep the cursor at the end of the line instead of jumping to t
 **** scroll windows by half a page
 scroll by half a page instead of a full bage whith PageDown/PageUp keys
 also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-down)
-#+begin_src elisp
+#+begin_src elisp :tangle no
   ;; make ScrollDown and ScrollUp Commands Scroll half a screen
   (defun oxcl/scroll-up-half ()
     (interactive)
@@ -659,7 +672,7 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 
 ** highlight current symbol
 highlight the word/symbol under the cursor (with a small delay) and all its occurrences in the visible buffer
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package idle-highlight-mode
     :hook ((prog-mode text-mode) . idle-highlight-mode)
     :custom
@@ -669,7 +682,7 @@ highlight the word/symbol under the cursor (with a small delay) and all its occu
 
 ** jump to occurrence of symbol under the cursor
 C-* jumps to the next occurrence the symbol that is under the cursor.
-#+begin_src elisp
+#+begin_src elisp :tangle no
   ;; this function adds wrap functionality to smartscan.
   (defun oxcl/smartscan-wrap ()
     (interactive)
@@ -694,7 +707,7 @@ C-_   : normal undo
 S-C-_ : normal redo
 C-x u : emacs  undo
 C-x U : emacs  redo
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (keymap-global-unset "C-/")
   (keymap-global-unset "C-?")
   (keymap-global-unset "C--")
@@ -706,28 +719,28 @@ C-x U : emacs  redo
 *** undo tree and branching
 
 ** <Esc> is <C-g>
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (global-set-key (kbd "<escape>") (kbd "C-g"))
 #+end_src
 
 ** Bookmarks
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (global-set-key (kbd "C-d") #'bookmark-set)
 #+end_src
 
 ** persistent cursor position across sessions
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (save-place-mode 1)
   (setq save-place-forget-unreadable-files nil)
 #+end_src
 
 ** Windows
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (global-set-key (kbd "C-q") #'delete-window)
 #+end_src
 
 ** Multi Cursor
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package multiple-cursors)
 #+end_src
 
@@ -772,19 +785,19 @@ the builtin flyspell package will check each word under the cursor spelling agai
 
 * minibuffer
 ** find-file
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (global-set-key (kbd "C-x f") #'find-file)
 #+end_src
 
 ** history
 *** persistent history across sessions
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
   (savehist-mode 1)
   (add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))
 #+end_src
 
 *** keybindings
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (defun oxcl/set-minibuffer-keybindings ()
     "Add custom keybindings for the  minibuffer."
     (local-set-key (kbd "M-<up>")   #'previous-history-element)
@@ -793,13 +806,13 @@ the builtin flyspell package will check each word under the cursor spelling agai
 #+end_src
 
 ** mini-frame
-#+begin_src elisp
+#+begin_src elisp :tangle no
 #+end_src
 
 ** search and replace
 *** make isearch better
 **** sane defaults
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
   (setq-default char-fold-symmetric t  ; accent character's match the regular character as well
     search-ring-max 64
     regexp-search-ring-max 64)
@@ -807,7 +820,7 @@ the builtin flyspell package will check each word under the cursor spelling agai
 #+end_src
 
 **** frictionless search
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
 
   ;; while using incremental search when going from C-s to C-r or from C-r to C-s go to the
   ;; next/previous match immediately. instead of requiring two key presses
@@ -832,7 +845,7 @@ the builtin flyspell package will check each word under the cursor spelling agai
 #+end_src
 
 **** isearch history
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
   (define-key isearch-mode-map (kbd "<M-up>") 'isearch-ring-retreat)
   (define-key isearch-mode-map (kbd "<M-down>") 'isearch-ring-advance)
 #+end_src
@@ -857,7 +870,7 @@ isearch-other-end)
 
 **** disable momentary messages
 disable isearch annoying messages which appear after the search string and sometimes cause a delay
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (defun oxcl/isearch--momentary-message (orig-fun &rest args)
     (apply orig-fun `(,(car args) 0)))
   (advice-add 'isearch--momentary-message :around #'oxcl/isearch--momentary-message)
@@ -866,7 +879,7 @@ disable isearch annoying messages which appear after the search string and somet
 **** loose search
 add two new keybindings for C-S-s and C-S-r which does a case insensetive incremental search with lax space enabled. and taking '-' and '_' as the same
 so it's practically a less strict loose version of the normal isearch. it should also work in a isearch buffer as well to convert the current search to a loose one
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (defun oxcl/loose-search (&optional arg)
     (interactive)
     (if (bound-and-true-p oxcl/loose-search)
@@ -912,17 +925,17 @@ so it's practically a less strict loose version of the normal isearch. it should
 #+end_src
 **** search count (lazy highlight)
 show total number of matches in the minibuffer
-#+begin_src emacs-lisp
+#+begin_src elisp :tangle no
   (setq isearch-lazy-count t
   lazy-highlight-initial-delay 0)
 #+end_src
 
 **** more modern regex
 replace emacs regex with a more modern functional regex
-#+begin_src elisp
+#+begin_src elisp :tangle no
 #+end_src
 * which key
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package which-key
     :demand t
     :config
@@ -932,22 +945,11 @@ replace emacs regex with a more modern functional regex
     which-key-show-early-on-C-h t))
 #+end_src
 
-* org mode
-#+begin_src emacs-lisp
-  ;;  (use-package poly-org
-  ;;    :hook (org-mode))
-    (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
-    ;; (setq org-src-tab-acts-natively t)
-    ;; (setq org-confirm-babel-evaluate nil)
-    ;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
-    ;; (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
-#+end_src
-
 * programming
 ** tree-sitter
 *** enable tree-sitter
 replace builtin tree-sitter major modes with the old ones
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq major-mode-remap-alist '((ruby-mode . ruby-ts-mode)
          (c++-mode . c++-ts-mode)
          (c-or-c++-mode . c-or-c++-ts-mode)
@@ -974,28 +976,28 @@ replace builtin tree-sitter major modes with the old ones
 *** third-party ts-modes
 since the builtin support for tree-sitter major modes is limited to few languages right now third-party packages are used as temporarily solution
 **** clojure
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package clojure-ts-mode
     :commands (clojure-ts-mode)
     :mode "\\.\\(clj\\|cljs\\|cljc\\)\\'")
 #+end_src
 
 **** kotlin
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package kotlin-ts-mode
     :commands (kotlin-ts-mode)
     :mode "\\.kt\\'")
 #+end_src
 
 **** nix
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package nix-ts-mode
     :commands (nix-ts-mode)
     :mode "\\.nix\\'")
 #+end_src
 
 **** lua
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package lua-ts-mode
     :ensure (:host sourcehut :repo "johnmuhl/lua-ts-mode")
     :mode "\\.lua\\'"
@@ -1004,7 +1006,7 @@ since the builtin support for tree-sitter major modes is limited to few language
 
 ** parenthesis and delimiters
 *** rainbow delimiters
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package rainbow-delimiters
     :config
     (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
@@ -1012,7 +1014,7 @@ since the builtin support for tree-sitter major modes is limited to few language
 
 *** highlight on hover
 match the other pair of a delimiter on cursor hover
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (show-paren-mode)
   (setq show-paren-delay 0)
   (defun my-show-paren-any (orig-fun)
@@ -1024,7 +1026,7 @@ match the other pair of a delimiter on cursor hover
 *** jump to other pair
 similar to vim % command
 taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-wiki]]
-#+begin_src elisp
+#+begin_src elisp :tangle no
   ;; since C-* is used also for smart-scan this function will fallback to oxcl/smartscan-wrap if the cursor
   ;; on a parenthesis
   (defun oxcl/goto-match-paren ()
@@ -1036,7 +1038,7 @@ taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-
 #+end_src
 
 *** auto close opening delimiters
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (electric-pair-mode)
   (setq electric-pair-skip-whitespace nil)
 #+end_src
@@ -1044,7 +1046,7 @@ taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-
 ** indentation
 ** git
 *** magit
-#+begin_src elisp
+#+begin_src elisp :tangle no
 ;;  (use-package magit)
 #+end_src
 
@@ -1052,7 +1054,7 @@ taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-
 *** auto insert
 automatically insert generic boilerplate via autoinsert and yasnippet when creating new files based on file extension
 this code integrates yasnippet with the builtin yasnippet which is taken from  [[https://www.emacswiki.org/emacs/AutoInsertMod][emacs-wiki]]
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (defun oxcl/yas-insert ()
     "Replace text in yasnippet templates."
     (yas-expand-snippet (buffer-string) (point-min) (point-max)))
@@ -1079,7 +1081,7 @@ this code integrates yasnippet with the builtin yasnippet which is taken from  [
 #+end_src
 
 *** yasnippet
-#+begin_src elisp
+#+begin_src elisp :tangle no
     (use-package yasnippet
       :demand t
       :custom
@@ -1091,7 +1093,7 @@ this code integrates yasnippet with the builtin yasnippet which is taken from  [
 
 ** completion
 *** defaults
-#+begin_src elisp
+#+begin_src elisp :tangle no
   ;;  (setq-default completion-styles '(basic))
 #+end_src
 
@@ -1100,7 +1102,7 @@ sorts the completion candidates based on recent usage and frequency.
 makes the auto completion smarter by putting more common and more recent completion candidates first
 **** base
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
   ;;	(use-package prescient
   ;;    :defer t
   ;;    :config
@@ -1108,7 +1110,7 @@ makes the auto completion smarter by putting more common and more recent complet
 #+end_src
 
 **** prescient for company-mode
-#+begin_src elisp
+#+begin_src elisp :tangle no
   ;;  (use-package company-prescient
   ;;    :requires prescient
   ;;    :after company
@@ -1119,7 +1121,7 @@ makes the auto completion smarter by putting more common and more recent complet
 *** rainbow mode
 colorize color codes like #ff0000 in the buffer.
 it is automatically turned on for css,sass,scss and can be manually turned on with M-x rainbow-mode for other buffers
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package rainbow-mode
     :hook (css-base-mode . rainbow-mode))
 #+end_src
@@ -1133,7 +1135,7 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
 some enhancements to the builtin hex editor in emacs
 *** detect binary files automatically
 automatically detect binary format when opening files and switch to hex editor
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (add-hook 'find-file-hook (lambda ()
             (when (equal buffer-file-coding-system 'no-conversion) (hexl-mode))))
   (add-to-list 'auto-mode-alist '("\\.\\(bin\\|exe\\|dat\\|dll\\|ana\\|anac\\|hex\\)\\'" . hexl-mode))
@@ -1141,7 +1143,7 @@ automatically detect binary format when opening files and switch to hex editor
 
 *** keybindings
 add quality of life keybindings
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (defun oxcl/hexl-backspace ()
     (interactive)
     (hexl-backward-char 1)
@@ -1154,7 +1156,7 @@ add quality of life keybindings
 *** mode-line info
 TODO
 display byte, short, float and integer representations of the value under the cursor in the mode-line
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq oxcl/hexl-val-in-byte ""
   oxcl/hexl-val-in-short ""
   oxcl/hexl-val-in-int32 ""
@@ -1175,7 +1177,7 @@ in my implementation of ~gruvbox-material~ i have defined custom faces:
 - ~oxcl/hexl-printable-face~
 - ~oxcl/hexl-null-face~
 i will use these to colorize the hexl-mode buffer
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq oxcl/hexl-printable-left-regexp "$[2-7][a-zA-Z0-9]\\(?: \\)"
   oxcl/hexl-printable-right-regexp "\\(?:\\b\\)[2-7][a-zA-Z0-9]"
   oxcl/hexl-null-left-regexp  "00\\b"
@@ -1193,24 +1195,24 @@ poke is an interactive and extensible editor for structured binary data with mor
 poke has a dedicated DSL named Poke which can be used to define binary structures.
 poke integration with emacs comes in two packages: ~poke.el~ a user interface for poke and ~poke-mode~ a major mode for writing Poke files
 *** poke.el
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package poke
     :requires (poke-mode))
 #+end_src
 
 *** poke-mode
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package poke-mode)
 #+end_src
 
 ** vimrc
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package vimrc-mode
     :mode ("\\.vim\\(rc\\)?\\'" "\\(.\\)?tridactylrc\\'"))
 #+end_src
 
 ** terminal emulator
-#+begin_src elisp
+#+begin_src elisp :tangle no
 ;;  (use-package vterm
 ;;    :custom
 ;;    (vterm-ignore-blink-cursor t)
@@ -1221,7 +1223,7 @@ poke integration with emacs comes in two packages: ~poke.el~ a user interface fo
 #+end_src
 
 ** expand region
-#+begin_src elisp
+#+begin_src elisp :tangle no
 ;;  (defun oxcl/expand-region ()
 ;;     (interactive)
 ;;     (if (bound-and-true-p combobulate-mode)
@@ -1258,7 +1260,7 @@ poke integration with emacs comes in two packages: ~poke.el~ a user interface fo
 * rest client
 ** defaults
 declare GET and POST requests in a http file and fire them up with emacs. similar to postman
-#+begin_src elisp
+#+begin_src elisp :tangle no
     (use-package restclient
       :mode ("\\.http\\'" . restclient-mode)
       :commands restclient-mode
@@ -1287,7 +1289,7 @@ declare GET and POST requests in a http file and fire them up with emacs. simila
 
 ** automatic http prefix injector
 this function automatically adds a "http://" at the beginning of the url if it's missing one since httpclient.el doesn't add the http:// by default
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (defun oxcl/inject-http-to-url ()
   (interactive)
   (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
@@ -1305,7 +1307,7 @@ this function automatically adds a "http://" at the beginning of the url if it's
 
 ** org-mode babel integration
 use ~#begin_src restclient~ to execute restclient requests inside an org-mode code block
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package ob-restclient
     :after org-mode
     :config
@@ -1314,17 +1316,17 @@ use ~#begin_src restclient~ to execute restclient requests inside an org-mode co
 
 ** jq integration
 use jq to query and search the response object and store them in restclient variables with ~-> jq-set-var :<var-name> <jq-query>~
-#+begin_src elisp
+#+begin_src elisp :tangle no
       (use-package jq-mode
   :hook (restclient-mode . (lambda () (require 'jq-mode))))
       (use-package restclient-jq :after jq-mode)
 #+end_src
-#+begin_src elisp
+#+begin_src elisp :tangle no
 #+end_src
 
 ** json integration
 prettify json files and diplay UTF-8 characters correctly
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (add-hook
    'restclient-mode-hook
    (lambda () (add-hook 'restclient-response-loaded-hook
@@ -1333,7 +1335,7 @@ prettify json files and diplay UTF-8 characters correctly
 
 ** hexl-mode integration
 automatically display responses with binary format in hexl-mode (emacs builtin hex editor)
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (defun oxcl/restclient-hexl-mode ()
     (set-buffer-file-coding-system 'binary)
     (setq buffer-undo-list nil)
@@ -1346,9 +1348,20 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 
 #+end_src
 
+* org mode
+#+begin_src elisp :tangle no
+  ;;  (use-package poly-org
+  ;;    :hook (org-mode))
+    (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "RET") #'org-return-and-maybe-indent)))
+    ;; (setq org-src-tab-acts-natively t)
+    ;; (setq org-confirm-babel-evaluate nil)
+    ;; (define-key org-mode-map (kbd "C-.") 'org-edit-src-code)
+    ;; (define-key org-src-mode-map (kbd "C-.") 'org-edit-src-exit)
+#+end_src
+
 * dired
 ** sane defaults
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq delete-by-moving-to-trash t
   dired-listing-switches "-Ahl -v --group-directories-first"
   dired-dwim-target t
@@ -1360,7 +1373,7 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 #+end_src
 
 ** keybindings
-#+begin_src elisp
+#+begin_src elisp :tangle no
   ;; toggle a dired buffer in other window for current directory with C-x C-d
   ;;  (keymap-global-set "C-x C-d" #'dired-jump-other-window)
   (add-hook 'dired-mode-hook (lambda ()
@@ -1379,7 +1392,7 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 #+end_src
 
 ** icons
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package all-the-icons-dired
     :hook (dired-mode . all-the-icons-dired-mode))
 #+end_src
@@ -1438,7 +1451,7 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 (move-lines-binding)
 * test
 
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (setq org-fold-core-style 'overlays)
        (use-package ctrlf
    :config
