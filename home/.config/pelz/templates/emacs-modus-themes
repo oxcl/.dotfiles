@@ -7,7 +7,7 @@
 (fg-main "#{{fg}}")
 (fg-dim "#{{fgDim}}")
 (fg-alt "#c6daff")
-(bg-active "#535353")
+(bg-active "#{{bg3}}")
 (bg-inactive "#303030")
 (border "#646464")
 

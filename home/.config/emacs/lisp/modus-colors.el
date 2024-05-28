@@ -7,7 +7,7 @@
 (fg-main "#d4be98")
 (fg-dim "#c5b18d")
 (fg-alt "#c6daff")
-(bg-active "#535353")
+(bg-active "#32302f")
 (bg-inactive "#303030")
 (border "#646464")
 

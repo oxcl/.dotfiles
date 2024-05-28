@@ -189,3 +189,7 @@
 (overline-heading-6 unspecified)
 (overline-heading-7 unspecified)
 (overline-heading-8 unspecified)))
+
+(modus-themes-with-colors
+  (custom-set-faces
+   `(shadow ((,c :inherit default :foreground ,red)))))
