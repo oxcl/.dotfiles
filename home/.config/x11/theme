@@ -36,3 +36,8 @@
 ! White
 *.color7:                #e7d7bc
 *.color15:               #f1e9da
+
+! Misc
+!----------------------------------------
+! colors to use for selected text
+*.highlightColor:        #3d3835

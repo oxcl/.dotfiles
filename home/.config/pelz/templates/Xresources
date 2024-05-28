@@ -36,3 +36,8 @@
 ! White
 *.color7:                #{{white}}
 *.color15:               #{{whiteBright}}
+
+! Misc
+!----------------------------------------
+! colors to use for selected text
+*.highlightColor:        #{{bg4}}

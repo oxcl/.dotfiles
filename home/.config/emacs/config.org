@@ -518,7 +518,7 @@ the actual colors for the theme is injected into the file ~lisp/modus-custom.el~
   (use-package indent-bars
     :ensure (:host github :repo "jdtsmith/indent-bars")
     :config
-    (setq indent-bars-color '("white" :blend 0.1)
+    (setq indent-bars-color '("white" :blend 0.15)
       indent-bars-color-by-depth nil
       indent-bars-pattern "."
       indent-bars-width-frac 0.1
@@ -534,12 +534,12 @@ the actual colors for the theme is injected into the file ~lisp/modus-custom.el~
 *** For Lisp Languages
 #+begin_src elisp
   (use-package highlight-indent-guides
-    :hook (lisp-mode)
+    :hook (lisp-mode emacs-lisp-mode)
     :custom-face
     (highlight-indent-guides-character-face ((t :foreground "white")))
     :custom
     (highlight-indent-guides-method 'character)
-    (highlight-indent-guides-auto-character-face-perc 38.25))
+    (highlight-indent-guides-auto-character-face-perc 85))
 #+end_src
 
 ** Third-Party Treesitter Modes
@@ -605,8 +605,9 @@ since the builtin support for tree-sitter major modes is limited to few language
     (editorconfig-mode 1))
 #+end_src
 
-* font ligature
-#+begin_src elisp :tangle no
+** font ligature
+enable support for font ligatures
+#+begin_src elisp
   (use-package ligature
     :demand t
     :config
@@ -710,6 +711,7 @@ all-the-icons fonts should be installed for this to work
                                (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
 #+end_src
 
+* ----------------------------------------------------
 * spell checking
 the builtin flyspell package will check each word under the cursor spelling against the specified backend.
 #+begin_src elisp :tangle no
