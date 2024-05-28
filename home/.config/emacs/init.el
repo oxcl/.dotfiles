@@ -97,6 +97,14 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (set-face-attribute 'variable-pitch nil :family "ioZevka Quasi")
 ;; (setq-default line-spacing 0) ; small padding between each line
 
+(setq-default display-line-numbers-width 4) ; how many digits for line numbers
+(dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
+  (add-hook mode 'display-line-numbers-mode))
+
+(global-hl-line-mode)
+(dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode-hook))
+  (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
+
 (setq-default tab-width 4
               standard-indent 4
               ;; c, c++, c#, objective-c java, bpftrace, awk, protobuf

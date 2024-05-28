@@ -136,6 +136,21 @@ make sure internet communications are in TLS.this code is taken from [[https://g
   ;; (setq-default line-spacing 0) ; small padding between each line
 #+end_src
 
+* Editor
+** Line Numbers Column
+#+begin_src elisp
+  (setq-default display-line-numbers-width 4) ; how many digits for line numbers
+  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
+    (add-hook mode 'display-line-numbers-mode))
+#+end_src
+
+** Highlight Current Line
+#+begin_src elisp
+  (global-hl-line-mode)
+  (dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode-hook))
+    (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
+#+end_src
+
 * Programming
 ** Indentation
 *** set default indentation for different modes
@@ -680,29 +695,16 @@ enable support for font ligatures
     (global-ligature-mode t))
 #+end_src
 
-** line numbers column
-#+begin_src elisp :tangle no
-  (setq-default display-line-numbers-width 4) ; how many digits for line numbers
-  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
-    (add-hook mode 'display-line-numbers-mode))
-  (setq require-final-newline t)
-#+end_src
-
-** highlight current line
-#+begin_src elisp :tangle no
-  (global-hl-line-mode)
-  (dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode-hook))
-    (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
-#+end_src
-
 ** icons
-all-the-icons fonts should be installed for this to work
+all-the-icons fonts should be installed on the system for this to work
 #+begin_src elisp :tangle no
   (use-package all-the-icons
     :if (display-graphic-p))
 #+end_src
 
-** zoom-in/zoom-out
+* ----------------------------------------------------
+
+* zoom-in/zoom-out
 #+begin_src elisp :tangle no
   ;; will not work properly without the after-init-hook idk why
   (add-hook 'after-init-hook (lambda ()
@@ -711,7 +713,6 @@ all-the-icons fonts should be installed for this to work
                                (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
 #+end_src
 
-* ----------------------------------------------------
 * spell checking
 the builtin flyspell package will check each word under the cursor spelling against the specified backend.
 #+begin_src elisp :tangle no
@@ -765,10 +766,6 @@ the builtin flyspell package will check each word under the cursor spelling agai
     (local-set-key (kbd "M-<up>")   #'previous-history-element)
     (local-set-key (kbd "M-<down>") #'next-history-element))
   (add-hook 'minibuffer-setup-hook 'oxcl/set-minibuffer-keybindings)
-#+end_src
-
-** mini-frame
-#+begin_src elisp :tangle no
 #+end_src
 
 ** search and replace
@@ -908,12 +905,6 @@ replace emacs regex with a more modern functional regex
 #+end_src
 
 * Editor
-** Indent Keymaps
-
-** Indent Guides
-
-** Clean whitespace on save
-
 ** Percise Word Movements
 #+begin_src elisp :tangle no
   (defun oxcl/boundary-p (is-delete)
@@ -1074,13 +1065,6 @@ replace emacs regex with a more modern functional regex
   (global-set-key (kbd "DEL") #'oxcl/backspace-whitespace-to-tab-stop)
 #+end_src
 
-** Editorconfig
-
-** Multi Cursor
-#+begin_src elisp :tangle no
-
-#+end_src
-
 ** text navigation
 left arrow should keep the cursor at the end of the line instead of jumping to the next line
 #+begin_src elisp :tangle no
@@ -1206,11 +1190,6 @@ C-x U : emacs  redo
 ** Windows
 #+begin_src elisp :tangle no
   (global-set-key (kbd "C-q") #'delete-window)
-#+end_src
-
-** Multi Cursor
-#+begin_src elisp :tangle no
-  (use-package multiple-cursors)
 #+end_src
 
 * programming
