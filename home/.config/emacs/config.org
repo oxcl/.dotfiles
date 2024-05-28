@@ -101,12 +101,18 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 * Better Defaults
 #+begin_src elisp
   (setq ring-bell-function 'ignore ; disable visual or audible ring
-	overflow-newline-into-fringe nil  ; stop cursor & chars from going in fringe zone
+        overflow-newline-into-fringe nil  ; stop cursor & chars from going in fringe zone
+        save-interprogram-paste-before-kill t ; before killing some text make sure the system clipboard content is added to emacs kill ring
+        require-final-newline t ; ensure a final new line at the end of the buffer before saving
+        backup-by-copying t ; create a backup by copying instead of renaming current file as backup
+        frame-inhibit-implied-resize t
         uniquify-buffer-name-style 'forward) ; display name of files with the same name similar to vscode
+  (setq-default indent-tabs-mode nil) ; don't use tab characters for indentation
   (blink-cursor-mode -1) ; disable cursor blink
   (tooltip-mode -1) ; hide tooltip popup window on mouse hover
   (set-fringe-mode '(5 . 10)) ; add small margin to the right of the editor
 #+end_src
+
 * Simple Enhancements
 ** persistent cursor position across sessions
 #+begin_src elisp
@@ -120,23 +126,19 @@ make sure internet communications are in TLS.this code is taken from [[https://g
   (add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))
 #+end_src
 
-* Ido Mode
-#+begin_src elisp :tangle no
-  (setq ido-enable-flex-matching t)
-  (setq ido-everywhere t)
-  (ido-mode t)
-  (setq ido-use-filename-at-point 'guess
-	ido-use-url-at-point nil)
-  (setq ido-ignore-extensions t)
-#+end_src
-* Package Management
-** Add local scripts to path
-#+begin_src emacs-lisp :tangle no
-  (add-to-list 'load-path (expand-file-name "lisp" real-user-emacs-directory))
+* UI
+** font
+#+begin_src elisp
+  (set-frame-font "ioZevka Code 11" nil t)
+  (variable-pitch-mode t)
+  
+  (set-face-attribute 'variable-pitch nil :family "ioZevka Quasi")
+  ;; (setq-default line-spacing 0) ; small padding between each line
 #+end_src
 
+* Package Management
 ** elpaca Package Manager
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (defvar elpaca-installer-version 0.7)
   (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
   (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -175,6 +177,13 @@ make sure internet communications are in TLS.this code is taken from [[https://g
       (load "./elpaca-autoloads")))
   (add-hook 'after-init-hook #'elpaca-process-queues)
   (elpaca `(,@elpaca-order))
+
+  ;; don't open the elpaca buffer every time the init file is reloaded
+  (defun oxcl/hide-elpaca-buffer-when-reloading-config ()
+    (ignore (elpaca-process-queues)))
+  (with-eval-after-load "elpaca-log"
+    (setf (alist-get #'oxcl/hide-elpaca-buffer-when-reloading-config elpaca-log-command-queries) 'silent))
+  (advice-add #'oxcl/tangle-and-reload :after #'oxcl/hide-elpaca-buffer-when-reloading-config)
 #+end_src
 
 #+begin_src elisp :tangle no
@@ -182,7 +191,7 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 #+end_src
 
 ** Integrate use-package with elpaca
-#+begin_src elisp :tangle no
+#+begin_src elisp
   (elpaca elpaca-use-package
     (elpaca-use-package-mode)
     (setq use-package-always-ensure t
@@ -192,133 +201,47 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 
 ** delight
 delight is a package that can hide package names from minibuffer
-#+begin_src elisp :tangle no
+#+begin_src elisp
   (use-package delight
     :demand t)
   (elpaca-wait)
 #+end_src
 
-* UI
-** font
-#+begin_src elisp :tangle no
-      (set-face-attribute 'default nil
-                     :family "ioZevka Code"
-                     :height 110)
-      (setq-default line-spacing 1) ; small padding between each line
-#+end_src
-*** font ligature
-#+begin_src elisp :tangle no
-  (use-package ligature
-    :demand t
-    :config
-    ;; Enable the "www" ligature in every possible major mode
-    (ligature-set-ligatures 't '("www"))
-    ;; Enable traditional ligature support in eww-mode, if the
-    ;; `variable-pitch' face supports it
-    (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
-    ;; Enable all Cascadia and Fira Code ligatures in programming modes
-    (ligature-set-ligatures '(prog-mode org-mode)
-                            '(;; == === ==== => =| =>>=>=|=>==>> ==< =/=//=// =~
-                              ;; =:= =!=
-                              ("=" (rx (+ (or ">" "<" "|" "/" "~" ":" "!" "="))))
-                              ;; ;; ;;;
-                              (";" (rx (+ ";")))
-                              ;; && &&&
-                              ("&" (rx (+ "&")))
-                              ;; !! !!! !. !: !!. != !== !~
-                              ("!" (rx (+ (or "=" "!" "\." ":" "~"))))
-                              ;; ?? ??? ?:  ?=  ?.
-                              ("?" (rx (or ":" "=" "\." (+ "?"))))
-                              ;; %% %%%
-                              ("%" (rx (+ "%")))
-                              ;; |> ||> |||> ||||> |] |} || ||| |-> ||-||
-                              ;; |->>-||-<<-| |- |== ||=||
-                              ;; |==>>==<<==<=>==//==/=!==:===>
-                              ("|" (rx (+ (or ">" "<" "|" "/" ":" "!" "}" "\]"
-                                              "-" "=" ))))
-                              ;; \\ \\\ \/
-                              ("\\" (rx (or "/" (+ "\\"))))
-                              ;; ++ +++ ++++ +>
-                              ("+" (rx (or ">" (+ "+"))))
-                              ;; :: ::: :::: :> :< := :// ::=
-                              (":" (rx (or ">" "<" "=" "//" ":=" (+ ":"))))
-                              ;; // /// //// /\ /* /> /===:===!=//===>>==>==/
-                              ("/" (rx (+ (or ">"  "<" "|" "/" "\\" "\*" ":" "!"
-                                              "="))))
-                              ;; .. ... .... .= .- .? ..= ..<
-                              ("\." (rx (or "=" "-" "\?" "\.=" "\.<" (+ "\."))))
-                              ;; -- --- ---- -~ -> ->> -| -|->-->>->--<<-|
-                              ("-" (rx (+ (or ">" "<" "|" "~" "-"))))
-                              ;; *> */ *)  ** *** ****
-                              ("*" (rx (or ">" "/" ")" "*" "***" )))
-                              ;; www wwww
-                              ("w" (rx (+ "w")))
-                              ;; <> <!-- <|> <: <~ <~> <~~ <+ <* <$ </  <+> <*>
-                              ;; <$> </> <|  <||  <||| <|||| <- <-| <-<<-|-> <->>
-                              ;; <<-> <= <=> <<==<<==>=|=>==/==//=!==:=>
-                              ;; << <<< <<<<
-                              ("<" (rx (+ (or "\+" "\*" "\$" "<" ">" ":" "~"  "!"
-                                              "-"  "/" "|" "="))))
-                              ;; >: >- >>- >--|-> >>-|-> >= >== >>== >=|=:=>>
-                              ;; >> >>> >>>>
-                              (">" (rx (+ (or ">" "<" "|" "/" ":" "=" "-"))))
-                              ;; #: #= #! #( #? #[ #{ #_ #_( ## ### #####
-                              ("#" (rx (or ":" "=" "!" "(" "\?" "\[" "{" "_(" "_"
-                                           (+ "#"))))
-                              ;; ~~ ~~~ ~=  ~-  ~@ ~> ~~>
-                              ("~" (rx (or ">" "=" "-" "@" "~>" (+ "~"))))
-                              ;; __ ___ ____ _|_ __|____|_
-                              ("_" (rx (+ (or "_" "|"))))
-                              ;; Fira code: 0xFF 0x12
-                              ("0" (rx (and "x" (+ (in "A-F" "a-f" "0-9")))))
-                              ;; Fira code:
-                              "Fl"  "Tl"  "fi"  "fj"  "fl"  "ft"
-                              ;; The few not covered by the regexps.
-                              "{|"  "[|"  "]#"  "(*"  "}#"  "$>"  "^="))
-    ;; Enables ligature checks globally in all buffers. You can also do it
-    ;; per mode with `ligature-mode'.
-    (global-ligature-mode t))
+** Add local scripts to path
+#+begin_src emacs-lisp
+  (add-to-list 'load-path (expand-file-name "lisp" real-user-emacs-directory))
 #+end_src
 
-** theme
-#+begin_src elisp :tangle no
-  (use-package modus-themes
-    :demand t
-    :config
-    (load-theme 'modus-vivendi :no-confirm))
-#+end_src
+* Packages
+** Theme
+currently i use a heavily modified version of modus-themes.
+the actual colors for the theme is injected into the file ~lisp/modus-custom.el~ using my custom ~pelz~ script
+#+begin_src elisp
+    (use-package modus-themes
+      :demand t
+      :config
+      (setq modus-themes-italic-constructs t
+            modus-themes-bold-constructs t
+            modus-themes-mixed-fonts t ; enable proper proportional fonts in org mode
+            modus-themes-variable-pitch-ui t ; use proportional fonts in ui elements (mainly mode line)
+            modus-themes-prompts '(italic bold)) ; how to style the prompts in the minibuffer
+      ;; how to style the completion user interfaces
+      ;; 'matches' is the part of completion that matches user input
+      ;; 'selection' is the currently selected completion item
+      (setq modus-themes-completions '((matches . (extrabold))
+                                       (selection . (semibold italic text-also))))
 
-** line numbers column
-#+begin_src elisp :tangle no
-  (setq-default display-line-numbers-width 4) ; how many digits for line numbers
-  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
-    (add-hook mode 'display-line-numbers-mode))
-  (setq require-final-newline t)
-#+end_src
+      ;; different font styles for each org-mode heading based on its level
+      (setq modus-themes-headings
+        '((0 . (1.3))
+          (1 . (1.5))
+          (2 . (1.3))
+          (3 . (1.2))
+          (t . (1.1))))
 
-** highlight current line
-#+begin_src elisp :tangle no
-  (global-hl-line-mode)
-  (dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode-hook))
-    (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
+      (require 'modus-custom)
+      (load-theme 'modus-vivendi :no-confirm))
 #+end_src
-
-** icons
-all-the-icons fonts should be installed for this to work
-#+begin_src elisp :tangle no
-  (use-package all-the-icons
-    :if (display-graphic-p))
-#+end_src
-
-** zoom-in/zoom-out
-#+begin_src elisp :tangle no
-  ;; will not work properly without the after-init-hook idk why
-  (add-hook 'after-init-hook (lambda ()
-                               (global-set-key (kbd "C-+") #'text-scale-increase)
-                               (global-set-key (kbd "C--") #'text-scale-decrease)
-                               (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
-#+end_src
-
 * editor
 ** Indentation
 #+begin_src elisp :tangle no
@@ -750,6 +673,111 @@ C-x U : emacs  redo
   (use-package multiple-cursors)
 #+end_src
 
+* font ligature
+#+begin_src elisp :tangle no
+  (use-package ligature
+    :demand t
+    :config
+    ;; Enable the "www" ligature in every possible major mode
+    (ligature-set-ligatures 't '("www"))
+    ;; Enable traditional ligature support in eww-mode, if the
+    ;; `variable-pitch' face supports it
+    (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+    ;; Enable all Cascadia and Fira Code ligatures in programming modes
+    (ligature-set-ligatures '(prog-mode org-mode)
+                            '(;; == === ==== => =| =>>=>=|=>==>> ==< =/=//=// =~
+                              ;; =:= =!=
+                              ("=" (rx (+ (or ">" "<" "|" "/" "~" ":" "!" "="))))
+                              ;; ;; ;;;
+                              (";" (rx (+ ";")))
+                              ;; && &&&
+                              ("&" (rx (+ "&")))
+                              ;; !! !!! !. !: !!. != !== !~
+                              ("!" (rx (+ (or "=" "!" "\." ":" "~"))))
+                              ;; ?? ??? ?:  ?=  ?.
+                              ("?" (rx (or ":" "=" "\." (+ "?"))))
+                              ;; %% %%%
+                              ("%" (rx (+ "%")))
+                              ;; |> ||> |||> ||||> |] |} || ||| |-> ||-||
+                              ;; |->>-||-<<-| |- |== ||=||
+                              ;; |==>>==<<==<=>==//==/=!==:===>
+                              ("|" (rx (+ (or ">" "<" "|" "/" ":" "!" "}" "\]"
+                                              "-" "=" ))))
+                              ;; \\ \\\ \/
+                              ("\\" (rx (or "/" (+ "\\"))))
+                              ;; ++ +++ ++++ +>
+                              ("+" (rx (or ">" (+ "+"))))
+                              ;; :: ::: :::: :> :< := :// ::=
+                              (":" (rx (or ">" "<" "=" "//" ":=" (+ ":"))))
+                              ;; // /// //// /\ /* /> /===:===!=//===>>==>==/
+                              ("/" (rx (+ (or ">"  "<" "|" "/" "\\" "\*" ":" "!"
+                                              "="))))
+                              ;; .. ... .... .= .- .? ..= ..<
+                              ("\." (rx (or "=" "-" "\?" "\.=" "\.<" (+ "\."))))
+                              ;; -- --- ---- -~ -> ->> -| -|->-->>->--<<-|
+                              ("-" (rx (+ (or ">" "<" "|" "~" "-"))))
+                              ;; *> */ *)  ** *** ****
+                              ("*" (rx (or ">" "/" ")" "*" "***" )))
+                              ;; www wwww
+                              ("w" (rx (+ "w")))
+                              ;; <> <!-- <|> <: <~ <~> <~~ <+ <* <$ </  <+> <*>
+                              ;; <$> </> <|  <||  <||| <|||| <- <-| <-<<-|-> <->>
+                              ;; <<-> <= <=> <<==<<==>=|=>==/==//=!==:=>
+                              ;; << <<< <<<<
+                              ("<" (rx (+ (or "\+" "\*" "\$" "<" ">" ":" "~"  "!"
+                                              "-"  "/" "|" "="))))
+                              ;; >: >- >>- >--|-> >>-|-> >= >== >>== >=|=:=>>
+                              ;; >> >>> >>>>
+                              (">" (rx (+ (or ">" "<" "|" "/" ":" "=" "-"))))
+                              ;; #: #= #! #( #? #[ #{ #_ #_( ## ### #####
+                              ("#" (rx (or ":" "=" "!" "(" "\?" "\[" "{" "_(" "_"
+                                           (+ "#"))))
+                              ;; ~~ ~~~ ~=  ~-  ~@ ~> ~~>
+                              ("~" (rx (or ">" "=" "-" "@" "~>" (+ "~"))))
+                              ;; __ ___ ____ _|_ __|____|_
+                              ("_" (rx (+ (or "_" "|"))))
+                              ;; Fira code: 0xFF 0x12
+                              ("0" (rx (and "x" (+ (in "A-F" "a-f" "0-9")))))
+                              ;; Fira code:
+                              "Fl"  "Tl"  "fi"  "fj"  "fl"  "ft"
+                              ;; The few not covered by the regexps.
+                              "{|"  "[|"  "]#"  "(*"  "}#"  "$>"  "^="))
+    ;; Enables ligature checks globally in all buffers. You can also do it
+    ;; per mode with `ligature-mode'.
+    (global-ligature-mode t))
+#+end_src
+
+** line numbers column
+#+begin_src elisp :tangle no
+  (setq-default display-line-numbers-width 4) ; how many digits for line numbers
+  (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
+    (add-hook mode 'display-line-numbers-mode))
+  (setq require-final-newline t)
+#+end_src
+
+** highlight current line
+#+begin_src elisp :tangle no
+  (global-hl-line-mode)
+  (dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode-hook))
+    (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
+#+end_src
+
+** icons
+all-the-icons fonts should be installed for this to work
+#+begin_src elisp :tangle no
+  (use-package all-the-icons
+    :if (display-graphic-p))
+#+end_src
+
+** zoom-in/zoom-out
+#+begin_src elisp :tangle no
+  ;; will not work properly without the after-init-hook idk why
+  (add-hook 'after-init-hook (lambda ()
+                               (global-set-key (kbd "C-+") #'text-scale-increase)
+                               (global-set-key (kbd "C--") #'text-scale-decrease)
+                               (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
+#+end_src
+
 * spell checking
 the builtin flyspell package will check each word under the cursor spelling against the specified backend.
 #+begin_src elisp :tangle no
@@ -1121,8 +1149,10 @@ makes the auto completion smarter by putting more common and more recent complet
 *** rainbow mode
 colorize color codes like #ff0000 in the buffer.
 it is automatically turned on for css,sass,scss and can be manually turned on with M-x rainbow-mode for other buffers
-#+begin_src elisp :tangle no
+#+begin_src elisp
   (use-package rainbow-mode
+    :config
+    (setq rainbow-x-colors-font-lock-keywords '())
     :hook (css-base-mode . rainbow-mode))
 #+end_src
 
@@ -1456,4 +1486,13 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
        (use-package ctrlf
    :config
    (ctrlf-mode 1))
+#+end_src
+* Ido Mode
+#+begin_src elisp :tangle no
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (ido-mode t)
+  (setq ido-use-filename-at-point 'guess
+	ido-use-url-at-point nil)
+  (setq ido-ignore-extensions t)
 #+end_src
