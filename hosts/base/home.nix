@@ -74,11 +74,12 @@
     noto-fonts
     # monospace fonts
     iozevka
+    iozevka-nerd
+    #jetbrains-mono
     vazir-code-font
-    jetbrains-mono
     # icon fonts
     emacs-all-the-icons-fonts
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    # (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     poetry
   ];
 

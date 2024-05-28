@@ -4,11 +4,10 @@
 ! it will mess up the font
 ! also Vazir Code should be set before any Nerd Font for all persian letters to be rendered
 ! correctly (else some letters render as nerd font icons)
-URxvt*font:              xft:JetBrains Mono:pixelsize=14:antialias=true:hinting=true,\
+URxvt*font:              xft:ioZevka Nerd:pixelsize=14:antialias=true:hinting=true,\
                          xft:Vazir Code WOL:pixelsize=16:antialias=true:hinting=true,\
-       xft:JetBrainsMono Nerd Font Mono:pixelsize=14:antialias=true:hinting=true,\
                          xft:Noto Color Emoji:pixelsize=13,\
-       xft:Unifont,\
+                         xft:Unifont
 URxvt*lineSpace:         0
 
 URxvt*letterSpace:       1

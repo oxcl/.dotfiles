@@ -202,7 +202,7 @@ delight is a package that can hide package names from minibuffer
 ** font
 #+begin_src elisp :tangle no
       (set-face-attribute 'default nil
-                     :family "JetBrainsMono"
+                     :family "ioZevka Code"
                      :height 110)
       (setq-default line-spacing 1) ; small padding between each line
 #+end_src

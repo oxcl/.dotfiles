@@ -1,1 +1,12 @@
 import = ["~/.config/alacritty/theme.toml"]
+
+[window]
+padding = { x = 5, y = 5 }
+
+[scrolling]
+history = 100000
+
+[font]
+#normal = { family = "ioZevka Mono", style = "Regular" }
+builtin_box_drawing = false
+#offset = { x = 0, y = 2 }
