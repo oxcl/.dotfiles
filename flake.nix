@@ -3,23 +3,18 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-23.11";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # since rofi-blocks was not available in nixpkgs i wrote my own flake for it.
-    rofi-blocks = {
-      url = "github:oxcl/rofi-blocks-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    gruvbox-material-gtk = {
-      url = "github:oxcl/gruvbox-material-gtk-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    apple-emoji-nix = {
-      url = "github:oxcl/apple-emoji-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    rofi-blocks.url = "github:oxcl/rofi-blocks-nix";
+    rofi-blocks.inputs.nixpkgs.follows = "nixpkgs";
+
+    gruvbox-material-gtk.url = "github:oxcl/gruvbox-material-gtk-nix";
+    gruvbox-material-gtk.inputs.nixpkgs.follows = "nixpkgs";
+
+    iozevka .url = "github:oxcl/iozevka";
+
     unstable-nixpkgs.url = "nixpkgs/nixos-unstable";
   };
 
@@ -35,8 +30,8 @@
     overlays = [
       unstable-overlay
       inputs.rofi-blocks.overlay
+      inputs.iozevka.overlays.default
       inputs.gruvbox-material-gtk.overlays.default
-      inputs.apple-emoji-nix.overlays.default
     ];
     pkgs = import inputs.nixpkgs {
       inherit system overlays;

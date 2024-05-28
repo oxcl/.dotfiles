@@ -1,25 +1,5 @@
 {
   "nodes": {
-    "apple-emoji-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1711624089,
-        "narHash": "sha256-Glk61yudkHfUaTMlfUPLay/d6R/prmIt37oEWtVh+Qw=",
-        "owner": "oxcl",
-        "repo": "apple-emoji-nix",
-        "rev": "5b1a9d2513af73b5a23c7656e34d54a6bf76b34d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxcl",
-        "repo": "apple-emoji-nix",
-        "type": "github"
-      }
-    },
     "gruvbox-material-gtk": {
       "inputs": {
         "nixpkgs": [
@@ -60,7 +40,41 @@
         "type": "github"
       }
     },
+    "iozevka": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1716857020,
+        "narHash": "sha256-AZafVrGP0GyeZa+bLPM/ap/d/Ugw6AmxT0n4AkZb8lg=",
+        "owner": "oxcl",
+        "repo": "iozevka",
+        "rev": "6454af1cbd8a8a4ef3e4c4e6b5a623a636b9b675",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxcl",
+        "repo": "iozevka",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
+      "locked": {
+        "lastModified": 1688392541,
+        "narHash": "sha256-lHrKvEkCPTUO+7tPfjIcb7Trk6k31rz18vkyqmkeJfY=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-22.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
       "locked": {
         "lastModified": 1712437997,
         "narHash": "sha256-g0whLLwRvgO2FsyhY8fNk+TWenS3jg5UdlWL4uqgFeo=",
@@ -97,10 +111,10 @@
     },
     "root": {
       "inputs": {
-        "apple-emoji-nix": "apple-emoji-nix",
         "gruvbox-material-gtk": "gruvbox-material-gtk",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs",
+        "iozevka": "iozevka",
+        "nixpkgs": "nixpkgs_2",
         "rofi-blocks": "rofi-blocks",
         "unstable-nixpkgs": "unstable-nixpkgs"
       }

@@ -73,7 +73,7 @@
     vazir-fonts
     noto-fonts
     # monospace fonts
-    # TODO: custom iozevka
+    iozevka
     vazir-code-font
     jetbrains-mono
     # icon fonts
