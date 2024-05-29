@@ -40,11 +40,11 @@ most of theses optimizations are taken from doom emacs [[https://github.com/doom
 
 ** Unclutter Working Directory
 because many packages including builtin ones use ~user-emacs-directory~ i just move the folder to cache
-#+begin_src elisp
+#+begin_src elisp :tangle ./init.el
   (setq real-user-emacs-directory user-emacs-directory
-	user-emacs-directory oxcl/cache-dir
-	server-auth-dir (expand-file-name "server" real-user-emacs-directory)
-	;; relocate backup files
+    user-emacs-directory oxcl/cache-dir
+    server-auth-dir (expand-file-name "server" real-user-emacs-directory)
+    ;; relocate backup files
 	backup-directory-alist `((".*" . ,(expand-file-name "emacs/backups" oxcl/cache-dir)))
 	;; relocate auto-save files
 	auto-save-file-name-transforms `((".*" ,(expand-file-name "save" oxcl/cache-dir) t))
@@ -88,7 +88,7 @@ make sure internet communications are in TLS.this code is taken from [[https://g
 #+end_src
 
 * Emacs Config Auto Reload
-#+begin_src elisp
+#+begin_src elisp :tangle ./init.el
   (defun oxcl/add-tangle-and-reload-hook ()
     (when (equal (file-truename (concat real-user-emacs-directory "config.org"))
 		 (buffer-file-name))
@@ -162,20 +162,20 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 
 * Simple Enhancements
 ** persistent cursor position across sessions
-#+begin_src elisp
+#+begin_src elisp :tangle ./init.el
   (save-place-mode 1)
   (setq save-place-forget-unreadable-files nil)
 #+end_src
 
 ** persistent minibuffer history across sessions
-#+begin_src elisp
+#+begin_src elisp :tangle ./init.el
   (savehist-mode 1)
   (add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))
 #+end_src
 
 * UI
 ** font
-#+begin_src elisp
+#+begin_src elisp :tangle ./init.el
     (set-frame-font "ioZevka Code 11" nil t)
     (set-face-attribute 'fixed-pitch nil :family "ioZevka Code")
     (set-face-attribute 'variable-pitch nil :family "ioZevka Quasi")
@@ -498,7 +498,7 @@ replace builtin tree-sitter major modes with the old ones
 
 * Package Management
 ** elpaca Package Manager
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle ./init.el
   (defvar elpaca-installer-version 0.7)
   (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
   (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -551,7 +551,7 @@ replace builtin tree-sitter major modes with the old ones
 #+end_src
 
 ** Integrate use-package with elpaca
-#+begin_src elisp
+#+begin_src elisp :tangle ./init.el
   (elpaca elpaca-use-package
     (elpaca-use-package-mode)
     (setq use-package-always-ensure t
@@ -568,7 +568,7 @@ delight is a package that can hide package names from minibuffer
 #+end_src
 
 ** Add local scripts to path
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle ./init.el
   (add-to-list 'load-path (expand-file-name "lisp" real-user-emacs-directory))
 #+end_src
 
@@ -609,17 +609,17 @@ the actual colors for the theme is injected into the file ~lisp/modus-custom.el~
     :ensure (:host github :repo "jdtsmith/indent-bars" :branch "dev")
     :config
     (setq indent-bars-color '("white" :blend 0.1)
-          indent-bars-ts-color '("white" :blend 0.1)
-          indent-bars-highlight-current-depth '(:color "white" :blend 0.25)
-          indent-bars-starting-column 0
-          indent-bars-color-by-depth nil
-          indent-bars-pattern "."
-          indent-bars-width-frac 0.1
-          indent-bars-treesit-support t
-          indent-bars-treesit-scope '((bash if_statement))
-          indent-bars-depth-update-delay 0.03
-          indent-bars-treesit-update-delay 0.3
-          indent-bars-treesit-scope-min-lines 0)
+     indent-bars-ts-color '("white" :blend 0.1)
+     indent-bars-highlight-current-depth '(:color "white" :blend 0.25)
+     indent-bars-starting-column 0
+     indent-bars-color-by-depth nil
+     indent-bars-pattern "."
+     indent-bars-width-frac 0.1
+     indent-bars-treesit-support t
+     indent-bars-treesit-scope '((bash if_statement))
+     indent-bars-depth-update-delay 0.03
+     indent-bars-treesit-update-delay 0.3
+     indent-bars-treesit-scope-min-lines 0)
     ;;          indent-bars-no-descend-string t
     :hook (prog-mode conf-mode)
     :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1))))
@@ -720,7 +720,7 @@ since the builtin support for tree-sitter major modes is limited to few language
         (editorconfig-mode 1))
 #+end_src
 
-** font ligature
+** Font Ligature
 enable support for font ligatures
 #+begin_src elisp
   (use-package ligature
@@ -795,13 +795,37 @@ enable support for font ligatures
     (global-ligature-mode t))
 #+end_src
 
-** spell checking
+** Spell Checking
 #+begin_src elisp
   (use-package jinx
     :config
-    (setq jinx-languages "en_US fa_IR de_DE")
+    (setq jinx-languages "en_US de_DE fa_IR"
+          jinx-camel-modes '(prog-mode conf-mode org-mode)
+          jinx-exclude-faces '((t font-lock-keyword-face font-lock-builtin-face)))
+    (add-to-list 'jinx-exclude-regexps '(t "\\b[a-zA-Z]\\{2\\}\\b"))
+    (defun oxcl/jinx-lower-case-word-valid-p (start)
+      "Returns non-nil if word, that is assumed to be in lower case, at
+       START is valid, or would be valid if capitalized or upcased."
+      (let ((word (buffer-substring-no-properties start (point))))
+        (or (member word jinx--session-words)
+            (cl-loop for dict in jinx--dicts thereis
+                     (or
+                      (jinx--mod-check dict (upcase word))
+                      (jinx--mod-check dict (capitalize word))
+                      (jinx--mod-check dict word))))))
+    (set 'jinx--predicates (cl-substitute
+                            #'oxcl/jinx-lower-case-word-valid-p
+                            #'jinx--word-valid-p
+                            jinx--predicates))
+    (defun oxcl/jinx-add-to-personal ()
+      (interactive)
+      (execute-kbd-macro (kbd "C-$ @")))
+    :bind
+    ("C-$" . jinx-correct)
+    ("C-@" . oxcl/jinx-add-to-personal)
     :hook (text-mode prog-mode conf-mode org-mode))
 #+end_src
+
 * ----------------------------------------------------
 * zoom-in/zoom-out
 #+begin_src elisp :tangle no
@@ -816,16 +840,7 @@ enable support for font ligatures
 the builtin flyspell package will check each word under the cursor spelling against the specified backend.
 #+begin_src elisp :tangle no
     ;; ignore case sensitive spell checks
-    (defun oxcl/jinx-lower-case-word-valid-p (start)
-      "Return non-nil if word, that is assumed to be in lower case, at
-       START is valid, or would be valid if capitalized or upcased."
-      (let ((word (buffer-substring-no-properties start (point))))
-        (or (member word jinx--session-words)
-      (cl-loop for dict in jinx--dicts thereis
-         (or
-          (jinx--mod-check dict (upcase word))
-          (jinx--mod-check dict (capitalize word))
-          (jinx--mod-check dict word))))))
+
     (defun oxcl/jinx-add-to-personal ()
       (interactive)
       (let ((word (current-word t t)))
@@ -834,19 +849,8 @@ the builtin flyspell package will check each word under the cursor spelling agai
         (jinx-mode 1)))
     (use-package jinx
       :custom
-      (jinx-camel-modes '(prog-mode conf-mode org-mode))
-      (jinx-exclude-faces '((org-mode org-block-begin-line org-block-end-line)
-          (t font-lock-keyword-face font-lock-builtin-face)))
-      :config
-      (add-to-list 'jinx-exclude-regexps '(t "\\b[a-zA-Z]\\{2\\}\\b"))
-      (set 'jinx--predicates
-     (cl-substitute
-      #'oxcl/jinx-lower-case-word-valid-p
-      #'jinx--word-valid-p
-      jinx--predicates))
       :bind
-      ("C-$" . jinx-correct)
-      ("C-@" . oxcl/jinx-add-to-personal))
+)
 #+end_src
 
 * minibuffer

@@ -84,9 +84,11 @@
     aspell
     aspellDicts.en
     aspellDicts.de
+    aspellDicts.fa
     hunspell
     hunspellDicts.en-us
     hunspellDicts.de-de
+    hunspellDicts.fa-ir
   ];
 
   programs.firefox = {

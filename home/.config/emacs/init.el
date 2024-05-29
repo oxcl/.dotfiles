@@ -500,17 +500,17 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   :ensure (:host github :repo "jdtsmith/indent-bars" :branch "dev")
   :config
   (setq indent-bars-color '("white" :blend 0.1)
-        indent-bars-ts-color '("white" :blend 0.1)
-        indent-bars-highlight-current-depth '(:color "white" :blend 0.25)
-        indent-bars-starting-column 0
-        indent-bars-color-by-depth nil
-        indent-bars-pattern "."
-        indent-bars-width-frac 0.1
-        indent-bars-treesit-support t
-        indent-bars-treesit-scope '((bash if_statement))
-        indent-bars-depth-update-delay 0.03
-        indent-bars-treesit-update-delay 0.3
-        indent-bars-treesit-scope-min-lines 0)
+   indent-bars-ts-color '("white" :blend 0.1)
+   indent-bars-highlight-current-depth '(:color "white" :blend 0.25)
+   indent-bars-starting-column 0
+   indent-bars-color-by-depth nil
+   indent-bars-pattern "."
+   indent-bars-width-frac 0.1
+   indent-bars-treesit-support t
+   indent-bars-treesit-scope '((bash if_statement))
+   indent-bars-depth-update-delay 0.03
+   indent-bars-treesit-update-delay 0.3
+   indent-bars-treesit-scope-min-lines 0)
   ;;          indent-bars-no-descend-string t
   :hook (prog-mode conf-mode)
   :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1))))
@@ -655,7 +655,30 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (use-package jinx
   :config
-  (setq jinx-languages "en_US fa_IR de_DE")
+  (setq jinx-languages "en_US de_DE fa_IR"
+        jinx-camel-modes '(prog-mode conf-mode org-mode)
+        jinx-exclude-faces '((t font-lock-keyword-face font-lock-builtin-face)))
+  (add-to-list 'jinx-exclude-regexps '(t "\\b[a-zA-Z]\\{2\\}\\b"))
+  (defun oxcl/jinx-lower-case-word-valid-p (start)
+    "Returns non-nil if word, that is assumed to be in lower case, at
+     START is valid, or would be valid if capitalized or upcased."
+    (let ((word (buffer-substring-no-properties start (point))))
+      (or (member word jinx--session-words)
+          (cl-loop for dict in jinx--dicts thereis
+                   (or
+                    (jinx--mod-check dict (upcase word))
+                    (jinx--mod-check dict (capitalize word))
+                    (jinx--mod-check dict word))))))
+  (set 'jinx--predicates (cl-substitute
+                          #'oxcl/jinx-lower-case-word-valid-p
+                          #'jinx--word-valid-p
+                          jinx--predicates))
+  (defun oxcl/jinx-add-to-personal ()
+    (interactive)
+    (execute-kbd-macro (kbd "C-$ @")))
+  :bind
+  ("C-$" . jinx-correct)
+  ("C-@" . oxcl/jinx-add-to-personal)
   :hook (text-mode prog-mode conf-mode org-mode))
 
 (use-package rainbow-mode
