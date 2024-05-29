@@ -26,6 +26,10 @@ bg8            = "#665c54"
 fgDim          = "#c5b18d"
 fgBright       = "#ddc7a1"
 
+grey0          = "#7c6f64"
+grey1          = "#928374"
+grey2          = "#a89984"
+
 blackDim       = "#181919"
 redDim         = "#b85651"
 greenDim       = "#8f9a52"

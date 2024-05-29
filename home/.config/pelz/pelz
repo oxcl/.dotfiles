@@ -75,6 +75,10 @@ whiteBright=$(get_prop whiteBright $white)
 fgDim=$(get_prop fgDim $fg)
 fgBright=$(get_prop fgBright $fg)
 
+grey0=$(get_prop grey0 $blackBright)
+grey1=$(get_prop grey1 $grey0)
+grey2=$(get_prop grey2 $grey1)
+
 bgDim=$(get_prop bgDim $bg)
 bg0=$(get_prop bg0 $bgDim)
 bg1=$(get_prop bg1 $bg0)
@@ -133,4 +137,7 @@ cat $TEMPLATE_FILE \
  -e "s/{{whiteBright}}/$whiteBright/g"\
  -e "s/{{orange}}/$orange/g"\
  -e "s/{{orangeDim}}/$orangeDim/g"\
- -e "s/{{orangeBright}}/$orangeBright/g"
+ -e "s/{{orangeBright}}/$orangeBright/g"\
+ -e "s/{{grey0}}/$grey0/g"\
+ -e "s/{{grey1}}/$grey1/g"\
+ -e "s/{{grey2}}/$grey2/g"\

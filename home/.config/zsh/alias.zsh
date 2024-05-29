@@ -12,7 +12,6 @@ alias l.="ls -ldv .*" # list dot files"
 alias lt="ls -lth" # sort by time
 alias lS="ls -lSh" # sort by file size
 alias diff='diff --color' # colorized diffs
-alias latest='command ls -t | head -n1'
 
 # make grep use colors and ignore some special folders by default
 GREP_OPTIONS="--color=auto --exclude-dir={.git,CVS,.hg,.bzr,.svn,.idea,.tox}"

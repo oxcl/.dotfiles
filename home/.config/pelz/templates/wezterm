@@ -19,24 +19,24 @@ local colors = {
   split = '#{{bg0}}',
 
   ansi = {
-    '#{{black}}',
-    '#{{red}}',
-    '#{{green}}',
-    '#{{yellow}}',
-    '#{{blue}}',
-    '#{{magenta}}',
-    '#{{cyan}}',
-    '#{{white}}',
+    '#{{black}}', -- black
+    '#{{red}}', -- red
+    '#{{green}}', -- green
+    '#{{yellow}}', -- yellow
+    '#{{blue}}', -- blue
+    '#{{magenta}}', -- magenta
+    '#{{cyan}}', -- cyan
+    '#{{white}}', -- white
   },
   brights = {
-    '#{{blackBright}}',
-    '#{{redBright}}',
-    '#{{greenBright}}',
-    '#{{yellowBright}}',
-    '#{{blueBright}}',
-    '#{{magentaBright}}',
-    '#{{cyanBright}}',
-    '#{{whiteBright}}'
+    '#{{blackBright}}', -- blackBright
+    '#{{redBright}}', -- redBright
+    '#{{greenBright}}', -- greenBright
+    '#{{yellowBright}}', -- yellowBright
+    '#{{blueBright}}', -- blueBright
+    '#{{magentaBright}}', -- magentaBright
+    '#{{cyanBright}}', -- cyanBright
+    '#{{whiteBright}}' -- whiteBright
   },
 
   -- Arbitrary colors of the palette in the range from 16 to 255

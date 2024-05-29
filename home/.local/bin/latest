@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+command ls -t $@ | head -n1

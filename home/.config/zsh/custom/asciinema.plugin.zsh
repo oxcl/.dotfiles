@@ -4,15 +4,21 @@
 # recordings are saved at $HOME/asciinema and a .cast extension is added to them automatically
 
 # creates a new asciinema recording in $HOME/asciinema based on the provided name or an automatically generated one
+
+function convert_cast(){
+    filename="$1"
+    agg $filename "${filename%.cast}.gif" \
+        --theme $(echo "$MY_THEME_BG,$MY_THEME_FG,$MY_THEME_BLACK,$MY_THEME_RED,$MY_THEME_GREEN,$MY_THEME_YELLOW,$MY_THEME_BLUE,$MY_THEME_MAGENTA,$MY_THEME_CYAN,$MY_THEME_WHITE,$MY_THEME_BLACK_BRIGHT,$MY_THEME_RED_BRIGHT,$MY_THEME_GREEN_BRIGHT,$MY_THEME_YELLOW_BRIGHT,$MY_THEME_BLUE_BRIGHT,$MY_THEME_MAGENTA_BRIGHT,$MY_THEME_CYAN_BRIGHT,$MY_THEME_WHITE_BRIGHT" | tr -d '#')
+}
+
 function rec() {
     [[ ! -d "$HOME/asciinema" ]] && mkdir -p "$HOME/asciinema"
     [ -n "$1" ] && local filename="$HOME/asciinema/$1.cast" || local filename="$HOME/asciinema/$(date +'%Y-%m-%d-%H-%M-%S').cast"
     asciinema rec "$filename"
     [[ "$?" != 0 ]] && return
     # convert to gif
+    convert_cast "$filename"
     if command -v agg &>/dev/null; then
-	agg $filename "${filename%.cast}.gif" \
-	    --theme $(echo "$MY_THEME_BG,$MY_THEME_FG,$MY_THEME_BG0,$MY_THEME_RED,$MY_THEME_GREEN,$MY_THEME_YELLOW,$MY_THEME_BLUE,$MY_THEME_PURPLE,$MY_THEME_AQUA,$MY_THEME_FG,$MY_THEME_DARK_GREY,$MY_THEME_RED_SUBTLE,$MY_THEME_GREEN_SUBTLE,$MY_THEME_YELLOW_SUBTLE,$MY_THEME_BLUE_SUBTLE,$MY_THEME_PURPLE_SUBTLE,$MY_THEME_AQUA_SUBTLE,$MY_THEME_LIGHT_GREY" | tr -d '#')
 	[[ "$?" != 0 ]] || ! command -v gifsicle && return
 	# make an optimized version of the gif 
 	gifsicle --lossy=80 -k 64 -O2 -Okeep-empty "${filename%.cast}.gif" -o "${filename%.cast}.opt.gif"

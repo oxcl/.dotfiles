@@ -5,11 +5,23 @@
 '((bg-main "#{{bg}}")
 (bg-dim "#{{bg0}}")
 (fg-main "#{{fg}}")
-(fg-dim "#{{fgDim}}")
+(fg-dim "#{{grey0}}")
 (fg-alt "#c6daff")
 (bg-active "#{{bg3}}")
 (bg-inactive "#303030")
-(border "#646464")
+(border "#{{bg6}}")
+(bg-hl-line "#{{bg1}}")
+
+(bg-region "#{{bg4}}")
+(fg-region unspecified)
+
+(bg-mode-line-active "#{{bg5}}")
+(fg-mode-line-active "#{{fgBright}}")
+(border-mode-line-active "#{{bg7}}")
+
+(bg-mode-line-inactive "#{{bg0}}")
+(fg-mode-line-inactive "#{{grey1}}")
+(border-mode-line-inactive "#{{bg3}}")
 
 (red "#{{red}}")
 (red-warmer "#ff6b55")
@@ -47,8 +59,6 @@
 (cyan-faint "#{{cyanDim}}")
 (cyan-intense "#{{cyanBright}}")
 
-(rust "#db7b5f")
-(gold "#c0965b")
 (olive "#9cbd6f")
 (slate "#76afbf")
 (indigo "#9099d9")
@@ -79,9 +89,17 @@
 (bg-yellow-subtle "#4a4000")
 (bg-yellow-nuanced "#381d0f")
 
-(bg-ochre "#442c2f")
 (bg-lavender "#38325c")
 (bg-sage "#0f3d30")
+
+;; modus-themes doesn't have an orange color so we have to use other colors for orange
+(rust "#{{orange}}") ;; this is orange
+(gold "#{{orangeBright}}") ;; this is orangeBright
+(bg-ochre "#{{orangeDim}}") ;; this is orangeDim
+
+(modeline-err "#ffa9bf")
+(modeline-warning "#dfcf43")
+(modeline-info "#9fefff")
 
 (bg-graph-red-0 "#b52c2c")
 (bg-graph-red-1 "#702020")
@@ -100,25 +118,9 @@
 (bg-hover "#45605e")
 (bg-hover-secondary "#654a39")
 
-(bg-hl-line "#2f3849")
-
-(bg-region "#5a5a5a")
-(fg-region "#ffffff")
-
 (bg-char-0 "#0050af")
 (bg-char-1 "#7f1f7f")
 (bg-char-2 "#625a00")
-
-(bg-mode-line-active "#505050")
-(fg-mode-line-active "#ffffff")
-(border-mode-line-active "#959595")
-(bg-mode-line-inactive "#2d2d2d")
-(fg-mode-line-inactive "#969696")
-(border-mode-line-inactive "#606060")
-
-(modeline-err "#ffa9bf")
-(modeline-warning "#dfcf43")
-(modeline-info "#9fefff")
 
 (bg-tab-bar "#313131")
 (bg-tab-current "#000000")

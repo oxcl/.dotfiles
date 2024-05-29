@@ -86,6 +86,44 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (tooltip-mode -1) ; hide tooltip popup window on mouse hover
 (set-fringe-mode '(2 . 2)) ; add small margin to the right of the editor
 
+(setq scroll-error-top-bottom t ; put the cursor at the top or bottom of the window if no more scrolls are possible
+      scroll-conservatively 100 ; only scroll the minimum lines at a time when the cursor goes out the window
+      scroll-margin 5) ; start scrolling the window when the distance between the cursor and the window boundaries are less than this number
+
+;; make ScrollDown and ScrollUp Commands Scroll half a screen
+(defun oxcl/scroll-up-half ()
+  (interactive)
+  (scroll-up-command
+   (floor
+    (- (window-height)
+       next-screen-context-lines)
+    2)))
+(defun oxcl/scroll-down-half ()
+  (interactive)
+  (scroll-down-command
+   (floor
+    (- (window-height)
+       next-screen-context-lines)
+    2)))
+(defun oxcl/scroll-other-down-half()
+  (interactive)
+  (scroll-other-window-down
+   (floor
+    (- (window-height)
+       next-screen-context-lines)
+    2)))
+(defun oxcl/scroll-other-up-half()
+  (interactive)
+  (scroll-other-window
+   (floor
+    (- (window-height)
+       next-screen-context-lines)
+    2)))
+(global-set-key (kbd "<next>") 'oxcl/scroll-up-half)
+(global-set-key (kbd "<prior>") 'oxcl/scroll-down-half)
+(global-set-key (kbd "M-<next>") 'oxcl/scroll-other-up-half)
+(global-set-key (kbd "M-<prior>") 'oxcl/scroll-other-down-half)
+
 (save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
 
@@ -95,9 +133,11 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (set-frame-font "ioZevka Code 11" nil t)
 (set-face-attribute 'fixed-pitch nil :family "ioZevka Code")
 (set-face-attribute 'variable-pitch nil :family "ioZevka Quasi")
-;; (setq-default line-spacing 0) ; small padding between each line
+(set-face-attribute 'bold nil :weight 'semibold)
+(setq-default line-spacing 1) ; small padding between each line
 
-(setq-default display-line-numbers-width 4) ; how many digits for line numbers
+(setq-default display-line-numbers-width-start 4 ; how many digits for line numbers
+              display-line-numbers-grow-only t) ; in case a buffer is larger than 9999 lines
 (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
   (add-hook mode 'display-line-numbers-mode))
 
@@ -324,6 +364,30 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (global-set-key (kbd "M-i") #'oxcl/indent-right)
 (global-set-key (kbd "M-m") #'oxcl/indent-left)
 
+(defun oxcl/backspace-whitespace-to-tab-stop ()
+  "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
+  (interactive)
+  (if (or indent-tabs-mode (use-region-p)
+          (> (point)
+             (save-excursion
+               (back-to-indentation)
+               (point))))
+      (call-interactively 'backward-delete-char)
+    (let ((step (% (current-column) tab-width))
+          (pt (point)))
+      (when (zerop step)
+        (setq step tab-width))
+      ;; Account for edge case near beginning of buffer.
+      (setq step (min (- pt 1) step))
+      (save-match-data
+        (if (string-match "[^\t ]*\\([\t ]+\\)$"
+                          (buffer-substring-no-properties
+                           (- pt step) pt))
+            (backward-delete-char (- (match-end 1)
+                                     (match-beginning 1)))
+          (call-interactively 'backward-delete-char))))))
+(global-set-key (kbd "DEL") #'oxcl/backspace-whitespace-to-tab-stop)
+
 (setq-default fill-column 100)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
@@ -424,26 +488,31 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
   ;; different font styles for each org-mode heading based on its level
   (setq modus-themes-headings
-    '((0 . (1.3))
-      (1 . (1.5))
-      (2 . (1.3))
-      (3 . (1.2))
-      (t . (1.1))))
+        '((0 . (1.3))
+          (1 . (1.5))
+          (2 . (1.3))
+          (3 . (1.2))
+          (t . (1.1))))
   (require 'modus-custom)
-  (load-theme 'modus-vivendi :no-confirm))
+  (modus-themes-load-theme 'modus-vivendi))
 
 (use-package indent-bars
-  :ensure (:host github :repo "jdtsmith/indent-bars")
+  :ensure (:host github :repo "jdtsmith/indent-bars" :branch "dev")
   :config
-  (setq indent-bars-color '("white" :blend 0.15)
-    indent-bars-color-by-depth nil
-    indent-bars-pattern "."
-    indent-bars-width-frac 0.1
-    indent-bars-no-descend-string t
-    indent-bars-treesit-support t
-    indent-bars-treesit-update-delay 0.1
-    indent-bars-treesit-scope '()
-    indent-bars-treesit-scope-min-lines 2)
+  (setq indent-bars-color '("white" :blend 0.1)
+        indent-bars-ts-color '("white" :blend 0.25)
+        indent-bars-color-by-depth nil
+        indent-bars-pattern "."
+        indent-bars-width-frac 0.1
+        indent-bars-no-descend-string t
+        indent-bars-treesit-support t
+        indent-bars-treesit-update-delay 0.1
+        indent-bars-starting-column 0
+        indent-bars-treesit-scope nil
+        ;;'((typescript if_statement statement_block arguments))
+        ;; '((bash if_statement do_group subshell test_command compound_statement else_clause case_statement case_item))
+        indent-bars-ts-styling-scope 'in-scope
+        indent-bars-treesit-scope-min-lines 2)
   :hook (prog-mode conf-mode)
   :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1))))
 
@@ -454,6 +523,14 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   :custom
   (highlight-indent-guides-method 'character)
   (highlight-indent-guides-auto-character-face-perc 85))
+
+(use-package idle-highlight-mode
+  :hook ((prog-mode text-mode) . idle-highlight-mode)
+  :config
+  (setq idle-highlight-idle-time 0.1
+        idle-highlight-exceptions-face nil ; '(font-lock-comment-face)
+        idle-highlight-visible-buffers t
+        idle-highlight-before-point t))
 
 (use-package nix-ts-mode
   :commands (nix-ts-mode)
@@ -486,7 +563,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
                                   (indent-bars-mode -1)
                                   (setq oxcl/indent-bars-mode-off-for-now t))))
   (add-hook 'after-save-hook (lambda ()
-                               (when (and (bound-and-true-p indent-bars-mode)
+                               (when (and (boundp indent-bars-mode)
                                           oxcl/indent-bars-mode-off-for-now)
                                  (indent-bars-mode 1)
                                  (setq oxcl/indent-bars-mode-off-for-now nil))))
@@ -496,7 +573,15 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   :demand t
   :config
   (setq editorconfig-trim-whitespaces-mode (if (boundp 'ws-butler-mode) 'ws-butler-mode nil))
-  (editorconfig-mode 1))
+  (defun oxcl/update-indent-bars-with-editorconfig (size)
+    (when (bound-and-true-p indent-bars-mode)
+      (setq indent-bars-spacing-override size)
+      (indent-bars-reset)))
+  (dolist (_mode editorconfig-indentation-alist)
+    (let ((_varlist (cdr _mode)))
+      (setcdr _mode (append '((_ . oxcl/update-indent-bars-with-editorconfig))
+                                (if (listp _varlist) _varlist `(,_varlist))))))
+      (editorconfig-mode 1))
 
 (use-package ligature
   :demand t
