@@ -500,19 +500,18 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   :ensure (:host github :repo "jdtsmith/indent-bars" :branch "dev")
   :config
   (setq indent-bars-color '("white" :blend 0.1)
-        indent-bars-ts-color '("white" :blend 0.25)
+        indent-bars-ts-color '("white" :blend 0.1)
+        indent-bars-highlight-current-depth '(:color "white" :blend 0.25)
+        indent-bars-starting-column 0
         indent-bars-color-by-depth nil
         indent-bars-pattern "."
         indent-bars-width-frac 0.1
-        indent-bars-no-descend-string t
         indent-bars-treesit-support t
-        indent-bars-treesit-update-delay 0.1
-        indent-bars-starting-column 0
-        indent-bars-treesit-scope nil
-        ;;'((typescript if_statement statement_block arguments))
-        ;; '((bash if_statement do_group subshell test_command compound_statement else_clause case_statement case_item))
-        indent-bars-ts-styling-scope 'in-scope
-        indent-bars-treesit-scope-min-lines 2)
+        indent-bars-treesit-scope '((bash if_statement))
+        indent-bars-depth-update-delay 0.03
+        indent-bars-treesit-update-delay 0.3
+        indent-bars-treesit-scope-min-lines 0)
+  ;;          indent-bars-no-descend-string t
   :hook (prog-mode conf-mode)
   :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1))))
 
@@ -653,6 +652,11 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   ;; Enables ligature checks globally in all buffers. You can also do it
   ;; per mode with `ligature-mode'.
   (global-ligature-mode t))
+
+(use-package jinx
+  :config
+  (setq jinx-languages "en_US fa_IR de_DE")
+  :hook (text-mode prog-mode conf-mode org-mode))
 
 (use-package rainbow-mode
   :config

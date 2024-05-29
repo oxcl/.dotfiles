@@ -22,6 +22,9 @@
 (bg-line-number-inactive bg-main)
 (bg-line-number-active bg-hl-line)
 
+(underline-err red-faint)
+(underline-warning yellow-faint)
+(underline-note cyan-faint)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (keybind blue-cooler)
@@ -29,9 +32,7 @@
 (identifier yellow-faint)
 (err red)
 (info cyan-cooler)
-(underline-err red-intense)
-(underline-warning yellow)
-(underline-note cyan)
+
 (bg-prominent-err bg-red-intense)
 (fg-prominent-err fg-main)
 (bg-prominent-warning bg-yellow-intense)
@@ -207,5 +208,6 @@
      ;; add extra padding to mode line
      `(mode-line ((,c :box (:line-width 4 :color ,bg-mode-line-active))))
      `(mode-line-inactive ((,c :box (:line-width 4 :color ,bg-mode-line-inactive))))
-     `(idle-highlight ((,c (:background ,bg-active)))))))
+     `(idle-highlight ((,c (:background ,bg-active))))
+     `(jinx-misspelled ((,c (:underline (:style wave :color ,green-faint))))))))
 (add-hook 'modus-themes-after-load-theme-hook #'oxcl/modus-themes-apply-custom-faces)

@@ -81,6 +81,12 @@
     emacs-all-the-icons-fonts
     # (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     poetry
+    aspell
+    aspellDicts.en
+    aspellDicts.de
+    hunspell
+    hunspellDicts.en-us
+    hunspellDicts.de-de
   ];
 
   programs.firefox = {

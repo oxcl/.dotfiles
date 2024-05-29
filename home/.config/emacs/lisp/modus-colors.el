@@ -1,6 +1,6 @@
 (provide 'modus-colors)
-;; the colors are automatically injeceted in this file using the 'pelz' script i wrote which you can find
-;; in my dotfilese (~/.local/bin/pelz).
+;; the colors are automatically injected in this file using the 'pelz' script i wrote which you can find
+;; in my dotfiles (~/.local/bin/pelz).
 (setq modus-vivendi-palette-overrides
 '((bg-main "#202020")
 (bg-dim "#131414")
