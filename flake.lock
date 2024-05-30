@@ -45,11 +45,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1717050094,
-        "narHash": "sha256-FX/JKvtjNv2OZsLfqiIuYHsOhCxJbIm716AF3LQD9lI=",
+        "lastModified": 1717051310,
+        "narHash": "sha256-KRG+q4tnO6AbhwYCBeO0X1uZeoctYew0YOQiMK4nXXA=",
         "owner": "oxcl",
         "repo": "iozevka",
-        "rev": "02073136d13b2724420d1ee4c6acadf3c7f0f9c7",
+        "rev": "58c8cbe70713f87370df8c7a1df0afe6dd818b74",
         "type": "github"
       },
       "original": {

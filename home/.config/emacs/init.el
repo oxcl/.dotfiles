@@ -496,6 +496,14 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   (require 'modus-custom)
   (modus-themes-load-theme 'modus-vivendi))
 
+(use-package idle-highlight-mode
+  :hook ((prog-mode text-mode) . idle-highlight-mode)
+  :config
+  (setq idle-highlight-idle-time 0.1
+        idle-highlight-exceptions-face nil ; '(font-lock-comment-face)
+        idle-highlight-visible-buffers t
+        idle-highlight-before-point t))
+
 (use-package indent-bars
   :ensure (:host github :repo "jdtsmith/indent-bars")
   :config
@@ -511,7 +519,6 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
         indent-bars-depth-update-delay 0.03
         indent-bars-treesit-update-delay 0.1
         indent-bars-treesit-scope-min-lines 0)
-  ;;          indent-bars-no-descend-string t
   :hook (prog-mode conf-mode)
   :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1))))
 
@@ -523,30 +530,11 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   (highlight-indent-guides-method 'character)
   (highlight-indent-guides-auto-character-face-perc 85))
 
-(use-package idle-highlight-mode
-  :hook ((prog-mode text-mode) . idle-highlight-mode)
+(use-package rainbow-mode
   :config
-  (setq idle-highlight-idle-time 0.1
-        idle-highlight-exceptions-face nil ; '(font-lock-comment-face)
-        idle-highlight-visible-buffers t
-        idle-highlight-before-point t))
-
-(use-package nix-ts-mode
-  :commands (nix-ts-mode)
-  :mode "\\.nix\\'")
-
-(use-package lua-ts-mode
-  :ensure (:host sourcehut :repo "johnmuhl/lua-ts-mode")
-  :mode "\\.lua\\'"
-  :commands (lua-ts-mode))
-
-(use-package kotlin-ts-mode
-  :commands (kotlin-ts-mode)
-  :mode "\\.kt\\'")
-
-(use-package clojure-ts-mode
-  :commands (clojure-ts-mode)
-  :mode "\\.\\(clj\\|cljs\\|cljc\\)\\'")
+  (setq rainbow-x-colors-font-lock-keywords '())
+  (add-hook 'rainbow-mode-hook (hl-line-mode (if rainbow-mode -1 +1)))
+  :hook (css-base-mode . rainbow-mode))
 
 (use-package ws-butler
   :demand t
@@ -567,6 +555,63 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
                                  (indent-bars-mode 1)
                                  (setq oxcl/indent-bars-mode-off-for-now nil))))
   (ws-butler-global-mode))
+
+(use-package nix-ts-mode
+  :commands (nix-ts-mode)
+  :mode "\\.nix\\'")
+
+(use-package lua-ts-mode
+  :ensure (:host sourcehut :repo "johnmuhl/lua-ts-mode")
+  :mode "\\.lua\\'"
+  :commands (lua-ts-mode))
+
+(use-package kotlin-ts-mode
+  :commands (kotlin-ts-mode)
+  :mode "\\.kt\\'")
+
+(use-package clojure-ts-mode
+  :commands (clojure-ts-mode)
+  :mode "\\.\\(clj\\|cljs\\|cljc\\)\\'")
+
+(use-package jinx
+  :config
+  (setq jinx-languages "en_US de_DE fa_IR"
+        jinx-camel-modes '(prog-mode conf-mode org-mode)
+        jinx-include-faces nil
+        jinx-exclude-faces '((prog-mode font-lock-keyword-face font-lock-builtin-face font-lock-doc-markup-face font-lock-preprocessor-face)
+                             (org-mode org-block)
+                             (conf-mode . prog-mode)))
+
+  (setq jinx-exclude-regexps (append jinx-exclude-regexps
+                                    '((prog-mode "\\b[a-zA-Z]\\{2\\}\\b")
+                                      (conf-mode . prog-mode)
+                                      (css-mode "\\b[a-fA-F0-9]\\{6\\}\\b")
+                                      (css-ts-mode . css-mode))))
+
+  (defun oxcl/jinx-lower-case-word-valid-p (start)
+    "Returns non-nil if word, that is assumed to be in lower case, at
+     START is valid, or would be valid if capitalized or upcased."
+    (let ((word (buffer-substring-no-properties start (point))))
+      (or (member word jinx--session-words)
+          (cl-loop for dict in jinx--dicts thereis
+                   (or
+                    (jinx--mod-check dict (upcase word))
+                    (jinx--mod-check dict (capitalize word))
+                    (jinx--mod-check dict word))))))
+  (set 'jinx--predicates (cl-substitute
+                          #'oxcl/jinx-lower-case-word-valid-p
+                          #'jinx--word-valid-p
+                          jinx--predicates))
+  (defun oxcl/jinx-consider-hyphen-as-space-in-lisp ()
+    (modify-syntax-entry ?- " " jinx--syntax-table))
+  (defun oxcl/jinx-add-to-personal ()
+    (interactive)
+    (execute-kbd-macro (kbd "C-$ @")))
+  (add-hook 'jinx-mode-hook #'oxcl/jinx-consider-hyphen-as-space-in-lisp)
+  :bind
+  ("C-$" . jinx-correct)
+  ("C-@" . oxcl/jinx-add-to-personal)
+  :hook (text-mode prog-mode conf-mode org-mode))
 
 (use-package editorconfig
   :demand t
@@ -653,50 +698,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   ;; per mode with `ligature-mode'.
   (global-ligature-mode t))
 
-(use-package jinx
+(use-package vertico
+  :demand t
   :config
-  (setq jinx-languages "en_US de_DE fa_IR"
-        jinx-camel-modes '(prog-mode conf-mode org-mode)
-        jinx-include-faces nil
-        jinx-exclude-faces '((prog-mode font-lock-keyword-face font-lock-builtin-face font-lock-doc-markup-face font-lock-preprocessor-face)
-                             (org-mode org-block)
-                             (conf-mode . prog-mode)))
-
-  (setq jinx-exclude-regexps (append jinx-exclude-regexps
-                                    '((prog-mode "\\b[a-zA-Z]\\{2\\}\\b")
-                                      (conf-mode . prog-mode)
-                                      (css-mode "\\b[a-fA-F0-9]\\{6\\}\\b")
-                                      (css-ts-mode . css-mode))))
-
-  (defun oxcl/jinx-lower-case-word-valid-p (start)
-    "Returns non-nil if word, that is assumed to be in lower case, at
-     START is valid, or would be valid if capitalized or upcased."
-    (let ((word (buffer-substring-no-properties start (point))))
-      (or (member word jinx--session-words)
-          (cl-loop for dict in jinx--dicts thereis
-                   (or
-                    (jinx--mod-check dict (upcase word))
-                    (jinx--mod-check dict (capitalize word))
-                    (jinx--mod-check dict word))))))
-  (set 'jinx--predicates (cl-substitute
-                          #'oxcl/jinx-lower-case-word-valid-p
-                          #'jinx--word-valid-p
-                          jinx--predicates))
-  (defun oxcl/jinx-consider-hyphen-as-space-in-lisp ()
-    (modify-syntax-entry ?- " " jinx--syntax-table))
-  (defun oxcl/jinx-add-to-personal ()
-    (interactive)
-    (execute-kbd-macro (kbd "C-$ @")))
-  (add-hook 'jinx-mode-hook #'oxcl/jinx-consider-hyphen-as-space-in-lisp)
-  :bind
-  ("C-$" . jinx-correct)
-  ("C-@" . oxcl/jinx-add-to-personal)
-  :hook (text-mode prog-mode conf-mode org-mode))
-
-(use-package rainbow-mode
-  :config
-  (setq rainbow-x-colors-font-lock-keywords '())
-  (add-hook 'rainbow-mode-hook (hl-line-mode (if rainbow-mode -1 +1)))
-  :hook (css-base-mode . rainbow-mode))
-
-
+  (vertico-mode))
