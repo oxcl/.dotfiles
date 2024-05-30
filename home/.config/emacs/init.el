@@ -497,20 +497,20 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   (modus-themes-load-theme 'modus-vivendi))
 
 (use-package indent-bars
-  :ensure (:host github :repo "jdtsmith/indent-bars" :branch "dev")
+  :ensure (:host github :repo "jdtsmith/indent-bars")
   :config
   (setq indent-bars-color '("white" :blend 0.1)
-   indent-bars-ts-color '("white" :blend 0.1)
-   indent-bars-highlight-current-depth '(:color "white" :blend 0.25)
-   indent-bars-starting-column 0
-   indent-bars-color-by-depth nil
-   indent-bars-pattern "."
-   indent-bars-width-frac 0.1
-   indent-bars-treesit-support t
-   indent-bars-treesit-scope '((bash if_statement))
-   indent-bars-depth-update-delay 0.03
-   indent-bars-treesit-update-delay 0.3
-   indent-bars-treesit-scope-min-lines 0)
+        indent-bars-highlight-current-depth '(:color "white" :blend 0.2)
+        indent-bars-ts-highlight-current-depth nil
+        indent-bars-starting-column 0
+        indent-bars-color-by-depth nil
+        indent-bars-pattern "."
+        indent-bars-width-frac 0.1
+        indent-bars-treesit-support t
+        indent-bars-treesit-scope '((bash if_statement))
+        indent-bars-depth-update-delay 0.03
+        indent-bars-treesit-update-delay 0.1
+        indent-bars-treesit-scope-min-lines 0)
   ;;          indent-bars-no-descend-string t
   :hook (prog-mode conf-mode)
   :hook (emacs-lisp-mode . (lambda () (indent-bars-mode -1))))
