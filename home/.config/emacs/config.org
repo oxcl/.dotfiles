@@ -108,6 +108,8 @@ make sure internet communications are in TLS.this code is taken from [[https://g
         require-final-newline t ; ensure a final new line at the end of the buffer before saving
         backup-by-copying t ; create a backup by copying instead of renaming current file as backup
         frame-inhibit-implied-resize t
+        blink-matching-delay 0.1
+        show-paren-delay 0.1
         uniquify-buffer-name-style 'forward) ; display name of files with the same name similar to vscode
   (setq-default indent-tabs-mode nil) ; don't use tab characters for indentation
   (blink-cursor-mode -1) ; disable cursor blink
@@ -176,11 +178,11 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 * UI
 ** font
 #+begin_src elisp :tangle ./init.el
-    (set-frame-font "ioZevka Code 11" nil t)
-    (set-face-attribute 'fixed-pitch nil :family "ioZevka Code")
-    (set-face-attribute 'variable-pitch nil :family "ioZevka Quasi")
-    (set-face-attribute 'bold nil :weight 'semibold)
-    (setq-default line-spacing 1) ; small padding between each line
+      (set-frame-font "ioZevka Code 11" nil t)
+      (set-face-attribute 'fixed-pitch nil :family "ioZevka Code")
+      (set-face-attribute 'variable-pitch nil :family "ioZevka Quasi")
+      (set-face-attribute 'bold nil :weight 'semibold)
+      (setq-default line-spacing 0) ; small padding between each line
 #+end_src
 
 * Editor
@@ -194,9 +196,8 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 
 ** Highlight Current Line
 #+begin_src elisp
-  (global-hl-line-mode)
-  (dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode-hook))
-    (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
+  (dolist (hook '(prog-mode-hook conf-mode))
+    (add-hook hook #'hl-line-mode))
 #+end_src
 
 * Programming
@@ -588,8 +589,8 @@ the actual colors for the theme is injected into the file ~lisp/modus-custom.el~
     ;; how to style the completion user interfaces
     ;; 'matches' is the part of completion that matches user input
     ;; 'selection' is the currently selected completion item
-    (setq modus-themes-completions '((matches . (extrabold))
-                                     (selection . (semibold italic text-also))))
+    (setq modus-themes-completions '((matches . ())
+                                     (selection . (semibold text-also))))
 
     ;; different font styles for each org-mode heading based on its level
     (setq modus-themes-headings
@@ -621,8 +622,8 @@ highlight the word/symbol under the cursor (with a small delay) and all its occu
   (use-package indent-bars
     :ensure (:host github :repo "jdtsmith/indent-bars")
     :config
-    (setq indent-bars-color '("white" :blend 0.1)
-          indent-bars-highlight-current-depth '(:color "white" :blend 0.2)
+    (setq indent-bars-color '("white" :blend 0.08)
+          indent-bars-highlight-current-depth '(:color "white" :blend 0.13)
           indent-bars-ts-highlight-current-depth nil
           indent-bars-starting-column 0
           indent-bars-color-by-depth nil
@@ -655,7 +656,8 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
   (use-package rainbow-mode
     :config
     (setq rainbow-x-colors-font-lock-keywords '())
-    (add-hook 'rainbow-mode-hook (hl-line-mode (if rainbow-mode -1 +1)))
+    (add-hook 'rainbow-mode-hook (lambda ()
+                                   (hl-line-mode (if rainbow-mode -1 +1))))
     :hook (css-base-mode . rainbow-mode))
 #+end_src
 
@@ -680,6 +682,26 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
                                    (indent-bars-mode 1)
                                    (setq oxcl/indent-bars-mode-off-for-now nil))))
     (ws-butler-global-mode))
+#+end_src
+
+** Better Help Buffers
+#+begin_src elisp
+  (use-package helpful
+  :bind
+  ("C-h f" . #'helpful-callable)
+  ("C-h v" . #'helpful-variable)
+  ("C-h k" . #'helpful-key)
+  ("C-h x" . #'helpful-command)
+  ("C-h h" . #'help-for-help)
+  ("C-h C-h" . #'helpful-at-point))
+#+end_src
+
+** Vertico
+#+begin_src elisp
+  (use-package vertico
+    :demand t
+    :config
+    (vertico-mode))
 #+end_src
 
 ** Third-Party Treesitter Modes
@@ -718,7 +740,7 @@ since the builtin support for tree-sitter major modes is limited to few language
   (use-package jinx
     :config
     (setq jinx-languages "en_US de_DE fa_IR"
-          jinx-camel-modes '(prog-mode conf-mode org-mode)
+          jinx-camel-modes '(prog-mode conf-mode org-mode toml-ts-mode toml-mode)
           jinx-include-faces nil
           jinx-exclude-faces '((prog-mode font-lock-keyword-face font-lock-builtin-face font-lock-doc-markup-face font-lock-preprocessor-face)
                                (org-mode org-block)
@@ -849,13 +871,6 @@ enable support for font ligatures
 #+end_src
 
 * ----------------------------------------------------
-* testing vertico
-#+begin_src elisp
-  (use-package vertico
-    :demand t
-    :config
-    (vertico-mode))
-#+end_src
 * zoom-in/zoom-out
 #+begin_src elisp :tangle no
   ;; will not work properly without the after-init-hook idk why

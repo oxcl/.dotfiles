@@ -80,6 +80,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
       require-final-newline t ; ensure a final new line at the end of the buffer before saving
       backup-by-copying t ; create a backup by copying instead of renaming current file as backup
       frame-inhibit-implied-resize t
+      blink-matching-delay 0.1
+      show-paren-delay 0.1
       uniquify-buffer-name-style 'forward) ; display name of files with the same name similar to vscode
 (setq-default indent-tabs-mode nil) ; don't use tab characters for indentation
 (blink-cursor-mode -1) ; disable cursor blink
@@ -134,16 +136,15 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (set-face-attribute 'fixed-pitch nil :family "ioZevka Code")
 (set-face-attribute 'variable-pitch nil :family "ioZevka Quasi")
 (set-face-attribute 'bold nil :weight 'semibold)
-(setq-default line-spacing 1) ; small padding between each line
+(setq-default line-spacing 0) ; small padding between each line
 
 (setq-default display-line-numbers-width-start 4 ; how many digits for line numbers
               display-line-numbers-grow-only t) ; in case a buffer is larger than 9999 lines
 (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
   (add-hook mode 'display-line-numbers-mode))
 
-(global-hl-line-mode)
-(dolist (mode '(comint-mode-hook restclient-mode-hook org-mode-hook vterm-mode-hook))
-  (add-hook mode (lambda () (setq-local global-hl-line-mode nil)))) ; org-mode has a lot of bugs with hl-line
+(dolist (hook '(prog-mode-hook conf-mode))
+  (add-hook hook #'hl-line-mode))
 
 (setq-default tab-width 4
               standard-indent 4
@@ -483,8 +484,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   ;; how to style the completion user interfaces
   ;; 'matches' is the part of completion that matches user input
   ;; 'selection' is the currently selected completion item
-  (setq modus-themes-completions '((matches . (extrabold))
-                                   (selection . (semibold italic text-also))))
+  (setq modus-themes-completions '((matches . ())
+                                   (selection . (semibold text-also))))
 
   ;; different font styles for each org-mode heading based on its level
   (setq modus-themes-headings
@@ -507,8 +508,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (use-package indent-bars
   :ensure (:host github :repo "jdtsmith/indent-bars")
   :config
-  (setq indent-bars-color '("white" :blend 0.1)
-        indent-bars-highlight-current-depth '(:color "white" :blend 0.2)
+  (setq indent-bars-color '("white" :blend 0.08)
+        indent-bars-highlight-current-depth '(:color "white" :blend 0.13)
         indent-bars-ts-highlight-current-depth nil
         indent-bars-starting-column 0
         indent-bars-color-by-depth nil
@@ -533,7 +534,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (use-package rainbow-mode
   :config
   (setq rainbow-x-colors-font-lock-keywords '())
-  (add-hook 'rainbow-mode-hook (hl-line-mode (if rainbow-mode -1 +1)))
+  (add-hook 'rainbow-mode-hook (lambda ()
+                                 (hl-line-mode (if rainbow-mode -1 +1))))
   :hook (css-base-mode . rainbow-mode))
 
 (use-package ws-butler
@@ -556,6 +558,20 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
                                  (setq oxcl/indent-bars-mode-off-for-now nil))))
   (ws-butler-global-mode))
 
+(use-package helpful
+:bind
+("C-h f" . #'helpful-callable)
+("C-h v" . #'helpful-variable)
+("C-h k" . #'helpful-key)
+("C-h x" . #'helpful-command)
+("C-h h" . #'help-for-help)
+("C-h C-h" . #'helpful-at-point))
+
+(use-package vertico
+  :demand t
+  :config
+  (vertico-mode))
+
 (use-package nix-ts-mode
   :commands (nix-ts-mode)
   :mode "\\.nix\\'")
@@ -576,7 +592,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (use-package jinx
   :config
   (setq jinx-languages "en_US de_DE fa_IR"
-        jinx-camel-modes '(prog-mode conf-mode org-mode)
+        jinx-camel-modes '(prog-mode conf-mode org-mode toml-ts-mode toml-mode)
         jinx-include-faces nil
         jinx-exclude-faces '((prog-mode font-lock-keyword-face font-lock-builtin-face font-lock-doc-markup-face font-lock-preprocessor-face)
                              (org-mode org-block)
@@ -697,8 +713,3 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   ;; Enables ligature checks globally in all buffers. You can also do it
   ;; per mode with `ligature-mode'.
   (global-ligature-mode t))
-
-(use-package vertico
-  :demand t
-  :config
-  (vertico-mode))

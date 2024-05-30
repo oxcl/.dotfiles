@@ -90,6 +90,15 @@ bg6=$(get_prop bg6 $bg5)
 bg7=$(get_prop bg7 $bg6)
 bg8=$(get_prop bg8 $bg7)
 
+bgRed=$(get_prop bgRed $red)
+bgGreen=$(get_prop bgGreen $green)
+bgYellow=$(get_prop bgYellow $yellow)
+bgBlue=$(get_prop bgBlue $blue)
+bgRedBright=$(get_prop bgRedBright $bgRed)
+bgGreenBright=$(get_prop bgGreenBright $bgGreen)
+bgYellowBright=$(get_prop bgYellowBright $bgYellow)
+bgBlueBright=$(get_prop bgBlueBright $bgBlue)
+
 orange=$(get_prop orange $yellowDim)
 orangeDim=$(get_prop orangeDim $orange)
 orangeBright=$(get_prop orangeBright $orange)
@@ -141,3 +150,11 @@ cat $TEMPLATE_FILE \
  -e "s/{{grey0}}/$grey0/g"\
  -e "s/{{grey1}}/$grey1/g"\
  -e "s/{{grey2}}/$grey2/g"\
+ -e "s/{{bgRed}}/$bgRed/g"\
+ -e "s/{{bgGreen}}/$bgGreen/g"\
+ -e "s/{{bgYellow}}/$bgYellow/g"\
+ -e "s/{{bgBlue}}/$bgBlue/g"\
+ -e "s/{{bgRedBright}}/$bgRedBright/g"\
+ -e "s/{{bgGreenBright}}/$bgGreenBright/g"\
+ -e "s/{{bgYellowBright}}/$bgYellowBright/g"\
+ -e "s/{{bgBlueBright}}/$bgBlueBright/g"

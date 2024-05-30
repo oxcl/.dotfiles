@@ -50,3 +50,12 @@ whiteBright    = "#fcfbf8"
 
 orange         = "#e78a4e"
 orangeDim      = "#bd6f3e"
+
+bgRed          = "#402120"
+bgRedBright    = "#4c3432"
+bgGreen        = "#34381b"
+bgGreenBright  = "#3b4439"
+bgYellow       = "#4f422e"
+bgYellowBright = "#3c3836"
+bgBlue         = "#0e363e"
+bgBlueBright   = "#374141"

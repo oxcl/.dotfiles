@@ -1,6 +1,6 @@
 (provide 'modus-colors)
-;; the colors are automatically injected in this file using the 'pelz' script i wrote which you can find
-;; in my dotfiles (~/.local/bin/pelz).
+;; the colors are automatically injeceted in this file using the 'pelz' script i wrote which you can find
+;; in my dotfilese (~/.local/bin/pelz).
 (setq modus-vivendi-palette-overrides
 '((bg-main "#202020")
 (bg-dim "#131414")
@@ -9,10 +9,10 @@
 (fg-alt "#c6daff")
 (bg-active "#32302f")
 (bg-inactive "#303030")
-(border "#514945")
+(border "#665c54")
 (bg-hl-line "#2a2827")
 
-(bg-region "#3d3835")
+(bg-region "#46403d")
 (fg-region unspecified)
 
 (bg-mode-line-active "#46403d")
@@ -65,29 +65,21 @@
 (maroon "#cf7fa7")
 (pink "#d09dc0")
 
-(bg-red-intense "#9d1f1f")
-(bg-red-subtle "#620f2a")
-(bg-red-nuanced "#3a0c14")
+(bg-red-intense "#b85651")
+(bg-red-subtle "#442e2d")
+(bg-red-nuanced "#3c1f1e")
 
-(bg-green-intense "#2f822f")
-(bg-green-subtle "#00422a")
-(bg-green-nuanced "#092f1f")
+(bg-green-intense "#8f9a52")
+(bg-green-subtle "#333e34")
+(bg-green-nuanced "#32361a")
 
-(bg-blue-intense "#1640b0")
-(bg-blue-subtle "#242679")
-(bg-blue-nuanced "#12154a")
+(bg-blue-intense "#68948a")
+(bg-blue-subtle "#2e3b3b")
+(bg-blue-nuanced "#0d3138")
 
-(bg-magenta-intense "#7030af")
-(bg-magenta-subtle "#552f5f")
-(bg-magenta-nuanced "#2f0c3f")
-
-(bg-cyan-intense "#2266ae")
-(bg-cyan-subtle "#004065")
-(bg-cyan-nuanced "#042837")
-
-(bg-yellow-intense "#7a6100")
-(bg-yellow-subtle "#4a4000")
-(bg-yellow-nuanced "#381d0f")
+(bg-yellow-intense "#c18f41")
+(bg-yellow-subtle "#32302f")
+(bg-yellow-nuanced "#473c29")
 
 (bg-lavender "#38325c")
 (bg-sage "#0f3d30")
@@ -100,6 +92,8 @@
 (modeline-err "#ffa9bf")
 (modeline-warning "#dfcf43")
 (modeline-info "#9fefff")
+
+(bg-completion "#3d3835")
 
 (bg-graph-red-0 "#b52c2c")
 (bg-graph-red-1 "#702020")
@@ -114,7 +108,6 @@
 (bg-graph-cyan-0 "#47dfea")
 (bg-graph-cyan-1 "#00808f")
 
-(bg-completion "#2f447f")
 (bg-hover "#45605e")
 (bg-hover-secondary "#654a39")
 
@@ -147,8 +140,4 @@
 (fg-removed "#ffbfbf")
 (fg-removed-intense "#ff9095")
 
-(bg-diff-context "#1a1a1a")
-
-(bg-paren-match "#2f7f9f")
-(fg-paren-match fg-main)
-(bg-paren-expression "#453040")))
+(bg-diff-context "#1a1a1a")))
