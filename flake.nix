@@ -13,7 +13,7 @@
     gruvbox-material-gtk.url = "github:oxcl/gruvbox-material-gtk-nix";
     gruvbox-material-gtk.inputs.nixpkgs.follows = "nixpkgs";
 
-    iozevka .url = "github:oxcl/iozevka";
+    iozevka.url = "github:oxcl/iozevka";
 
     unstable-nixpkgs.url = "nixpkgs/nixos-unstable";
   };
