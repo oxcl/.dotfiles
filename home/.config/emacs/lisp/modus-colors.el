@@ -23,6 +23,10 @@
 (fg-mode-line-inactive "#928374")
 (border-mode-line-inactive "#32302f")
 
+(bg-tab-bar "#131414")
+(bg-tab-current "#131414")
+(bg-tab-other "#131414")
+
 (red "#ea6962")
 (red-warmer "#ff6b55")
 (red-cooler "#ff7f9f")
@@ -114,10 +118,6 @@
 (bg-char-0 "#0050af")
 (bg-char-1 "#7f1f7f")
 (bg-char-2 "#625a00")
-
-(bg-tab-bar "#313131")
-(bg-tab-current "#000000")
-(bg-tab-other "#545454")
 
 (bg-added "#00381f")
 (bg-added-faint "#002910")

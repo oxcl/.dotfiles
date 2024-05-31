@@ -3,6 +3,13 @@
 #+DESCRIPTION: This is my personal emacs configuration written in literate programming style using org-mode
 #+STARTUP: overview
 #+PROPERTY: header-args :results silent :tangle ./init.el
+* Configuration Flags
+#+begin_src elisp
+  (setq oxcl/load-only-essentials nil ; only load bare-minimum configurations
+        oxcl/load-only-builtins nil ; only load configurations that are builtin to emacs without loading any 3rd party packages
+        oxcl/load-only-elpaca nil) ; only load builtin configurations plus elpaca but without any 3rd party packages.
+#+end_src
+
 * Startup
 ** Optimizations
 most of theses optimizations are taken from doom emacs [[https://github.com/doomemacs/doomemacs/blob/master/lisp/doom.el][doom.el]]
@@ -110,6 +117,8 @@ make sure internet communications are in TLS.this code is taken from [[https://g
         frame-inhibit-implied-resize t
         blink-matching-delay 0.1
         show-paren-delay 0.1
+        display-buffer-alist '()
+        face-remapping-alist '()
         uniquify-buffer-name-style 'forward) ; display name of files with the same name similar to vscode
   (setq-default indent-tabs-mode nil) ; don't use tab characters for indentation
   (blink-cursor-mode -1) ; disable cursor blink
@@ -162,17 +171,41 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
   (global-set-key (kbd "M-<prior>") 'oxcl/scroll-other-down-half)
 #+end_src
 
-* Simple Enhancements
 ** persistent cursor position across sessions
 #+begin_src elisp :tangle ./init.el
-  (save-place-mode 1)
   (setq save-place-forget-unreadable-files nil)
+  (save-place-mode 1)
 #+end_src
 
 ** persistent minibuffer history across sessions
 #+begin_src elisp :tangle ./init.el
   (savehist-mode 1)
   (add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))
+#+end_src
+
+* Simple Enhancements
+#+begin_src elisp
+  (when oxcl/load-only-essentials
+    (setq warning-minimum-level :emergency)
+    (error (message (concat "Prevented anything other than essential configuration from being loaded because "
+                                   "oxcl/load-only-essentiaals was set to true"))))
+#+end_src
+** Better Help Buffer
+#+begin_src elisp
+  ;; when navigation keys are pressed the whole buffer scrolls instead of the cursor moving
+  (add-hook 'help-mode-hook #'scroll-lock-mode)
+  (setq oxcl/scroll-margin-default scroll-margin)
+  (setq oxcl/cursor-type-default cursor-type)
+  (defun oxcl/hide-cursor-in-scroll-lock-mode ()
+    (if scroll-lock-mode
+        (progn
+          (make-local-variable 'scroll-margin)
+          (setq scroll-margin 0
+                cursor-type nil))
+      (progn
+        (setq scroll-margin oxcl/scroll-margin-default
+              cursor-type oxcl/cursor-type-default))))
+  (add-hook 'scroll-lock-mode-hook #'oxcl/hide-cursor-in-scroll-lock-mode)
 #+end_src
 
 * UI
@@ -198,6 +231,20 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 #+begin_src elisp
   (dolist (hook '(prog-mode-hook conf-mode))
     (add-hook hook #'hl-line-mode))
+#+end_src
+
+* Minibuffer
+** Better Completion Buffer
+#+begin_src elisp
+  (setq completion-auto-help 'always ; open the completion buffer even if there was only one item to complete
+        completions-format 'one-column ; show each completion item on a single line
+        completions-detailed t
+        completions-max-height 11)
+  ;; disable the modeline for completion buffer and limit its size to a maximum
+  (add-to-list 'display-buffer-alist '("\\*Completions\\*"
+                                       (display-buffer-reuse-mode-window display-buffer-at-bottom)
+                                       (window-parameters . ((mode-line-format . none))))
+               t)
 #+end_src
 
 * Programming
@@ -497,7 +544,19 @@ replace builtin tree-sitter major modes with the old ones
   (setq treesit-font-lock-level 4)
 #+end_src
 
+* Tabs
+#+begin_src elisp
+  (setq tab-line-close-button-show nil
+        tab-line-separator " | ")
+  (global-tab-line-mode)
+#+end_src
 * Package Management
+#+begin_src elisp
+  (when oxcl/load-only-builtins
+    (setq warning-minimum-level :emergency)
+    (error (message (concat "Prevented package manager from being loaded because "
+				   "oxcl/load-only-builtins was set to true"))))
+#+end_src
 ** elpaca Package Manager
 #+begin_src emacs-lisp :tangle ./init.el
   (defvar elpaca-installer-version 0.7)
@@ -574,6 +633,14 @@ delight is a package that can hide package names from minibuffer
 #+end_src
 
 * Packages
+before loading any third party packages we first check the two variables ~oxcl/load-essentials-only~ and ~oxcl/load-elpaca-only~ and if any of them is true we will not load any 3rd party packages.
+with this you can easily the configuration of emacs to allow easier debugging and testing new packages.
+#+begin_src elisp
+  (when oxcl/load-only-elpaca
+    (setq warning-minimum-level :emergency)
+    (error (message (concat "Prevented 3rd party packages from being loaded because "
+                            "oxcl/load-only-elpaca was set to true"))))
+#+end_src
 ** Theme
 currently i use a heavily modified version of modus-themes.
 the actual colors for the theme is injected into the file ~lisp/modus-custom.el~ using my custom ~pelz~ script
@@ -687,6 +754,8 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
 ** Better Help Buffers
 #+begin_src elisp
   (use-package helpful
+  :config
+  (add-hook 'helpful-mode-hook #'scroll-lock-mode)
   :bind
   ("C-h f" . #'helpful-callable)
   ("C-h v" . #'helpful-variable)
@@ -700,15 +769,17 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
 *** Vertico
 #+begin_src elisp
   (use-package vertico
-    :demand t
+    :defer t
     :config
     (setq vertico-cycle t)
+    (setq read-extended-command-predicate #'command-completion-default-include-p)
     (vertico-mode))
 #+end_src
 
 *** Marginalia
 #+begin_src elisp
   (use-package marginalia
+    :after vertico
     :config
     (marginalia-mode))
 #+end_src
@@ -879,7 +950,6 @@ enable support for font ligatures
     (global-ligature-mode t))
 #+end_src
 
-* ----------------------------------------------------
 * zoom-in/zoom-out
 #+begin_src elisp :tangle no
   ;; will not work properly without the after-init-hook idk why
@@ -1680,13 +1750,13 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
 (require 'move-lines)
 (move-lines-binding)
 * test
-
 #+begin_src elisp :tangle no
   (setq org-fold-core-style 'overlays)
        (use-package ctrlf
    :config
    (ctrlf-mode 1))
 #+end_src
+
 * Ido Mode
 #+begin_src elisp :tangle no
   (setq ido-enable-flex-matching t)

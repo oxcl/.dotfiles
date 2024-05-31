@@ -1,3 +1,7 @@
+(setq oxcl/load-only-essentials nil ; only load bare-minimum configurations
+      oxcl/load-only-builtins nil ; only load configurations that are builtin to emacs without loading any 3rd party packages
+      oxcl/load-only-elpaca nil) ; only load builtin configurations plus elpaca but without any 3rd party packages.
+
 (unless init-file-debug
   (setq frame-inhibit-implied-size t
 	inhibit-startup-screen t
@@ -82,6 +86,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
       frame-inhibit-implied-resize t
       blink-matching-delay 0.1
       show-paren-delay 0.1
+      display-buffer-alist '()
+      face-remapping-alist '()
       uniquify-buffer-name-style 'forward) ; display name of files with the same name similar to vscode
 (setq-default indent-tabs-mode nil) ; don't use tab characters for indentation
 (blink-cursor-mode -1) ; disable cursor blink
@@ -126,11 +132,31 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (global-set-key (kbd "M-<next>") 'oxcl/scroll-other-up-half)
 (global-set-key (kbd "M-<prior>") 'oxcl/scroll-other-down-half)
 
-(save-place-mode 1)
 (setq save-place-forget-unreadable-files nil)
+(save-place-mode 1)
 
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables '(search-ring-regexp-search-ring file-name-history))
+
+(when oxcl/load-only-essentials
+  (setq warning-minimum-level :emergency)
+  (error (message (concat "Prevented anything other than essential configuration from being loaded because "
+                                 "oxcl/load-only-essentiaals was set to true"))))
+
+;; when navigation keys are pressed the whole buffer scrolls instead of the cursor moving
+(add-hook 'help-mode-hook #'scroll-lock-mode)
+(setq oxcl/scroll-margin-default scroll-margin)
+(setq oxcl/cursor-type-default cursor-type)
+(defun oxcl/hide-cursor-in-scroll-lock-mode ()
+  (if scroll-lock-mode
+      (progn
+        (make-local-variable 'scroll-margin)
+        (setq scroll-margin 0
+              cursor-type nil))
+    (progn
+      (setq scroll-margin oxcl/scroll-margin-default
+            cursor-type oxcl/cursor-type-default))))
+(add-hook 'scroll-lock-mode-hook #'oxcl/hide-cursor-in-scroll-lock-mode)
 
 (set-frame-font "ioZevka Code 11" nil t)
 (set-face-attribute 'fixed-pitch nil :family "ioZevka Code")
@@ -145,6 +171,16 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (dolist (hook '(prog-mode-hook conf-mode))
   (add-hook hook #'hl-line-mode))
+
+(setq completion-auto-help 'always ; open the completion buffer even if there was only one item to complete
+      completions-format 'one-column ; show each completion item on a single line
+      completions-detailed t
+      completions-max-height 11)
+;; disable the modeline for completion buffer and limit its size to a maximum
+(add-to-list 'display-buffer-alist '("\\*Completions\\*"
+                                     (display-buffer-reuse-mode-window display-buffer-at-bottom)
+                                     (window-parameters . ((mode-line-format . none))))
+             t)
 
 (setq-default tab-width 4
               standard-indent 4
@@ -415,6 +451,15 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (add-to-list 'auto-mode-alist '("\\(\\.cmake\\|CMakeLists\\.txt\\)\\'" . cmake-ts-mode))
 (setq treesit-font-lock-level 4)
 
+(setq tab-line-close-button-show nil
+      tab-line-separator " | ")
+(global-tab-line-mode)
+
+(when oxcl/load-only-builtins
+  (setq warning-minimum-level :emergency)
+  (error (message (concat "Prevented package manager from being loaded because "
+				 "oxcl/load-only-builtins was set to true"))))
+
 (defvar elpaca-installer-version 0.7)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -472,6 +517,11 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (elpaca-wait)
 
 (add-to-list 'load-path (expand-file-name "lisp" real-user-emacs-directory))
+
+(when oxcl/load-only-elpaca
+  (setq warning-minimum-level :emergency)
+  (error (message (concat "Prevented 3rd party packages from being loaded because "
+                          "oxcl/load-only-elpaca was set to true"))))
 
 (use-package modus-themes
   :demand t
@@ -559,6 +609,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   (ws-butler-global-mode))
 
 (use-package helpful
+:config
+(add-hook 'helpful-mode-hook #'scroll-lock-mode)
 :bind
 ("C-h f" . #'helpful-callable)
 ("C-h v" . #'helpful-variable)
@@ -568,12 +620,14 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 ("C-h C-h" . #'helpful-at-point))
 
 (use-package vertico
-  :demand t
+  :defer t
   :config
   (setq vertico-cycle t)
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
   (vertico-mode))
 
 (use-package marginalia
+  :after vertico
   :config
   (marginalia-mode))
 
@@ -718,3 +772,218 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   ;; Enables ligature checks globally in all buffers. You can also do it
   ;; per mode with `ligature-mode'.
   (global-ligature-mode t))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(modus-themes-common-palette-overrides
+   '((keyword red)
+     (string green)
+     (fringe bg)
+     (cursor fg-main)
+     (type yellow)
+     (preprocessor magenta)
+     (variable fg-main)
+     (fnname cyan)
+     (builtin magenta)
+     (docstring green-faint)
+     (docmarkup green)
+     (warning rust)
+     (fg-line-number-inactive fg-dim)
+     (fg-line-number-active fg-mode-line-inactive)
+     (bg-line-number-inactive bg-main)
+     (bg-line-number-active bg-hl-line)
+     (underline-err red-faint)
+     (underline-warning yellow-faint)
+     (underline-note cyan-faint)
+     (bg-paren-match bg-yellow-nuanced)
+     (fg-paren-match fg-main)
+     (bg-paren-expression bg-yellow-nuanced)
+     (underline-paren-match unspecified)
+     (bg-prominent-err bg-red-subtle)
+     (fg-prominent-err fg-main)
+     (keybind blue)
+     (fg-completion-match-0 red)
+     (fg-completion-match-1 green-intense)
+     (fg-completion-match-2 gold)
+     (fg-completion-match-3 blue)
+     (bg-completion-match-0 unspecified)
+     (bg-completion-match-1 unspecified)
+     (bg-completion-match-2 unspecified)
+     (bg-completion-match-3 unspecified)
+     (bg-search-current bg-yellow-intense)
+     (bg-search-lazy bg-yellow-nuanced)
+     (bg-search-replace bg-blue-subtle)
+     (bg-search-rx-group-0 bg-blue-intense)
+     (bg-search-rx-group-1 bg-green-intense)
+     (bg-search-rx-group-2 bg-red-intense)
+     (bg-search-rx-group-3 bg-magenta-intense)
+     (name magenta)
+     (identifier yellow-faint)
+     (err red)
+     (info cyan-cooler)
+     (bg-prominent-warning bg-yellow-intense)
+     (fg-prominent-warning fg-main)
+     (bg-prominent-note bg-cyan-intense)
+     (fg-prominent-note fg-main)
+     (bg-active-argument bg-yellow-nuanced)
+     (fg-active-argument yellow-cooler)
+     (bg-active-value bg-cyan-nuanced)
+     (fg-active-value cyan-cooler)
+     (constant blue-cooler)
+     (rx-construct green-cooler)
+     (rx-backslash magenta)
+     (accent-0 blue-cooler)
+     (accent-1 magenta-warmer)
+     (accent-2 cyan-cooler)
+     (accent-3 yellow)
+     (fg-button-active fg-main)
+     (fg-button-inactive fg-dim)
+     (bg-button-active bg-active)
+     (bg-button-inactive bg-dim)
+     (date-common cyan)
+     (date-deadline red)
+     (date-event fg-alt)
+     (date-holiday red-cooler)
+     (date-holiday-other blue)
+     (date-now fg-main)
+     (date-range fg-alt)
+     (date-scheduled yellow-warmer)
+     (date-weekday cyan)
+     (date-weekend red-faint)
+     (fg-link blue-warmer)
+     (bg-link unspecified)
+     (underline-link blue-warmer)
+     (fg-link-symbolic cyan)
+     (bg-link-symbolic unspecified)
+     (underline-link-symbolic cyan)
+     (fg-link-visited magenta)
+     (bg-link-visited unspecified)
+     (underline-link-visited magenta)
+     (mail-cite-0 blue-warmer)
+     (mail-cite-1 yellow-cooler)
+     (mail-cite-2 cyan-cooler)
+     (mail-cite-3 red-cooler)
+     (mail-part blue)
+     (mail-recipient magenta-cooler)
+     (mail-subject magenta-warmer)
+     (mail-other magenta-faint)
+     (bg-mark-delete bg-red-subtle)
+     (fg-mark-delete red-cooler)
+     (bg-mark-select bg-cyan-subtle)
+     (fg-mark-select cyan)
+     (bg-mark-other bg-yellow-subtle)
+     (fg-mark-other yellow)
+     (fg-prompt cyan-cooler)
+     (bg-prompt unspecified)
+     (bg-prose-block-delimiter bg-dim)
+     (fg-prose-block-delimiter fg-dim)
+     (bg-prose-block-contents bg-dim)
+     (bg-prose-code unspecified)
+     (fg-prose-code cyan-cooler)
+     (bg-prose-macro unspecified)
+     (fg-prose-macro magenta-cooler)
+     (bg-prose-verbatim unspecified)
+     (fg-prose-verbatim magenta-warmer)
+     (prose-done green)
+     (prose-todo red)
+     (prose-metadata fg-dim)
+     (prose-metadata-value fg-alt)
+     (prose-table fg-alt)
+     (prose-table-formula magenta-warmer)
+     (prose-tag magenta-faint)
+     (rainbow-0 fg-main)
+     (rainbow-1 magenta-intense)
+     (rainbow-2 cyan-intense)
+     (rainbow-3 red-warmer)
+     (rainbow-4 yellow-intense)
+     (rainbow-5 magenta-cooler)
+     (rainbow-6 green-intense)
+     (rainbow-7 blue-warmer)
+     (rainbow-8 magenta-warmer)
+     (bg-space unspecified)
+     (fg-space border)
+     (bg-space-err bg-red-intense)
+     (bg-term-black "#000000")
+     (fg-term-black "#000000")
+     (bg-term-black-bright "#595959")
+     (fg-term-black-bright "#595959")
+     (bg-term-red red)
+     (fg-term-red red)
+     (bg-term-red-bright red-warmer)
+     (fg-term-red-bright red-warmer)
+     (bg-term-green green)
+     (fg-term-green green)
+     (bg-term-green-bright green-cooler)
+     (fg-term-green-bright green-cooler)
+     (bg-term-yellow yellow)
+     (fg-term-yellow yellow)
+     (bg-term-yellow-bright yellow-warmer)
+     (fg-term-yellow-bright yellow-warmer)
+     (bg-term-blue blue)
+     (fg-term-blue blue)
+     (bg-term-blue-bright blue-warmer)
+     (fg-term-blue-bright blue-warmer)
+     (bg-term-magenta magenta)
+     (fg-term-magenta magenta)
+     (bg-term-magenta-bright magenta-cooler)
+     (fg-term-magenta-bright magenta-cooler)
+     (bg-term-cyan cyan)
+     (fg-term-cyan cyan)
+     (bg-term-cyan-bright cyan-cooler)
+     (fg-term-cyan-bright cyan-cooler)
+     (bg-term-white "#a6a6a6")
+     (fg-term-white "#a6a6a6")
+     (bg-term-white-bright "#ffffff")
+     (fg-term-white-bright "#ffffff")
+     (fg-heading-0 cyan-cooler)
+     (fg-heading-1 fg-main)
+     (fg-heading-2 yellow-faint)
+     (fg-heading-3 blue-faint)
+     (fg-heading-4 magenta)
+     (fg-heading-5 green-faint)
+     (fg-heading-6 red-faint)
+     (fg-heading-7 cyan-faint)
+     (fg-heading-8 fg-dim)
+     (bg-heading-0 unspecified)
+     (bg-heading-1 unspecified)
+     (bg-heading-2 unspecified)
+     (bg-heading-3 unspecified)
+     (bg-heading-4 unspecified)
+     (bg-heading-5 unspecified)
+     (bg-heading-6 unspecified)
+     (bg-heading-7 unspecified)
+     (bg-heading-8 unspecified)
+     (overline-heading-0 unspecified)
+     (overline-heading-1 unspecified)
+     (overline-heading-2 unspecified)
+     (overline-heading-3 unspecified)
+     (overline-heading-4 unspecified)
+     (overline-heading-5 unspecified)
+     (overline-heading-6 unspecified)
+     (overline-heading-7 unspecified)
+     (overline-heading-8 unspecified))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(font-lock-builtin-face ((((class color) (min-colors 256)) :weight normal)))
+ '(font-lock-constant-face ((((class color) (min-colors 256)) :foreground "#d3869b")))
+ '(font-lock-function-call-face ((((class color) (min-colors 256)) :foreground "#89b482")))
+ '(font-lock-number-face ((((class color) (min-colors 256)) :foreground "#d3869b")))
+ '(font-lock-operator-face ((((class color) (min-colors 256)) :foreground "#e78a4e")))
+ '(font-lock-property-name-face ((((class color) (min-colors 256)) :foreground "#7daea3")))
+ '(font-lock-punctuation-face ((((class color) (min-colors 256)) :foreground "#deb472")))
+ '(font-lock-type-face ((((class color) (min-colors 256)) :weight normal)))
+ '(font-lock-warning-face ((((class color) (min-colors 256)) :weight normal)))
+ '(idle-highlight ((((class color) (min-colors 256)) (:background "#32302f"))))
+ '(jinx-misspelled ((((class color) (min-colors 256)) (:underline (:style wave :color "#8f9a52")))))
+ '(mode-line ((((class color) (min-colors 256)) :box (:line-width 4 :color "#46403d"))))
+ '(mode-line-inactive ((((class color) (min-colors 256)) :box (:line-width 4 :color "#131414"))))
+ '(show-paren-match ((((class color) (min-colors 256)) :weight bold)))
+ '(show-paren-mismatch ((((class color) (min-colors 256)) :weight bold)))
+ '(tab-line ((t (:inherit modus-themes-ui-variable-pitch :background "#131414" :foreground "#7c6f64" :box (:line-width (-1 . 4) :color "#131414") :underline (:color "#665c54" :style line :position t) :height 1.3))))
+ '(tab-line-tab-current ((((class color) (min-colors 256)) :underline (:color "#89b482" :position t))))
+ '(tab-line-tab-inactive ((((class color) (min-colors 256)) :background "#ea6962" :box (:line-width (4 . 4) :color "#7daea3")))))

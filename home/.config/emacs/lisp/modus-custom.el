@@ -222,5 +222,14 @@
      `(idle-highlight               ((,c (:background ,bg-active))))
      `(jinx-misspelled              ((,c (:underline (:style wave :color ,green-faint)))))
      `(show-paren-match             ((,c :weight bold)))
-     `(show-paren-mismatch          ((,c :weight bold))))))
+     `(show-paren-mismatch          ((,c :weight bold)))
+     ;; tabs
+     `(tab-line                     ((,c :height 1.0
+                                         :foreground ,fg-dim
+                                         :box (:line-width (-1 . 5) :color ,bg-tab-bar)
+                                         :underline (:color ,border :position t))))
+     `(tab-line-tab-current         ((,c :foreground ,fg-main
+                                         :underline (:color ,cyan :position t))))
+     `(tab-line-tab-inactive        ((,c :foreground ,border
+                                         ))))))
 (add-hook 'modus-themes-after-load-theme-hook #'oxcl/modus-themes-apply-custom-faces)
