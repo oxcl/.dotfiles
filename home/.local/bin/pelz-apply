@@ -10,3 +10,6 @@ apply alacritty "$HOME/.dotfiles/home/.config/alacritty/theme.toml"
 apply Xresources "$HOME/.dotfiles/home/.config/x11/theme"
 apply wezterm "$HOME/.dotfiles/home/.config/wezterm/theme.lua"
 apply emacs-modus-themes "$HOME/.dotfiles/home/.config/emacs/lisp/modus-colors.el"
+
+
+source "${XDG_CONFIG_HOME:-$HOME/.config}/x11/profile"

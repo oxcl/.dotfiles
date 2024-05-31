@@ -696,12 +696,21 @@ it is automatically turned on for css,sass,scss and can be manually turned on wi
   ("C-h C-h" . #'helpful-at-point))
 #+end_src
 
-** Vertico
+** Vertico and Friends
+*** Vertico
 #+begin_src elisp
   (use-package vertico
     :demand t
     :config
+    (setq vertico-cycle t)
     (vertico-mode))
+#+end_src
+
+*** Marginalia
+#+begin_src elisp
+  (use-package marginalia
+    :config
+    (marginalia-mode))
 #+end_src
 
 ** Third-Party Treesitter Modes

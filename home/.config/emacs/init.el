@@ -570,7 +570,12 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (use-package vertico
   :demand t
   :config
+  (setq vertico-cycle t)
   (vertico-mode))
+
+(use-package marginalia
+  :config
+  (marginalia-mode))
 
 (use-package nix-ts-mode
   :commands (nix-ts-mode)
