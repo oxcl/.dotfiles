@@ -226,10 +226,10 @@
      ;; tabs
      `(tab-line                     ((,c :height 1.0
                                          :foreground ,fg-dim
-                                         :box (:line-width (-1 . 5) :color ,bg-tab-bar)
+                                         :box (:line-width (-1 . 3) :color ,bg-tab-bar)
                                          :underline (:color ,border :position t))))
-     `(tab-line-tab-current         ((,c :foreground ,fg-main
+     `(tab-line-tab-current         ((,c :foreground ,fg-mode-line-active
                                          :underline (:color ,cyan :position t))))
-     `(tab-line-tab-inactive        ((,c :foreground ,border
-                                         ))))))
+     `(tab-line-tab-inactive         ((,c :slant normal :foreground ,fg-mode-line-inactive)))
+     `(tab-line-tab-special          ((,c :slant oblique))))))
 (add-hook 'modus-themes-after-load-theme-hook #'oxcl/modus-themes-apply-custom-faces)
