@@ -46,7 +46,7 @@
         (bg-completion-match-2 unspecified)
         (bg-completion-match-3 unspecified)
       ;; search
-        (bg-search-current bg-yellow-intense)
+        (bg-search-current bg-ochre)
         (bg-search-lazy bg-yellow-nuanced)
         (bg-search-replace bg-blue-subtle)
         (bg-search-rx-group-0 bg-blue-intense)
@@ -227,8 +227,9 @@
      `(tab-line                     ((,c :height 1.0
                                          :foreground ,fg-dim
                                          :box (:line-width (-1 . 3) :color ,bg-tab-bar)
+                                         :overline ,bg-active
                                          :underline (:color ,border :position t))))
-     `(tab-line-tab-current         ((,c :foreground ,fg-mode-line-active
+     `(tab-line-tab-current          ((,c :foreground ,fg-mode-line-active
                                          :underline (:color ,cyan :position t))))
      `(tab-line-tab-inactive         ((,c :slant normal :foreground ,fg-mode-line-inactive)))
      `(tab-line-tab-special          ((,c :slant oblique))))))

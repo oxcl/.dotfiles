@@ -178,7 +178,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
       completions-max-height 11)
 ;; disable the modeline for completion buffer and limit its size to a maximum
 (add-to-list 'display-buffer-alist '("\\*Completions\\*"
-                                     (display-buffer-reuse-mode-window display-buffer-at-bottom)
+                                     nil ;(display-buffer-reuse-mode-window display-buffer-at-bottom)
                                      (window-parameters . ((mode-line-format . none))))
              t)
 

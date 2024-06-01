@@ -40,4 +40,4 @@
 ! Misc
 !----------------------------------------
 ! colors to use for selected text
-*.highlightColor:        #{{bg4}}
+*.highlightColor:        #{{bg5}}

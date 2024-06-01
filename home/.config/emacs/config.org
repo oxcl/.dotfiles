@@ -242,7 +242,7 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
         completions-max-height 11)
   ;; disable the modeline for completion buffer and limit its size to a maximum
   (add-to-list 'display-buffer-alist '("\\*Completions\\*"
-                                       (display-buffer-reuse-mode-window display-buffer-at-bottom)
+                                       nil ;(display-buffer-reuse-mode-window display-buffer-at-bottom)
                                        (window-parameters . ((mode-line-format . none))))
                t)
 #+end_src
@@ -550,6 +550,7 @@ replace builtin tree-sitter major modes with the old ones
         tab-line-separator " | ")
   (global-tab-line-mode)
 #+end_src
+
 * Package Management
 #+begin_src elisp
   (when oxcl/load-only-builtins
@@ -641,6 +642,7 @@ with this you can easily the configuration of emacs to allow easier debugging an
     (error (message (concat "Prevented 3rd party packages from being loaded because "
                             "oxcl/load-only-elpaca was set to true"))))
 #+end_src
+
 ** Theme
 currently i use a heavily modified version of modus-themes.
 the actual colors for the theme is injected into the file ~lisp/modus-custom.el~ using my custom ~pelz~ script
