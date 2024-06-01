@@ -83,6 +83,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
       save-interprogram-paste-before-kill t ; before killing some text make sure the system clipboard content is added to emacs kill ring
       require-final-newline t ; ensure a final new line at the end of the buffer before saving
       backup-by-copying t ; create a backup by copying instead of renaming current file as backup
+      history-delete-duplicates t ; delete duplicate entries from minibuffer history
       frame-inhibit-implied-resize t
       blink-matching-delay 0.1
       show-paren-delay 0.1
@@ -175,7 +176,17 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (setq completion-auto-help 'always ; open the completion buffer even if there was only one item to complete
       completions-format 'one-column ; show each completion item on a single line
       completions-detailed t
-      completions-max-height 11)
+      completions-max-height 11
+      completion-show-help nil
+      read-buffer-completion-ignore-case t
+      read-file-name-completion-ignore-case t)
+(add-to-list 'completion-styles 'flex)
+
+;; better keybindings for vanilla minibuffer
+(define-key minibuffer-local-map (kbd "<down>") #'minibuffer-next-completion)
+(define-key minibuffer-local-map (kbd "<up>") #'minibuffer-previous-completion)
+(define-key minibuffer-local-map (kbd "C-<down>") #'next-history-element)
+(define-key minibuffer-local-map (kbd "C-<up>") #'previous-history-element)
 ;; disable the modeline for completion buffer and limit its size to a maximum
 (add-to-list 'display-buffer-alist '("\\*Completions\\*"
                                      nil ;(display-buffer-reuse-mode-window display-buffer-at-bottom)
@@ -451,10 +462,6 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (add-to-list 'auto-mode-alist '("\\(\\.cmake\\|CMakeLists\\.txt\\)\\'" . cmake-ts-mode))
 (setq treesit-font-lock-level 4)
 
-(setq tab-line-close-button-show nil
-      tab-line-separator " | ")
-(global-tab-line-mode)
-
 (when oxcl/load-only-builtins
   (setq warning-minimum-level :emergency)
   (error (message (concat "Prevented package manager from being loaded because "
@@ -602,7 +609,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
                                   (indent-bars-mode -1)
                                   (setq oxcl/indent-bars-mode-off-for-now t))))
   (add-hook 'after-save-hook (lambda ()
-                               (when (and (boundp indent-bars-mode)
+                               (when (and (boundp 'indent-bars-mode)
                                           oxcl/indent-bars-mode-off-for-now)
                                  (indent-bars-mode 1)
                                  (setq oxcl/indent-bars-mode-off-for-now nil))))
@@ -620,14 +627,16 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 ("C-h C-h" . #'helpful-at-point))
 
 (use-package vertico
-  :defer t
+  :demand t
   :config
   (setq vertico-cycle t)
   (setq read-extended-command-predicate #'command-completion-default-include-p)
+  (define-key vertico-map (kbd "<down>") #'vertico-next)
+  (define-key vertico-map (kbd "<up>") #'vertico-previous)
   (vertico-mode))
 
 (use-package marginalia
-  :after vertico
+  :demand t
   :config
   (marginalia-mode))
 

@@ -222,15 +222,17 @@
      `(idle-highlight               ((,c (:background ,bg-active))))
      `(jinx-misspelled              ((,c (:underline (:style wave :color ,green-faint)))))
      `(show-paren-match             ((,c :weight bold)))
-     `(show-paren-mismatch          ((,c :weight bold)))
+     `(show-paren-mismatch          ((,c :weight bold))))))
      ;; tabs
-     `(tab-line                     ((,c :height 1.0
-                                         :foreground ,fg-dim
-                                         :box (:line-width (-1 . 3) :color ,bg-tab-bar)
-                                         :overline ,bg-active
-                                         :underline (:color ,border :position t))))
-     `(tab-line-tab-current          ((,c :foreground ,fg-mode-line-active
-                                         :underline (:color ,cyan :position t))))
-     `(tab-line-tab-inactive         ((,c :slant normal :foreground ,fg-mode-line-inactive)))
-     `(tab-line-tab-special          ((,c :slant oblique))))))
+;;     `(tab-line                     ((,c :height 1.0
+;;                                         :foreground ,fg-dim
+;;                                         :box (:line-width (-1 . 3) :color ,bg-tab-bar)
+;;                                         :overline ,bg-active
+;;                                         :underline (:color ,border :position t))))
+;;     `(tab-line-tab-current          ((,c :foreground ,fg-mode-line-active
+;;                                          :box nil
+;;                                         :underline (:color ,cyan :position t))))
+;;     `(tab-line-tab-inactive         ((,c :box nil
+;;                                          :slant normal :foreground ,fg-mode-line-inactive)))
+;;     `(tab-line-tab-special          ((,c :slant oblique))))))
 (add-hook 'modus-themes-after-load-theme-hook #'oxcl/modus-themes-apply-custom-faces)

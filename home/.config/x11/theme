@@ -40,4 +40,4 @@
 ! Misc
 !----------------------------------------
 ! colors to use for selected text
-*.highlightColor:        #3d3835
+*.highlightColor:        #46403d
