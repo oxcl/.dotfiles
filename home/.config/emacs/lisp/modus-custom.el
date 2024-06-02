@@ -32,7 +32,7 @@
         (fg-paren-match fg-main)
         (bg-paren-expression bg-yellow-nuanced)
         (underline-paren-match unspecified)
-        (bg-prominent-err bg-red-subtle)
+        (bg-prominent-err bg-red-intense)
         (fg-prominent-err fg-main)
       ;; UI elements
         (keybind blue)
@@ -216,8 +216,12 @@
      `(font-lock-property-name-face ((,c :foreground ,blue)))
      `(font-lock-warning-face       ((,c :weight normal)))
      ;; add extra padding to mode line
-     `(mode-line                    ((,c :box (:line-width 4 :color ,bg-mode-line-active))))
-     `(mode-line-inactive           ((,c :box (:line-width 4 :color ,bg-mode-line-inactive))))
+     `(mode-line                    ((,c :box (:line-width (4 . 4) :color ,bg-mode-line-active)
+                                         :underline (:color ,border-mode-line-active :position t)
+                                         :overline ,border-mode-line-active)))
+     `(mode-line-inactive           ((,c :box (:line-width (4 . 4) :color ,bg-mode-line-inactive)
+                                         :underline (:color ,border-mode-line-inactive :position t)
+                                         :overline ,border-mode-line-inactive)))
      ;; modification to other faces
      `(idle-highlight               ((,c (:background ,bg-active))))
      `(jinx-misspelled              ((,c (:underline (:style wave :color ,green-faint)))))

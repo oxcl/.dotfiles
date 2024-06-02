@@ -180,6 +180,10 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
       completion-show-help nil
       read-buffer-completion-ignore-case t
       read-file-name-completion-ignore-case t)
+
+;; fix lockups and slowdowns with jinx (specially in org-mode and when hitting the end of the buffer)
+(setopt text-mode-ispell-word-completion nil)
+
 (add-to-list 'completion-styles 'flex)
 
 ;; better keybindings for vanilla minibuffer
