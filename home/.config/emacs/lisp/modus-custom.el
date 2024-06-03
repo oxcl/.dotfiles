@@ -225,12 +225,14 @@
      ;; modification to other faces
      `(idle-highlight               ((,c (:background ,bg-active))))
      `(jinx-misspelled              ((,c (:underline (:style wave :color ,green-faint)))))
-    ` (show-paren-match             ((,c :weight bold)))
+     `(show-paren-match             ((,c :weight bold)))
      `(show-paren-mismatch          ((,c :weight bold)))
      ;; dashboard
      `(dashboard-items-face         ((,c :box (:line-width 3 :color ,bg-main))))
      `(dashboard-heading            ((,c :expand t :box (:line-width 7 :color ,bg-main)
-                                         :underline (:position 5)))))))
+                                         :underline (:position 5))))
+     ;; volatile-highlights
+     `(secondary-selection           ((,c :foreground unspecified :background ,bg-red-subtle))))))
 
      ;; tabs
 ;;     `(tab-line                     ((,c :height 1.0

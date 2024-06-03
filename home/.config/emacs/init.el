@@ -1,6 +1,7 @@
-(setq oxcl/load-only-essentials nil ; only load bare-minimum configurations
-      oxcl/load-only-builtins nil ; only load configurations that are builtin to emacs without loading any 3rd party packages
-      oxcl/load-only-elpaca nil) ; only load builtin configurations plus elpaca but without any 3rd party packages.
+;; -*- lexical-binding: t -*-
+    (setq oxcl/load-only-essentials nil ; only load bare-minimum configurations
+          oxcl/load-only-builtins nil ; only load configurations that are builtin to emacs without loading any 3rd party packages
+          oxcl/load-only-elpaca nil) ; only load builtin configurations plus elpaca but without any 3rd party packages.
 
 (unless init-file-debug
   (setq frame-inhibit-implied-size t
@@ -159,16 +160,28 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
             cursor-type oxcl/cursor-type-default))))
 (add-hook 'scroll-lock-mode-hook #'oxcl/hide-cursor-in-scroll-lock-mode)
 
-(global-set-key (kbd "M-m") #'windmove-left)
-(global-set-key (kbd "M-n") #'windmove-down)
-(global-set-key (kbd "M-e") #'windmove-up)
-(global-set-key (kbd "M-i") #'windmove-right)
+;; When you run for instance windmove-left and there is no window on the left, windmove will throw exception
+;;(and if you have debug-on-error enabled) you will see Debugger complaining.
+(defun ignore-error-wrapper (fn)
+  "Funtion return new function that ignore errors.
+ The function wraps a function with `ignore-errors' macro."
+  (let ((fn fn))
+    (lambda ()
+      (interactive)
+      (funcall fn))))
+(global-set-key (kbd "M-m") (ignore-error-wrapper 'windmove-left))
+(global-set-key (kbd "M-n") (ignore-error-wrapper 'windmove-down))
+(global-set-key (kbd "M-e") (ignore-error-wrapper 'windmove-up))
+(global-set-key (kbd "M-i") (ignore-error-wrapper 'windmove-right))
 
-(global-set-key (kbd "M-M") #'windmove-swap-states-left)
-(global-set-key (kbd "M-N") #'windmove-swap-states-down)
-(global-set-key (kbd "M-E") #'windmove-swap-states-up)
-(global-set-key (kbd "M-I") #'windmove-swap-states-right)
+(global-set-key (kbd "M-M") (ignore-error-wrapper 'windmove-swap-states-left))
+(global-set-key (kbd "M-N") (ignore-error-wrapper 'windmove-swap-states-down))
+(global-set-key (kbd "M-E") (ignore-error-wrapper 'windmove-swap-states-up))
+(global-set-key (kbd "M-I") (ignore-error-wrapper 'windmove-swap-states-right))
 (global-set-key (kbd "C-x o") (lambda () (interactive) (print "don't use"))) ; TODO: remove later
+;;(global-set-key (kbd "C-x 0") (lambda () (interactive) (print "don't use"))) ; TODO: until i get use to C-w
+
+;;(global-set-key (kbd "C-w") #'delete-window) ; TODO: remove this after figuring out tab-line-mode
 
 (set-frame-font "ioZevka Code 11" nil t)
 (set-face-attribute 'fixed-pitch nil :family "ioZevka Code")

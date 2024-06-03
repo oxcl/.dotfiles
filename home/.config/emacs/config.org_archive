@@ -1,0 +1,35 @@
+#    -*- mode: org -*-
+
+
+Archived entries from file /home/user/.dotfiles/home/.config/emacs/config.org
+
+
+* Window Management
+:PROPERTIES:
+:ARCHIVE_TIME: 2024-06-03 Mon 13:59
+:ARCHIVE_FILE: ~/.dotfiles/home/.config/emacs/config.org
+:ARCHIVE_CATEGORY: config
+:END:
+#+begin_src elisp
+  ;; When you run for instance windmove-left and there is no window on the left, windmove will throw exception
+  ;; (and if you have debug-on-error enabled) you will see Debugger complaining.
+  (defun ignore-error-wrapper (fn)
+    "Funtion return new function that ignore errors.
+       The function wraps a function with `ignore-errors' macro."
+    (lexical-let ((fn fn))
+                 (lambda ()
+                   (interactive)
+                   (ignore-errors
+                     (funcall fn)))))
+
+  (global-set-key (kbd "M-m") (ignore-error-wrapper 'windmove-left))
+  (global-set-key (kbd "M-n") (ignore-error-wrapper 'windmove-down))
+  (global-set-key (kbd "M-e") (ignore-error-wrapper 'windmove-up))
+  (global-set-key (kbd "M-i") (ignore-error-wrapper 'windmove-right))
+
+  (global-set-key (kbd "M-M") (ignore-error-wrapper 'windmove-swap-states-left))
+  (global-set-key (kbd "M-N") (ignore-error-wrapper 'windmove-swap-states-down))
+  (global-set-key (kbd "M-E") (ignore-error-wrapper 'windmove-swap-states-up))
+  (global-set-key (kbd "M-I") (ignore-error-wrapper 'windmove-swap-states-right))
+  (global-set-key (kbd "C-x o") (lambda () (interactive) (print "don't use"))) ; TODO: remove later
+#+end_src
