@@ -230,8 +230,10 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 
 ** Highlight Current Line
 #+begin_src elisp
-  (dolist (hook '(prog-mode-hook conf-mode-hook))
+  (dolist (hook '(prog-mode-hook conf-mode-hook text-mode-hook))
     (add-hook hook #'hl-line-mode))
+
+  (add-hook 'org-mode-hook (lambda () (hl-line-mode -1)))
 #+end_src
 
 * Minibuffer
@@ -958,6 +960,14 @@ enable support for font ligatures
     (global-ligature-mode t))
 #+end_src
 
+** Volatile Highlights
+#+begin_src elisp
+  (use-package volatile-highlights
+    :demand t
+    :config
+    (volatile-highlights-mode 1))
+#+end_src
+
 ** Fancy Icons
 #+begin_src elisp
   (use-package all-the-icons
@@ -1006,6 +1016,7 @@ enable support for font ligatures
 
     (add-hook 'dashboard-mode-hook (lambda () (widget-forward 1)))
     ;; show dashboard on emacs startup
+
     (dashboard-setup-startup-hook))
 #+end_src
 
