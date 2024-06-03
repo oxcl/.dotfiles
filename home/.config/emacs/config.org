@@ -209,6 +209,20 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
   (add-hook 'scroll-lock-mode-hook #'oxcl/hide-cursor-in-scroll-lock-mode)
 #+end_src
 
+* Window Management
+#+begin_src elisp
+  (global-set-key (kbd "M-m") #'windmove-left)
+  (global-set-key (kbd "M-n") #'windmove-down)
+  (global-set-key (kbd "M-e") #'windmove-up)
+  (global-set-key (kbd "M-i") #'windmove-right)
+
+  (global-set-key (kbd "M-M") #'windmove-swap-states-left)
+  (global-set-key (kbd "M-N") #'windmove-swap-states-down)
+  (global-set-key (kbd "M-E") #'windmove-swap-states-up)
+  (global-set-key (kbd "M-I") #'windmove-swap-states-right)
+  (global-set-key (kbd "C-x o") (lambda () (interactive) (print "don't use"))) ; TODO: remove later
+#+end_src
+
 * UI
 ** font
 #+begin_src elisp :tangle ./init.el
@@ -420,7 +434,7 @@ the list of the variable is taken from ~editorconfig-mode~ source code
                 verilog-case-indent standard-indent)
 #+end_src
 
-*** Automaticly Indent New Lines
+*** Automatically Indent New Lines
 #+begin_src elisp
   (setq electric-indent-mode nil)
   (defun oxcl/newline-dwim ()
@@ -492,8 +506,8 @@ i use ~M-m~ and ~M-i~ to indent a line/region left or right
         (tab-to-tab-stop)
         (indent-rigidly-right-to-tab-stop (line-beginning-position)
           (line-end-position)))))
-  (global-set-key (kbd "M-i") #'oxcl/indent-right)
-  (global-set-key (kbd "M-m") #'oxcl/indent-left)
+  (global-set-key (kbd "M-S-<right>") #'oxcl/indent-right)
+  (global-set-key (kbd "M-S-<left>") #'oxcl/indent-left)
 #+end_src
 
 *** Delete Whitespace by Tab Stop

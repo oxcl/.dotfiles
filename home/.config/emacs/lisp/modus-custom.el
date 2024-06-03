@@ -225,7 +225,7 @@
      ;; modification to other faces
      `(idle-highlight               ((,c (:background ,bg-active))))
      `(jinx-misspelled              ((,c (:underline (:style wave :color ,green-faint)))))
-     `(show-paren-match             ((,c :weight bold)))
+    ` (show-paren-match             ((,c :weight bold)))
      `(show-paren-mismatch          ((,c :weight bold)))
      ;; dashboard
      `(dashboard-items-face         ((,c :box (:line-width 3 :color ,bg-main))))

@@ -159,6 +159,17 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
             cursor-type oxcl/cursor-type-default))))
 (add-hook 'scroll-lock-mode-hook #'oxcl/hide-cursor-in-scroll-lock-mode)
 
+(global-set-key (kbd "M-m") #'windmove-left)
+(global-set-key (kbd "M-n") #'windmove-down)
+(global-set-key (kbd "M-e") #'windmove-up)
+(global-set-key (kbd "M-i") #'windmove-right)
+
+(global-set-key (kbd "M-M") #'windmove-swap-states-left)
+(global-set-key (kbd "M-N") #'windmove-swap-states-down)
+(global-set-key (kbd "M-E") #'windmove-swap-states-up)
+(global-set-key (kbd "M-I") #'windmove-swap-states-right)
+(global-set-key (kbd "C-x o") (lambda () (interactive) (print "don't use"))) ; TODO: remove later
+
 (set-frame-font "ioZevka Code 11" nil t)
 (set-face-attribute 'fixed-pitch nil :family "ioZevka Code")
 (set-face-attribute 'variable-pitch nil :family "ioZevka Quasi")
@@ -411,8 +422,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
       (tab-to-tab-stop)
       (indent-rigidly-right-to-tab-stop (line-beginning-position)
         (line-end-position)))))
-(global-set-key (kbd "M-i") #'oxcl/indent-right)
-(global-set-key (kbd "M-m") #'oxcl/indent-left)
+(global-set-key (kbd "M-S-<right>") #'oxcl/indent-right)
+(global-set-key (kbd "M-S-<left>") #'oxcl/indent-left)
 
 (defun oxcl/backspace-whitespace-to-tab-stop ()
   "Delete whitespace backwards to the next tab-stop, otherwise delete one character."
