@@ -14,38 +14,38 @@
     (setq inhibit-redisplay t
 	  inhibit-message nil)
     (defun oxcl/reset-inhibited-vars-h ()
-  (setq-default inhibit-redisplay nil
+      (setq-default inhibit-redisplay nil
 		    inhibit-message nil)
-  (redraw-frame))
+      (redraw-frame))
     (add-hook 'after-init-hook #'oxcl/reset-inhibited-vars-h)
     (define-advice startup--load-user-init-file (:after (&rest _) undo-inhibit-vars)
-  (when init-file-had-error
+      (when init-file-had-error
 	(doom--reset-inhibited-vars-h)))
     (advice-add #'display-startup-echo_area-message :override #'ignore)
     (advice-add #'display-startup-screen :override #'ignore)
     (define-advice load-file (:override (file) silence)
-  (load file nil 'nomessage))
+      (load file nil 'nomessage))
     (define-advice startup--load-user-init-file (:before (&rest _) undo-silence)
-  (advice-remove #'load-file #'load-file@silence))
+      (advice-remove #'load-file #'load-file@silence))
     (advice-add #'tool-bar-setup :override #'ignore)
     (define-advice startup--load-user-init-file (:before (&rest _) defer-tool-bar-setup)
-  (advice-remove #'tool-bar-setup #'ignore)
-  (add-transient-hook! 'tool-bar-mode (tool-bar-setup)))))
+      (advice-remove #'tool-bar-setup #'ignore)
+      (add-transient-hook! 'tool-bar-mode (tool-bar-setup)))))
 
 (setq real-user-emacs-directory user-emacs-directory
   user-emacs-directory oxcl/cache-dir
   server-auth-dir (expand-file-name "server" real-user-emacs-directory)
   ;; relocate backup files
-  backup-directory-alist `((".*" . ,(expand-file-name "emacs/backups" oxcl/cache-dir)))
-  ;; relocate auto-save files
-  auto-save-file-name-transforms `((".*" ,(expand-file-name "save" oxcl/cache-dir) t))
-  ;; disable lockfiles
-  create-lockfiles nil)
+      backup-directory-alist `((".*" . ,(expand-file-name "emacs/backups" oxcl/cache-dir)))
+      ;; relocate auto-save files
+      auto-save-file-name-transforms `((".*" ,(expand-file-name "save" oxcl/cache-dir) t))
+      ;; disable lockfiles
+      create-lockfiles nil)
 
 ;; suppress compiler warnings
 (setq native-comp-async-report-warnings-errors init-file-debug
-  native-comp-warning-on-missing-source init-file-debug
-  ad-redefinition-action 'accept)
+      native-comp-warning-on-missing-source init-file-debug
+      ad-redefinition-action 'accept)
 
 (setq gnutls-verify-error noninteractive
 gnutls-algorithm-priority
@@ -71,7 +71,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (defun oxcl/add-tangle-and-reload-hook ()
   (when (equal (file-truename (concat real-user-emacs-directory "config.org"))
-	   (buffer-file-name))
+	       (buffer-file-name))
     (add-hook 'after-save-hook #'oxcl/tangle-and-reload nil t)))
 (defun oxcl/tangle-and-reload ()
   (org-babel-tangle)
@@ -170,7 +170,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (dolist (mode '(prog-mode-hook text-mode-hook restclient-mode-hook conf-mode-hook text-mode))
   (add-hook mode 'display-line-numbers-mode))
 
-(dolist (hook '(prog-mode-hook conf-mode))
+(dolist (hook '(prog-mode-hook conf-mode-hook))
   (add-hook hook #'hl-line-mode))
 
 (setq completion-auto-help 'always ; open the completion buffer even if there was only one item to complete
@@ -180,11 +180,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
       completion-show-help nil
       read-buffer-completion-ignore-case t
       read-file-name-completion-ignore-case t)
-
-;; fix lockups and slowdowns with jinx (specially in org-mode and when hitting the end of the buffer)
-(setopt text-mode-ispell-word-completion nil)
-
-(add-to-list 'completion-styles 'flex)
+(add-to-list 'completion-styles 'flex t)
 
 ;; better keybindings for vanilla minibuffer
 (define-key minibuffer-local-map (kbd "<down>") #'minibuffer-next-completion)
@@ -785,3 +781,48 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   ;; Enables ligature checks globally in all buffers. You can also do it
   ;; per mode with `ligature-mode'.
   (global-ligature-mode t))
+
+(use-package all-the-icons
+  :demand t
+  :if (display-graphic-p))
+
+(use-package nerd-icons
+  :demand t
+  :if (not (display-graphic-p)))
+
+(use-package dashboard
+  :after all-the-icons
+  :demand t
+  :config
+  ;; show dashboard when using emacsclient
+  (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name))
+        dashboard-startup-banner 2
+        dashboard-navigation-cycle t
+        ;; Content is not centered by default. To center, set
+        dashboard-center-content t
+        dashboard-items '((recents   . 5)
+                          (bookmarks . 5)
+                          (projects  . 5)
+                          (agenda    . 5)
+                          (registers . 5))
+        ;; set the order of the items
+        dashboard-startupify-list '(dashboard-insert-banner
+                                    dashboard-insert-newline
+                                    dashboard-insert-banner-title
+                                    dashboard-insert-newline
+                                    dashboard-insert-navigator
+                                    dashboard-insert-newline
+                                    dashboard-insert-init-info
+                                    dashboard-insert-items
+                                    dashboard-insert-newline)
+        ;; enable icons
+        dashboard-display-icons-p t
+        dashboard-icon-type (if (display-graphic-p) 'all-the-icons 'nerd-icons)
+        ;;dashboard-set-heading-icons t
+        dashboard-set-file-icons t)
+  (define-key dashboard-mode-map (kbd "<down>") #'widget-forward)
+  (define-key dashboard-mode-map (kbd "<up>") #'widget-backward)
+
+  (add-hook 'dashboard-mode-hook (lambda () (widget-forward 1)))
+  ;; show dashboard on emacs startup
+  (dashboard-setup-startup-hook))

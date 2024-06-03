@@ -230,7 +230,7 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 
 ** Highlight Current Line
 #+begin_src elisp
-  (dolist (hook '(prog-mode-hook conf-mode))
+  (dolist (hook '(prog-mode-hook conf-mode-hook))
     (add-hook hook #'hl-line-mode))
 #+end_src
 
@@ -244,11 +244,7 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
         completion-show-help nil
         read-buffer-completion-ignore-case t
         read-file-name-completion-ignore-case t)
-
-  ;; fix lockups and slowdowns with jinx (specially in org-mode and when hitting the end of the buffer)
-  (setopt text-mode-ispell-word-completion nil)
-
-  (add-to-list 'completion-styles 'flex)
+  (add-to-list 'completion-styles 'flex t)
 
   ;; better keybindings for vanilla minibuffer
   (define-key minibuffer-local-map (kbd "<down>") #'minibuffer-next-completion)
@@ -960,6 +956,57 @@ enable support for font ligatures
     ;; Enables ligature checks globally in all buffers. You can also do it
     ;; per mode with `ligature-mode'.
     (global-ligature-mode t))
+#+end_src
+
+** Fancy Icons
+#+begin_src elisp
+  (use-package all-the-icons
+    :demand t
+    :if (display-graphic-p))
+
+  (use-package nerd-icons
+    :demand t
+    :if (not (display-graphic-p)))
+#+end_src
+
+** Dashboard
+#+begin_src elisp
+  (use-package dashboard
+    :after all-the-icons
+    :demand t
+    :config
+    ;; show dashboard when using emacsclient
+    (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name))
+          dashboard-startup-banner 2
+          dashboard-navigation-cycle t
+          ;; Content is not centered by default. To center, set
+          dashboard-center-content t
+          dashboard-items '((recents   . 5)
+                            (bookmarks . 5)
+                            (projects  . 5)
+                            (agenda    . 5)
+                            (registers . 5))
+          ;; set the order of the items
+          dashboard-startupify-list '(dashboard-insert-banner
+                                      dashboard-insert-newline
+                                      dashboard-insert-banner-title
+                                      dashboard-insert-newline
+                                      dashboard-insert-navigator
+                                      dashboard-insert-newline
+                                      dashboard-insert-init-info
+                                      dashboard-insert-items
+                                      dashboard-insert-newline)
+          ;; enable icons
+          dashboard-display-icons-p t
+          dashboard-icon-type (if (display-graphic-p) 'all-the-icons 'nerd-icons)
+          ;;dashboard-set-heading-icons t
+          dashboard-set-file-icons t)
+    (define-key dashboard-mode-map (kbd "<down>") #'widget-forward)
+    (define-key dashboard-mode-map (kbd "<up>") #'widget-backward)
+
+    (add-hook 'dashboard-mode-hook (lambda () (widget-forward 1)))
+    ;; show dashboard on emacs startup
+    (dashboard-setup-startup-hook))
 #+end_src
 
 * zoom-in/zoom-out
