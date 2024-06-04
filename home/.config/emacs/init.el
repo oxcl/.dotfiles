@@ -181,6 +181,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (global-set-key (kbd "C-x o") (lambda () (interactive) (print "don't use"))) ; TODO: remove later
 ;;(global-set-key (kbd "C-x 0") (lambda () (interactive) (print "don't use"))) ; TODO: until i get use to C-w
 
+
 ;;(global-set-key (kbd "C-w") #'delete-window) ; TODO: remove this after figuring out tab-line-mode
 
 (set-frame-font "ioZevka Code 11" nil t)
@@ -665,6 +666,11 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   :demand t
   :config
   (marginalia-mode))
+
+(use-package avy
+  :config
+  (setq avy-keys '(?n ?t ?e ?s ?i ?r ?o ?a ?m ?g ?h ?d ?l ?p ?b ?j ?v ?k ?f ?u ?c ?\, ?x ?. ?z ?\; ?w ?y ?\" ?q))
+  :bind ("M-s" . avy-goto-subword-1))
 
 (use-package nix-ts-mode
   :commands (nix-ts-mode)
