@@ -232,7 +232,9 @@
      `(dashboard-heading            ((,c :expand t :box (:line-width 7 :color ,bg-main)
                                          :underline (:position 5))))
      ;; volatile-highlights
-     `(secondary-selection           ((,c :foreground unspecified :background ,bg-red-subtle))))))
+     `(secondary-selection           ((,c :foreground unspecified :background ,bg-red-subtle)))
+     ;;goto-line-preview
+     `(goto-line-preview-hl          ((,c :foreground unspecified :background ,bg-mode-line-active))))))
 
      ;; tabs
 ;;     `(tab-line                     ((,c :height 1.0

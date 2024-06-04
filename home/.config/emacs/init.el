@@ -160,6 +160,10 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
             cursor-type oxcl/cursor-type-default))))
 (add-hook 'scroll-lock-mode-hook #'oxcl/hide-cursor-in-scroll-lock-mode)
 
+(define-key key-translation-map (kbd "<escape>") (kbd "C-g"))
+(define-key key-translation-map (kbd "C-g") (kbd "<escape>"))
+(global-set-key (kbd"<escape>") #'goto-line)
+
 ;; When you run for instance windmove-left and there is no window on the left, windmove will throw exception
 ;;(and if you have debug-on-error enabled) you will see Debugger complaining.
 (defun ignore-error-wrapper (fn)
@@ -864,3 +868,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   ;; show dashboard on emacs startup
 
   (dashboard-setup-startup-hook))
+
+(use-package goto-line-preview
+  :config
+  (setq goto-line-preview-hl-duration 600) ;; disable highlights
+  :bind ("<escape>" . goto-line-preview))

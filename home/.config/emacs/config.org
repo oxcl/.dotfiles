@@ -210,6 +210,14 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
   (add-hook 'scroll-lock-mode-hook #'oxcl/hide-cursor-in-scroll-lock-mode)
 #+end_src
 
+* Universal Keybindings
+** C-g as goto-line
+#+begin_src elisp
+  (define-key key-translation-map (kbd "<escape>") (kbd "C-g"))
+  (define-key key-translation-map (kbd "C-g") (kbd "<escape>"))
+  (global-set-key (kbd"<escape>") #'goto-line)
+#+end_src
+
 * Window Management
 ** windmove
 #+begin_src elisp
@@ -1056,6 +1064,14 @@ enable support for font ligatures
     ;; show dashboard on emacs startup
 
     (dashboard-setup-startup-hook))
+#+end_src
+
+** goto-line preview
+#+begin_src elisp
+  (use-package goto-line-preview
+    :config
+    (setq goto-line-preview-hl-duration 600) ;; disable highlights
+    :bind ("<escape>" . goto-line-preview))
 #+end_src
 
 * zoom-in/zoom-out
