@@ -148,18 +148,12 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 ;; when navigation keys are pressed the whole buffer scrolls instead of the cursor moving
 (add-hook 'help-mode-hook #'scroll-lock-mode)
 
-(require 'char-fold)
-(setq-default char-fold-symmetric t  ; accent character's match the regular character as well
-              search-ring-max 64
-              regexp-search-ring-max 64)
-(setq search-default-mode #'char-fold-to-regexp)
-(add-to-list 'char-fold-include '(?ی "ي"))
-(add-to-list 'char-fold-include '(?ک "ك"))
-(char-fold-update-table)
+(key-translate "C-g" "C-[")
+(key-translate "C-[" "C-g")
+(define-key input-decode-map (kbd "<escape>") (kbd "C-g"))
+(define-key input-decode-map (kbd "C-g") (kbd "ESC"))
 
-(define-key key-translation-map (kbd "<escape>") (kbd "C-g"))
-(define-key key-translation-map (kbd "C-g") (kbd "<escape>"))
-(global-set-key (kbd"<escape>") #'goto-line)
+;; (global-set-key (kbd "C-[") #'goto-line)
 
 (global-set-key (kbd "C-z") #'undo-only)
 (global-set-key (kbd "C-S-z") #'undo-redo)
@@ -229,6 +223,40 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
                                      nil ;(display-buffer-reuse-mode-window display-buffer-at-bottom)
                                      (window-parameters . ((mode-line-format . none))))
              t)
+
+(setq-default search-ring-max 64
+              regexp-search-ring-max 64)
+
+;; search counts
+(setq isearch-lazy-count t
+      lazy-highlight-initial-delay 100)
+
+;; while using incremental search when going from C-s to C-r or from C-r to C-s go to the
+;; next/previous match immediately. instead of requiring two key presses
+(setq isearch-repeat-on-direction-change t)
+
+;; make the backspace delete the search query immediately!
+(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+;; automatically wrap around the buffer when no result is found
+(setq isearch-wrap-pause 'no)
+
+;; exit out of search with a single C-g in all scenarios
+(defun oxcl/isearch-full-abort ()
+  (interactive)
+  (isearch-abort)
+  (when isearch-mode (isearch-abort)))
+(define-key isearch-mode-map [remap isearch-abort] #'oxcl/isearch-full-abort)
+
+(define-key isearch-mode-map (kbd "C-<up>") 'isearch-ring-retreat)
+(define-key isearch-mode-map (kbd "C-<down>") 'isearch-ring-advance)
+
+(require 'char-fold)
+(setq char-fold-symmetric t  ; accent character's match the regular character as well
+      search-default-mode #'char-fold-to-regexp)
+(add-to-list 'char-fold-include '(?ی "ي"))
+(add-to-list 'char-fold-include '(?ک "ك"))
+(add-to-list 'char-fold-include '(?آ "آإ"))
+(char-fold-update-table)
 
 (setq-default tab-width 4
               standard-indent 4
@@ -472,6 +500,9 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
                                      (match-beginning 1)))
           (call-interactively 'backward-delete-char))))))
 (global-set-key (kbd "DEL") #'oxcl/backspace-whitespace-to-tab-stop)
+
+(electric-pair-mode)
+(setq electric-pair-skip-whitespace nil)
 
 (setq-default fill-column 100)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
@@ -826,8 +857,17 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (use-package volatile-highlights
   :demand t
+  :delight
   :config
   (volatile-highlights-mode 1))
+
+(use-package which-key
+  :demand t
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 1.0
+        which-key-idle-secondary-delay 0.2
+        which-key-show-early-on-C-h t))
 
 (use-package all-the-icons
   :demand t
@@ -877,5 +917,5 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (use-package goto-line-preview
   :config
-  (setq goto-line-preview-hl-duration 600) ;; disable highlights
-  :bind ("<escape>" . goto-line-preview))
+  (setq goto-line-preview-hl-duration 600)) ;; disable highlights
+  ;;:bind ("<escape>" . goto-line-preview))

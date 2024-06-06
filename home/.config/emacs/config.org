@@ -192,31 +192,26 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
     (error (message (concat "Prevented anything other than essential configuration from being loaded because "
                                    "oxcl/load-only-essentiaals was set to true"))))
 #+end_src
+
 ** Better Help Buffer
 #+begin_src elisp
   ;; when navigation keys are pressed the whole buffer scrolls instead of the cursor moving
   (add-hook 'help-mode-hook #'scroll-lock-mode)
 #+end_src
 
-** Better isearch
+* Universal Keybindings
+** <escape> as cancel
+swap <escape> and C-g at lowest level
 #+begin_src elisp
-  (require 'char-fold)
-  (setq-default char-fold-symmetric t  ; accent character's match the regular character as well
-                search-ring-max 64
-                regexp-search-ring-max 64)
-  (setq search-default-mode #'char-fold-to-regexp)
-  (add-to-list 'char-fold-include '(?ی "ي"))
-  (add-to-list 'char-fold-include '(?ک "ك"))
-  (char-fold-update-table)
+  (key-translate "C-g" "C-[")
+  (key-translate "C-[" "C-g")
+  (define-key input-decode-map (kbd "<escape>") (kbd "C-g"))
+  (define-key input-decode-map (kbd "C-g") (kbd "ESC"))
 #+end_src
 
-
-* Universal Keybindings
 ** C-g as goto-line
 #+begin_src elisp
-  (define-key key-translation-map (kbd "<escape>") (kbd "C-g"))
-  (define-key key-translation-map (kbd "C-g") (kbd "<escape>"))
-  (global-set-key (kbd"<escape>") #'goto-line)
+  ;; (global-set-key (kbd "C-[") #'goto-line)
 #+end_src
 
 ** C-z as undo/redo
@@ -312,6 +307,51 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
                                        nil ;(display-buffer-reuse-mode-window display-buffer-at-bottom)
                                        (window-parameters . ((mode-line-format . none))))
                t)
+#+end_src
+
+** Better isearch
+*** frictionless search
+#+begin_src elisp
+  (setq-default search-ring-max 64
+                regexp-search-ring-max 64)
+
+  ;; search counts
+  (setq isearch-lazy-count t
+        lazy-highlight-initial-delay 100)
+
+  ;; while using incremental search when going from C-s to C-r or from C-r to C-s go to the
+  ;; next/previous match immediately. instead of requiring two key presses
+  (setq isearch-repeat-on-direction-change t)
+
+  ;; make the backspace delete the search query immediately!
+  (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+  ;; automatically wrap around the buffer when no result is found
+  (setq isearch-wrap-pause 'no)
+
+  ;; exit out of search with a single C-g in all scenarios
+  (defun oxcl/isearch-full-abort ()
+    (interactive)
+    (isearch-abort)
+    (when isearch-mode (isearch-abort)))
+  (define-key isearch-mode-map [remap isearch-abort] #'oxcl/isearch-full-abort)
+#+end_src
+
+*** history
+#+begin_src elisp
+  (define-key isearch-mode-map (kbd "C-<up>") 'isearch-ring-retreat)
+  (define-key isearch-mode-map (kbd "C-<down>") 'isearch-ring-advance)
+
+#+end_src
+
+*** char-fold
+#+begin_src elisp
+  (require 'char-fold)
+  (setq char-fold-symmetric t  ; accent character's match the regular character as well
+        search-default-mode #'char-fold-to-regexp)
+  (add-to-list 'char-fold-include '(?ی "ي"))
+  (add-to-list 'char-fold-include '(?ک "ك"))
+  (add-to-list 'char-fold-include '(?آ "آإ"))
+  (char-fold-update-table)
 #+end_src
 
 * Programming
@@ -575,6 +615,12 @@ i use ~M-m~ and ~M-i~ to indent a line/region left or right
                                          (match-beginning 1)))
               (call-interactively 'backward-delete-char))))))
     (global-set-key (kbd "DEL") #'oxcl/backspace-whitespace-to-tab-stop)
+#+end_src
+
+** Parenthesis and Pair Characters
+#+begin_src elisp
+  (electric-pair-mode)
+  (setq electric-pair-skip-whitespace nil)
 #+end_src
 
 ** Vertical Ruler
@@ -1026,8 +1072,20 @@ enable support for font ligatures
 #+begin_src elisp
   (use-package volatile-highlights
     :demand t
+    :delight
     :config
     (volatile-highlights-mode 1))
+#+end_src
+
+** which key
+#+begin_src elisp
+  (use-package which-key
+    :demand t
+    :config
+    (which-key-mode)
+    (setq which-key-idle-delay 1.0
+          which-key-idle-secondary-delay 0.2
+          which-key-show-early-on-C-h t))
 #+end_src
 
 ** Fancy Icons
@@ -1086,159 +1144,13 @@ enable support for font ligatures
 #+begin_src elisp
   (use-package goto-line-preview
     :config
-    (setq goto-line-preview-hl-duration 600) ;; disable highlights
-    :bind ("<escape>" . goto-line-preview))
+    (setq goto-line-preview-hl-duration 600)) ;; disable highlights
+    ;;:bind ("<escape>" . goto-line-preview))
 #+end_src
 
-* minibuffer
-** find-file
-#+begin_src elisp :tangle no
-  (global-set-key (kbd "C-x f") #'find-file)
-#+end_src
-
-** search and replace
-*** make isearch better
-**** sane defaults
-#+begin_src elisp :tangle no
-
-  ;; TODO: make sure char-fold-table includes farsi letters
-#+end_src
-
-**** frictionless search
-#+begin_src elisp :tangle no
-
-  ;; while using incremental search when going from C-s to C-r or from C-r to C-s go to the
-  ;; next/previous match immediately. instead of requiring two key presses
-  (setq isearch-repeat-on-direction-change t)
-
-  ;; make the backspace delete the search query immediately!
-  ;; for going back to the previous match use C-r
-  (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
-  ;; clear the search string with C-S-<backspace> like other minibuffer prompts
-  (defun oxcl/isearch-clear ()
-    (interactive))
-  (define-key isearch-mode-map (kbd "C-S-<backspace>") #'oxcl/isearch-clear)
-  ;; automatically wrap around the buffer when no result is found
-  (setq isearch-wrap-pause 'no)
-
-  ;; exit out of search with a single C-g in all scenarios
-  (defun oxcl/isearch-full-abort ()
-    (interactive)
-    (isearch-abort)
-    (when isearch-mode (isearch-abort)))
-  (define-key isearch-mode-map [remap isearch-abort] #'oxcl/isearch-full-abort)
-#+end_src
-
-**** isearch history
-#+begin_src elisp :tangle no
-  (define-key isearch-mode-map (kbd "<M-up>") 'isearch-ring-retreat)
-  (define-key isearch-mode-map (kbd "<M-down>") 'isearch-ring-advance)
-#+end_src
-
-;; when using C-s C-w to search for the word under the cursor grab the entire word
-;; even if the cursor is in the middle of the word
-(defun oxcl/isearch-yank-word-at-point ()
-"Yank the whole word at point into the isearch buffer."
-(interactive)
-(save-excursion
-(if (and (not isearch-forward)
-isearch-other-end)
-(goto-char isearch-other-end))
-(skip-syntax-backward "w_")
-(isearch-yank-string (buffer-substring-no-properties (point)
-(progn (skip-syntax-forward "w_")
-(point))))))
-
-(define-key isearch-mode-map (kbd "C-w") 'oxcl/isearch-yank-word-at-point)
-
-#+end_src
-
-**** disable momentary messages
-disable isearch annoying messages which appear after the search string and sometimes cause a delay
-#+begin_src elisp :tangle no
-  (defun oxcl/isearch--momentary-message (orig-fun &rest args)
-    (apply orig-fun `(,(car args) 0)))
-  (advice-add 'isearch--momentary-message :around #'oxcl/isearch--momentary-message)
-#+end_src
-
-**** loose search
-add two new keybindings for C-S-s and C-S-r which does a case insensetive incremental search with lax space enabled. and taking '-' and '_' as the same
-so it's practically a less strict loose version of the normal isearch. it should also work in a isearch buffer as well to convert the current search to a loose one
-#+begin_src elisp :tangle no
-  (defun oxcl/loose-search (&optional arg)
-    (interactive)
-    (if (bound-and-true-p oxcl/loose-search)
-  (if (bound-and-true-p arg)
-      (isearch-repeat-backward)
-    (isearch-repeat-forward))
-      (setq oxcl/loose-search t)
-      (or (featurep 'char-fold) (require 'char-fold))
-      (oxcl/enable-loose-color)
-      (let ((case-fold-search t) ; case insensitive
-      (default-search-mode 'char-fold-to-regexp)
-      (search-upper-case nil)
-      (search-whitespace-regexp "[ .\t\n\\(\\)\\.,_-]+")) ; stops uppercase letters to change case sensitivity behavior
-  (set-char-table-range char-fold-table ?_ "-")
-  (set-char-table-range char-fold-table ?- "_")
-  (if (bound-and-true-p arg) (isearch-backward) (isearch-forward))
-  (set-char-table-range char-fold-table ?_ nil)
-  (set-char-table-range char-fold-table ?- nil)
-  (oxcl/disable-loose-color)
-  (setq oxcl/loose-search nil))))
-  (defun oxcl/loose-backward-search ()
-    (interactive)
-    (oxcl/loose-search t))
-  (keymap-global-set "C-S-s" #'oxcl/loose-search)
-  (keymap-global-set "C-S-r" #'oxcl/loose-backward-search)
-  (defun oxcl/make-loose (&optional arg)
-    (interactive)
-    (unless (featurep 'char-fold) (require 'char-fold))
-    (if (bound-and-true-p oxcl/loose-search)
-  (if (bound-and-true-p arg)
-      (isearch-repeat-backward)
-    (isearch-repeat-forward))
-      (setq oxcl/loose-search t)
-      (isearch-toggle-case-fold)
-      (isearch-toggle-char-fold)
-      (oxcl/enable-loose-color))
-    (add-hook 'isearch-mode-end-hook #'oxcl/disable-loose-color))
-  (defun oxcl/make-loose-backward ()
-    (interactive)
-    (oxcl/make-loose t))
-  (define-key isearch-mode-map (kbd "C-S-s") #'oxcl/make-loose)
-  (define-key isearch-mode-map (kbd "C-S-r") #'oxcl/make-loose-backward)
-#+end_src
-**** search count (lazy highlight)
-show total number of matches in the minibuffer
-#+begin_src elisp :tangle no
-  (setq isearch-lazy-count t
-  lazy-highlight-initial-delay 0)
-#+end_src
-
-**** more modern regex
-replace emacs regex with a more modern functional regex
-#+begin_src elisp :tangle no
-#+end_src
-* icons
-all-the-icons fonts should be installed on the system for this to work
-#+begin_src elisp :tangle no
-  (use-package all-the-icons
-    :if (display-graphic-p))
-#+end_src
-
-* which key
-#+begin_src elisp :tangle no
-  (use-package which-key
-    :demand t
-    :config
-    (which-key-mode)
-    (setq which-key-idle-delay 6.0
-    which-key-idle-secondary-delay 0.05
-    which-key-show-early-on-C-h t))
-#+end_src
-
+* -------------------------------------------
 * Editor
-** Percise Word Movements
+** Precise Word Movements
 #+begin_src elisp :tangle no
   (defun oxcl/boundary-p (is-delete)
     ;; when boundaries are checked for deleting or killing the behavior of this function is a bit different
@@ -1361,27 +1273,6 @@ all-the-icons fonts should be installed on the system for this to work
     :demand t)
 #+end_src
 
-** Move lines
-#+begin_src elisp :tangle no
-  (use-package move-dup
-    :demand t
-    :config
-    (global-set-key (kbd "M-n") 'move-dup-move-lines-down)
-    (global-set-key (kbd "M-e") 'move-dup-move-lines-up)
-    (global-set-key (kbd "M-o") 'move-dup-duplicate-down))
-#+end_src
-
-** window management
-**** ace
-#+begin_src elisp :tangle no
-  (use-package ace-window
-    :bind ("M-o" . 'ace-window)
-    :config
-    (setq aw-keys '(?a ?r ?s ?d ?g ?p ?d ?b ?v)))
-#+end_src
-
-** highlight current symbol
-
 ** jump to occurrence of symbol under the cursor
 C-* jumps to the next occurrence the symbol that is under the cursor.
 #+begin_src elisp :tangle no
@@ -1401,38 +1292,9 @@ C-* jumps to the next occurrence the symbol that is under the cursor.
     (keymap-global-set "C-*" 'oxcl/smartscan-wrap))
 #+end_src
 
-** undo
-*** linear undo
-make undo behave more linearly like other applications.
-keybindings are:
-C-_   : normal undo
-S-C-_ : normal redo
-C-x u : emacs  undo
-C-x U : emacs  redo
-#+begin_src elisp :tangle no
-  (keymap-global-unset "C-/")
-  (keymap-global-unset "C-?")
-  (keymap-global-unset "C--")
-  (keymap-global-unset "C-_")
-  (keymap-global-set "C-$" #'undo-only)
-  (keymap-global-set "C-~" #'undo-redo)
-#+end_src
-
-*** undo tree and branching
-
-** <Esc> is <C-g>
-#+begin_src elisp :tangle no
-  (global-set-key (kbd "<escape>") (kbd "C-g"))
-#+end_src
-
 ** Bookmarks
 #+begin_src elisp :tangle no
   (global-set-key (kbd "C-d") #'bookmark-set)
-#+end_src
-
-** Windows
-#+begin_src elisp :tangle no
-  (global-set-key (kbd "C-q") #'delete-window)
 #+end_src
 
 * programming
@@ -1443,17 +1305,6 @@ C-x U : emacs  redo
   (use-package rainbow-delimiters
     :config
     (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-#+end_src
-
-*** highlight on hover
-match the other pair of a delimiter on cursor hover
-#+begin_src elisp :tangle no
-  (show-paren-mode)
-  (setq show-paren-delay 0)
-  (defun my-show-paren-any (orig-fun)
-    (or (if (looking-at "\\s(") (funcall orig-fun))
-  (if (looking-at "\\s)") (save-excursion (forward-char 1) (funcall orig-fun)))))
-  (add-function :around show-paren-data-function #'my-show-paren-any)
 #+end_src
 
 *** jump to other pair
@@ -1470,11 +1321,6 @@ taken from [[https://www.emacswiki.org/emacs/NavigatingParentheses#h5o-2][emacs-
   (keymap-global-set "C-*" #'oxcl/goto-match-paren)
 #+end_src
 
-*** auto close opening delimiters
-#+begin_src elisp :tangle no
-  (electric-pair-mode)
-  (setq electric-pair-skip-whitespace nil)
-#+end_src
 
 ** git
 *** magit
@@ -1874,6 +1720,16 @@ automatically display responses with binary format in hexl-mode (emacs builtin h
        (use-package ctrlf
    :config
    (ctrlf-mode 1))
+#+end_src
+
+* minibuffer
+** search and replace
+**** disable momentary messages
+disable isearch annoying messages which appear after the search string and sometimes cause a delay
+#+begin_src elisp :tangle no
+  (defun oxcl/isearch--momentary-message (orig-fun &rest args)
+    (apply orig-fun `(,(car args) 0)))
+  (advice-add 'isearch--momentary-message :around #'oxcl/isearch--momentary-message)
 #+end_src
 
 * Ido Mode
