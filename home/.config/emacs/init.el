@@ -147,22 +147,28 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 ;; when navigation keys are pressed the whole buffer scrolls instead of the cursor moving
 (add-hook 'help-mode-hook #'scroll-lock-mode)
-(setq oxcl/scroll-margin-default scroll-margin)
-(setq oxcl/cursor-type-default cursor-type)
-(defun oxcl/hide-cursor-in-scroll-lock-mode ()
-  (if scroll-lock-mode
-      (progn
-        (make-local-variable 'scroll-margin)
-        (setq scroll-margin 0
-              cursor-type nil))
-    (progn
-      (setq scroll-margin oxcl/scroll-margin-default
-            cursor-type oxcl/cursor-type-default))))
-(add-hook 'scroll-lock-mode-hook #'oxcl/hide-cursor-in-scroll-lock-mode)
+
+(require 'char-fold)
+(setq-default char-fold-symmetric t  ; accent character's match the regular character as well
+              search-ring-max 64
+              regexp-search-ring-max 64)
+(setq search-default-mode #'char-fold-to-regexp)
+(add-to-list 'char-fold-include '(?ی "ي"))
+(add-to-list 'char-fold-include '(?ک "ك"))
+(char-fold-update-table)
 
 (define-key key-translation-map (kbd "<escape>") (kbd "C-g"))
 (define-key key-translation-map (kbd "C-g") (kbd "<escape>"))
 (global-set-key (kbd"<escape>") #'goto-line)
+
+(global-set-key (kbd "C-z") #'undo-only)
+(global-set-key (kbd "C-S-z") #'undo-redo)
+
+;; will not work properly without the after-init-hook idk why
+(add-hook 'after-init-hook (lambda ()
+                             (global-set-key (kbd "C-+") #'text-scale-increase)
+                             (global-set-key (kbd "C--") #'text-scale-decrease)
+                             (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
 
 ;; When you run for instance windmove-left and there is no window on the left, windmove will throw exception
 ;;(and if you have debug-on-error enabled) you will see Debugger complaining.

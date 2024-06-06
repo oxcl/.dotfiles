@@ -196,19 +196,20 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 #+begin_src elisp
   ;; when navigation keys are pressed the whole buffer scrolls instead of the cursor moving
   (add-hook 'help-mode-hook #'scroll-lock-mode)
-  (setq oxcl/scroll-margin-default scroll-margin)
-  (setq oxcl/cursor-type-default cursor-type)
-  (defun oxcl/hide-cursor-in-scroll-lock-mode ()
-    (if scroll-lock-mode
-        (progn
-          (make-local-variable 'scroll-margin)
-          (setq scroll-margin 0
-                cursor-type nil))
-      (progn
-        (setq scroll-margin oxcl/scroll-margin-default
-              cursor-type oxcl/cursor-type-default))))
-  (add-hook 'scroll-lock-mode-hook #'oxcl/hide-cursor-in-scroll-lock-mode)
 #+end_src
+
+** Better isearch
+#+begin_src elisp
+  (require 'char-fold)
+  (setq-default char-fold-symmetric t  ; accent character's match the regular character as well
+                search-ring-max 64
+                regexp-search-ring-max 64)
+  (setq search-default-mode #'char-fold-to-regexp)
+  (add-to-list 'char-fold-include '(?ی "ي"))
+  (add-to-list 'char-fold-include '(?ک "ك"))
+  (char-fold-update-table)
+#+end_src
+
 
 * Universal Keybindings
 ** C-g as goto-line
@@ -216,6 +217,21 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
   (define-key key-translation-map (kbd "<escape>") (kbd "C-g"))
   (define-key key-translation-map (kbd "C-g") (kbd "<escape>"))
   (global-set-key (kbd"<escape>") #'goto-line)
+#+end_src
+
+** C-z as undo/redo
+#+begin_src elisp
+  (global-set-key (kbd "C-z") #'undo-only)
+  (global-set-key (kbd "C-S-z") #'undo-redo)
+#+end_src
+
+** C--/C-+ as zoom-in/zoom-out
+#+begin_src elisp
+  ;; will not work properly without the after-init-hook idk why
+  (add-hook 'after-init-hook (lambda ()
+                               (global-set-key (kbd "C-+") #'text-scale-increase)
+                               (global-set-key (kbd "C--") #'text-scale-decrease)
+                               (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
 #+end_src
 
 * Window Management
@@ -1074,38 +1090,17 @@ enable support for font ligatures
     :bind ("<escape>" . goto-line-preview))
 #+end_src
 
-* zoom-in/zoom-out
-#+begin_src elisp :tangle no
-  ;; will not work properly without the after-init-hook idk why
-  (add-hook 'after-init-hook (lambda ()
-                               (global-set-key (kbd "C-+") #'text-scale-increase)
-                               (global-set-key (kbd "C--") #'text-scale-decrease)
-                               (global-set-key (kbd "C-=") (kbd "C-x C-0")))) ; reset
-#+end_src
-
 * minibuffer
 ** find-file
 #+begin_src elisp :tangle no
   (global-set-key (kbd "C-x f") #'find-file)
 #+end_src
 
-** history
-*** keybindings
-#+begin_src elisp :tangle no
-  (defun oxcl/set-minibuffer-keybindings ()
-    "Add custom keybindings for the  minibuffer."
-    (local-set-key (kbd "M-<up>")   #'previous-history-element)
-    (local-set-key (kbd "M-<down>") #'next-history-element))
-  (add-hook 'minibuffer-setup-hook 'oxcl/set-minibuffer-keybindings)
-#+end_src
-
 ** search and replace
 *** make isearch better
 **** sane defaults
 #+begin_src elisp :tangle no
-  (setq-default char-fold-symmetric t  ; accent character's match the regular character as well
-    search-ring-max 64
-    regexp-search-ring-max 64)
+
   ;; TODO: make sure char-fold-table includes farsi letters
 #+end_src
 
