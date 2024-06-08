@@ -501,7 +501,8 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (global-set-key (kbd "DEL") #'oxcl/backspace-whitespace-to-tab-stop)
 
 (electric-pair-mode)
-(setq electric-pair-skip-whitespace nil)
+(setq electric-pair-skip-whitespace nil
+      electric-pair-preserve-balance nil)
 
 (setq-default fill-column 100)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
@@ -916,5 +917,5 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (use-package goto-line-preview
   :config
-  (setq goto-line-preview-hl-duration 600)) ;; disable highlights
-  ;;:bind ("<escape>" . goto-line-preview))
+  (setq goto-line-preview-hl-duration 600) ;; disable highlights
+  :bind ("<escape>" . goto-line-preview))
