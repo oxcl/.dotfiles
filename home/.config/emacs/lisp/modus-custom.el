@@ -235,7 +235,7 @@
      `(secondary-selection           ((,c :foreground unspecified :background ,bg-red-subtle)))
      ;;goto-line-preview
      `(goto-line-preview-hl          ((,c :foreground unspecified :background ,bg-mode-line-active))))))
-
+;;     `(region                        ((,c :box (:line-width -2 :color ,bg-mode-line-active)))))))
      ;; tabs
 ;;     `(tab-line                     ((,c :height 1.0
 ;;                                         :foreground ,fg-dim

@@ -8,14 +8,14 @@
 (fg-dim "#{{grey0}}")
 (fg-alt "#c6daff")
 (bg-active "#{{bg3}}")
-(bg-inactive "#303030")
+(bg-inactive "#{{bgDim}}")
 (border "#{{bg8}}")
 (bg-hl-line "#{{bg1}}")
 
 (bg-region "#{{bg5}}")
 (fg-region unspecified)
 
-(bg-mode-line-active "#{{bg5}}")
+(bg-mode-line-active "#{{bg6}}")
 (fg-mode-line-active "#{{fgBright}}")
 (border-mode-line-active "#{{bg7}}")
 

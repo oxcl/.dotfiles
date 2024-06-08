@@ -8,14 +8,14 @@
 (fg-dim "#7c6f64")
 (fg-alt "#c6daff")
 (bg-active "#32302f")
-(bg-inactive "#303030")
+(bg-inactive "#070808")
 (border "#665c54")
 (bg-hl-line "#2a2827")
 
 (bg-region "#46403d")
 (fg-region unspecified)
 
-(bg-mode-line-active "#46403d")
+(bg-mode-line-active "#514945")
 (fg-mode-line-active "#ddc7a1")
 (border-mode-line-active "#5a524c")
 
