@@ -148,12 +148,11 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 ;; when navigation keys are pressed the whole buffer scrolls instead of the cursor moving
 (add-hook 'help-mode-hook #'scroll-lock-mode)
 
-(key-translate "C-g" "C-[")
-(key-translate "C-[" "C-g")
-(define-key input-decode-map (kbd "<escape>") (kbd "C-g"))
-(define-key input-decode-map (kbd "C-g") (kbd "ESC"))
-
-;; (global-set-key (kbd "C-[") #'goto-line)
+(when (display-graphic-p)
+  (define-key input-decode-map (kbd "<escape>") (kbd "C-g"))
+  (define-key input-decode-map (kbd "C-g") (kbd "<escape>"))
+  (global-set-key (kbd "<escape>") #'goto-line)
+  )
 
 (global-set-key (kbd "C-z") #'undo-only)
 (global-set-key (kbd "C-S-z") #'undo-redo)

@@ -200,18 +200,14 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 #+end_src
 
 * Universal Keybindings
-** <escape> as cancel
-swap <escape> and C-g at lowest level
+** <escape> as cancel and C-g as goto-line
+swap <escape> and C-g at lowest level (only possible in gui)
 #+begin_src elisp
-  (key-translate "C-g" "C-[")
-  (key-translate "C-[" "C-g")
-  (define-key input-decode-map (kbd "<escape>") (kbd "C-g"))
-  (define-key input-decode-map (kbd "C-g") (kbd "ESC"))
-#+end_src
-
-** C-g as goto-line
-#+begin_src elisp
-  ;; (global-set-key (kbd "C-[") #'goto-line)
+  (when (display-graphic-p)
+    (define-key input-decode-map (kbd "<escape>") (kbd "C-g"))
+    (define-key input-decode-map (kbd "C-g") (kbd "<escape>"))
+    (global-set-key (kbd "<escape>") #'goto-line)
+    )
 #+end_src
 
 ** C-z as undo/redo
