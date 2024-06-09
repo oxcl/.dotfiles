@@ -146,6 +146,12 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
                                  "oxcl/load-only-essentiaals was set to true"))))
 
 ;; when navigation keys are pressed the whole buffer scrolls instead of the cursor moving
+(advice-add 'scroll-lock-mode
+            :before (lambda ()
+                      (if scroll-lock-mode
+                          (setq scroll-margin (default-value scroll-margin))
+                        (progn (make-local-variable 'scroll-margin)
+                               (setq scroll-margin 0)))))
 (add-hook 'help-mode-hook #'scroll-lock-mode)
 
 (when (display-graphic-p)

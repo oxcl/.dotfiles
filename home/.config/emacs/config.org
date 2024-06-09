@@ -196,6 +196,12 @@ also works with M-PageDown/M-PageUp (scroll-other-window/scroll-other-window-dow
 ** Better Help Buffer
 #+begin_src elisp
   ;; when navigation keys are pressed the whole buffer scrolls instead of the cursor moving
+  (advice-add 'scroll-lock-mode
+              :before (lambda ()
+                        (if scroll-lock-mode
+                            (setq scroll-margin (default-value scroll-margin))
+                          (progn (make-local-variable 'scroll-margin)
+                                 (setq scroll-margin 0)))))
   (add-hook 'help-mode-hook #'scroll-lock-mode)
 #+end_src
 
