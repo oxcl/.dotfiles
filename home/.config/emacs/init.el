@@ -917,5 +917,14 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 
 (use-package goto-line-preview
   :config
+  (defun goto-line-preview--highlight ()
+    (pulse-momentary-highlight-one-line (point)))
   (setq goto-line-preview-hl-duration 600) ;; disable highlights
   :bind ("<escape>" . goto-line-preview))
+
+(use-package jsonrpc)
+(use-package dape
+  :demand t)
+
+(use-package realgud
+  :demand t)

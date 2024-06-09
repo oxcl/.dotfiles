@@ -1141,10 +1141,23 @@ enable support for font ligatures
 #+begin_src elisp
   (use-package goto-line-preview
     :config
+    (defun goto-line-preview--highlight ()
+      (pulse-momentary-highlight-one-line (point)))
     (setq goto-line-preview-hl-duration 600) ;; disable highlights
     :bind ("<escape>" . goto-line-preview))
 #+end_src
 
+** dape.el
+#+begin_src elisp
+  (use-package jsonrpc)
+  (use-package dape
+    :demand t)
+#+end_src
+** realgud
+#+begin_src elisp
+  (use-package realgud
+    :demand t)
+#+end_src
 * -------------------------------------------
 * Editor
 ** Precise Word Movements
