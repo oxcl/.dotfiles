@@ -1,0 +1,10 @@
+[init]
+  defaultBranch = main
+[alias]
+  commmit = commit
+  comit = commit
+  amend = commit --amend
+  clone-light = clone --filter=blob:none
+  import = submodule add --filter=blob:none
+[core]
+  compression = 0
