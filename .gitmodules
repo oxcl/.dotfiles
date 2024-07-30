@@ -1,3 +1,9 @@
 [submodule ".config/zsh/plugins/powerlevel10k"]
 	path = .config/zsh/plugins/powerlevel10k
 	url = https://github.com/romkatv/powerlevel10k
+[submodule ".config/zsh/plugins/ohmyzsh"]
+	path = .config/zsh/plugins/ohmyzsh
+	url = https://github.com/ohmyzsh/ohmyzsh
+[submodule ".config/zsh/plugins/fast-syntax-highlighting"]
+	path = .config/zsh/plugins/fast-syntax-highlighting
+	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
