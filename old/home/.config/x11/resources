@@ -1,0 +1,69 @@
+! Text
+!----------------------------------
+URxvt*font:               xft:ioZevka Nerd:size=11:antialias=true:hinting=true,\
+                          xft:Vazir Code WOL:size=12:antialias=true:hinting=true,\
+                          xft:Noto Color Emoji:size=11,\
+                          xft:Unifont
+URxvt*lineSpace:          0
+
+URxvt*letterSpace:        1
+
+! unicode character support
+URxvt*iso14756:           true
+
+! Appearance
+!----------------------------------
+URxvt*cursorBlink:        0
+URxvt*scrollBar:          false
+URxvt*urgentOnBell:       0
+URxvt*internalBorder:     2
+
+! Scrolling
+!----------------------------------
+! (try to) prevent scrolling to the bottom on new output
+URxvt*scrollTtyOutput:    false
+URxvt*scrollWithBuffer:   false
+URxvt*scrollTtyKeypress:  true
+URxvt*saveline:           10000
+! when in a pager (like less) scroll the pager with mouse scroll instead of the terminal itself
+URxvt*secondaryScroll:    false
+URxvt*secondaryWheel:     true
+
+! Misc
+!----------------------------------
+! disable control+shift
+URxvt*iso14755_52:       false
+URxvt*iso14755:          false
+URxvt*print-pipe:        cat > /dev/null
+URxvt.geometry:		     400x400
+
+! Extensions
+!---------------------------------
+URxvt*.perl-ext-common:  bidi,clipboard-osc,resize-font
+
+! xterm
+!---------------------------------
+xterm.termName:              xterm-256color
+! force-enable utf8
+xterm.vt100.locale:          false
+xterm.vt100.utf8:            true
+! make Alt behave the same as other terminals
+xterm.vt100.metaSendsEscape: true
+! fix Ctrl+H
+xterm.vt100.backarrowKey:    false
+xterm.ttyModes:              erase ^?
+! scroll inside pagers
+xterm.alternateScroll:       true
+! increase the scrollback buffer size
+xterm.vt100.saveLines:       10000
+! font settings
+xterm.vt100.faceName:        xft:ioZevka Nerd:size=11:antialias=true:hinting=true,\
+                             xft:Vazir Code WOL:size=12:antialias=true:hinting=true,\
+                             xft:Noto Color Emoji:size=11,\
+                             xft:Unifont
+! disable displaying bright colors in bold
+xterm.vt100.boldColors:      false
+! save the screen to scrollback buffer when clearing the screen
+xterm.vt100.cdXtraScroll:    trim
+! don't scroll to the bottom on output
+xterm.vt100.scrollTtyOutput: false
