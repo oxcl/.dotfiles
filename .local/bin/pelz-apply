@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# i wrote this script to quickly apply a theme across different programs and window managers using pelz (which i wrote)
+[[ -z "$MY_THEME" ]] && export MY_THEME="gruvbox_material_dark_hard"
+
+apply(){
+    echo "applying $1 ($2)"
+    pelz $1 $MY_THEME > $2
+}
+
+apply foot "$HOME/.config/foot/theme.ini"
+# apply alacritty "$HOME/.config/alacritty/theme.toml"
+# apply Xresources "$HOME/.config/x11/theme"
+# apply wezterm "$HOME/.config/wezterm/theme.lua"
+# apply emacs-modus-themes "$HOME/.config/emacs/lisp/modus-colors.el"
+
+
+# source "${XDG_CONFIG_HOME:-$HOME/.config}/x11/profile"
