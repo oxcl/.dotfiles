@@ -32,11 +32,32 @@ function load(){
   try "$HERE/plugins/$PLUGIN/$PLUGIN.zsh-theme" || \
   try "$HERE/plugins/$PLUGIN/$PLUGIN.plugin.zsh" || \
   try "$HERE/plugins/$PLUGIN/$PLUGIN.zsh" || \
+  try "$HERE/plugins/$PLUGIN/$(basename $PLUGIN).plugin.zsh" || \
   echo "failed to load plugin $PLUGIN: don't know which file to source" >&2
 }
 
 load powerlevel10k # zsh prompt
 load fast-syntax-highlighting # syntax highlighting for commands
 
+# clipcopy - Copy data to clipboard
+#   Usage:
+#     <command> | clipcopy     - copies stdin to clipboard
+#     clipcopy <file>          - copies a file's contents to clipboard
+# clippaste - writes clipboard's contents to stdout
+#   Usage:
+#     clippaste | <command>   - paste contents and pipes it to another process
+#     clippaste > <file>      - paste contents to a file
+load ohmyzsh/lib/clipboard
+
+# automatically send system notifications for commands that take a long time
+load ohmyzsh/plugins/bgnotify
+
+
+####################
+# ALIASES
+####################
+source "$HERE/alias.zsh"
+
 
 [[ -f "$HERE/p10k.zsh" ]] && source "$HERE/p10k.zsh"
+unset load
