@@ -1,0 +1,6 @@
+# name: restclient-hooks
+# contributor: oxcl
+# key: ->
+# --
+-> jq-set-var :${1:var} .${2:query}
+$0
