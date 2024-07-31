@@ -1,0 +1,8 @@
+#compdef xiny
+# completion for my own xiny (x in y minutes) command available in ~/.local/bin/xiny
+_XINY_CACHE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/xiny/list.txt"
+[[ ! -f "$_XINY_CACHE_FILE" ]] && return;
+function _xiny() {
+    compset -P '*,'
+    compadd -S '' $(cat "$_XINY_CACHE_FILE")
+}

@@ -32,8 +32,7 @@ FULL_URL="$URL$LANGUAGE/"
 
 # check cache for the language
 if [[ -d "$XINY_DIR/$LANGUAGE" ]]; then
-   bat $XINY_DIR/$LANGUAGE/*
-   exit 0;
+   exec bat $XINY_DIR/$LANGUAGE/*
 fi
 
 # refresh language list if old or not available for better completion
@@ -53,7 +52,7 @@ echo "downloading the tutorial '$(basename $FILE_URL)'..."
     if ! curl -Ss $URL$FILE_URL > "$FILE_PATH"; then
       rm "$FILE_PATH"
     fi
-    bat "$FILE_PATH"
+    exec bat "$FILE_PATH"
 else
     echo "No data found for $LANGUAGE" >&2
     echo -e "Please run this script with any programming language as a parameter, like so:\n xiny python" >&2
