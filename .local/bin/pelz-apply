@@ -2,12 +2,18 @@
 # i wrote this script to quickly apply a theme across different programs and window managers using pelz (which i wrote)
 [[ -z "$MY_THEME" ]] && export MY_THEME="gruvbox_material_dark_hard"
 
+pids=()
 apply(){
-    echo "applying $1 ($2)"
-    pelz $1 $MY_THEME > $2
+    echo "applying $1 ($2)" >&2
+    pelz $1 $MY_THEME > $2 &
+    pids+=( $! )
 }
-
 apply foot "$HOME/.config/foot/theme.ini"
+apply bat "$HOME/.config/bat/themes/pelz.tmTheme"
+
+for pid in ${pids[@]}; do
+  wait $pid
+done
 # apply alacritty "$HOME/.config/alacritty/theme.toml"
 # apply Xresources "$HOME/.config/x11/theme"
 # apply wezterm "$HOME/.config/wezterm/theme.lua"

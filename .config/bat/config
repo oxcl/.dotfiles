@@ -26,3 +26,6 @@
 
 # disable the grid
 #--style="full"
+
+# custom theme using pelz (~/.config/pelz/templates/bat)
+--theme="pelz"
