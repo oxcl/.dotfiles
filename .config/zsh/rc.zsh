@@ -56,6 +56,7 @@ load ohmyzsh/lib/clipboard
 
 # automatically send system notifications for commands that take a long time
 load ohmyzsh/plugins/bgnotify
+export bgnotify_treshold=60
 
 # colorize man pages with less as pager
 autoload -Uz colors && colors # required
