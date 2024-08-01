@@ -20,10 +20,6 @@ fi
 # i use git submodules and this function as my zsh plugin manager
 function load(){
   local PLUGIN="$1"
-  if [[ ! -d "$HERE/plugins/$PLUGIN" ]] && [[ ! -f "$HERE/plugins/$PLUGIN.zsh" ]]; then
-    echo "failed to load plugin $PLUGIN: directory or file $HERE/plugins/$PLUGIN does not exist" >&2
-    return -1
-  fi
 
   # add plugin directory to fpath for completions
   if [[ -d "$HERE/plugins/$PLUGIN" ]]; then
@@ -33,7 +29,9 @@ function load(){
   function try(){
     if [[ -f "$1" ]]; then source "$1"; else return 1; fi
   }
+
   try "$HERE/plugins/$PLUGIN.zsh" || \
+  try "$HERE/plugins/$PLUGIN.plugin.zsh" || \
   try "$HERE/plugins/$PLUGIN/$PLUGIN.zsh-theme" || \
   try "$HERE/plugins/$PLUGIN/$PLUGIN.plugin.zsh" || \
   try "$HERE/plugins/$PLUGIN/$PLUGIN.zsh" || \
@@ -42,6 +40,8 @@ function load(){
 }
 
 load powerlevel10k # zsh prompt
+load p10k_custom # my additional customizations and widgets for powerlevel10k prompt
+
 load fast-syntax-highlighting # syntax highlighting for commands
 
 # clipcopy - Copy data to clipboard
@@ -72,6 +72,17 @@ alias archive="ua"
 # usage: extract <file> OR unarchive <file>
 load ohmyzsh/plugins/extract
 alias unarchive="extract"
+
+# direnv integration with a wrapper for _direnv_hook to make direnv work without nagging
+# about .env files not being trusted. i do this because i have customized powerlevel10k
+# to add information in prompt about the status of direnv so i don't need explicit error
+# messages
+load ohmyzsh/plugins/direnv
+function _direnv_hook(){
+  trap -- '' SIGINT
+  eval "$(direnv export zsh 2> >(grep -v 'is blocked' >&2) )"
+  trap - SIGINT;
+}
 
 #load simple ohmyzsh plugins that are either only for completion or don't need configuration
 local simple_plugins
