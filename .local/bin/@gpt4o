@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+function ensure_exists(){
+    while [ -n "$1" ]; do
+        if ! command -v "$1" &> /dev/null; then
+            echo "'$1' is required for this program to run correctly. install it" >&2
+            exit 1
+        fi
+        shift
+    done
+}
+
+ensure_exists curl jq glow
+
+if [ -z "$GPT_TOKEN" ]; then
+    echo "'GPT_TOKEN' environment variable is not set." >&2
+    exit 1
+fi
+
+query="$@"
+response=$(
+    curl -s --get \
+         --data-urlencode "q=$query" \
+         --data-urlencode "token=$GPT_TOKEN" \
+         --data-urlencode "action=gpt4o" \
+         https://one-api.ir/chatgpt/
+)
+
+echo $response | jq -r .result[0] | glow | pv -qL $[200+(-2 + RANDOM%5)]

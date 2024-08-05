@@ -84,6 +84,27 @@ function _direnv_hook(){
   trap - SIGINT;
 }
 
+# show command autosuggestion (after the cursor in gray color) based on history, zsh completions, etc..
+load zsh-autosuggestions
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
+ZSH_AUTOSUGGEST_COMPLETION_IGNORE="npm *"
+ZSH_AUTOSUGGEST_STRATEGIES=(history)
+
+# enable thefuck in the shell if installed
+command -v thefuck &> /dev/null && eval "$(thefuck --alias)"
+# my plugin for autosuggesting fixes for mistakes using thefuck command
+load thefuck
+
+# search in the history for previous commands that share the same prefix as the one typed in the prompt
+# (similar to fish shell)
+load zsh-history-substring-search
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND=
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND=
+HISTORY_SUBSTRING_SEARCH_PREFIXED=1
+bindkey -M emacs '^[[1;5A' history-substring-search-up
+bindkey -M emacs '^[[1;5B' history-substring-search-down
+
+
 #load simple ohmyzsh plugins that are either only for completion or don't need configuration
 local simple_plugins
 alias() { :; }
@@ -127,6 +148,8 @@ setopt no_beep
 ####################
 # CUSTOMIZATIONS
 ####################
+
+bindkey -e # emulate emacs keybindings
 
 ####################
 # ALIASES
