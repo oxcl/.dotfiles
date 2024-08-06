@@ -1114,7 +1114,6 @@ enable support for font ligatures
     :if (display-graphic-p))
 
   (use-package nerd-icons
-    :demand t
     :if (not (display-graphic-p)))
 #+end_src
 
@@ -1167,6 +1166,12 @@ enable support for font ligatures
       (pulse-momentary-highlight-one-line (point)))
     (setq goto-line-preview-hl-duration 600) ;; disable highlights
     :bind ("<escape>" . goto-line-preview))
+#+end_src
+
+** vterm
+#+begin_src elisp
+  (use-package vterm
+    :demand t)
 #+end_src
 
 ** dape.el

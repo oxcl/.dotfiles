@@ -110,6 +110,9 @@ bindkey -M emacs '^[OB' history-substring-search-down
 # converting them to gifs
 load asciinema
 
+# custom plugin for emacs-vterm terimnal integration with zsh
+load vterm
+
 
 #load simple ohmyzsh plugins that are either only for completion or don't need configuration
 function load_plugins(){
@@ -173,7 +176,9 @@ bindkey -e
 WORDCHARS=
 bindkey "^H" backward-kill-word # Ctrl+Backspace
 bindkey "^Oc" forward-word # Ctrl+<Right>
+bindkey "^[[1;5C" forward-word # Ctrl+<Right> for vterm
 bindkey "^Od" backward-word # Ctrl+<Left>
+bindkey "^[[1;5D" backward-word # Ctrl+<Left> for vterm
 
 ####################
 # ALIASES

@@ -890,8 +890,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   :if (display-graphic-p))
 
 (use-package nerd-icons
-  :demand t
-  :if (not (display-graphic-p)))
+  :demand t)
 
 (use-package dashboard
   :after all-the-icons
@@ -937,6 +936,9 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
     (pulse-momentary-highlight-one-line (point)))
   (setq goto-line-preview-hl-duration 600) ;; disable highlights
   :bind ("<escape>" . goto-line-preview))
+
+(use-package vterm
+  :demand t)
 
 (use-package jsonrpc)
 (use-package dape
