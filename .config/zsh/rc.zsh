@@ -113,6 +113,9 @@ load asciinema
 # custom plugin for emacs-vterm terimnal integration with zsh
 load vterm
 
+# custom plugin for extra functions and utilities to make working with nix/nixos easier
+load nix
+
 
 #load simple ohmyzsh plugins that are either only for completion or don't need configuration
 function load_plugins(){
