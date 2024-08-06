@@ -1,0 +1,40 @@
+#!/usr/bin/env zsh
+# easily create .gitignore files based on different languages and frameworks
+# each argument should be seperated by space. if called without any arguments
+# it will launch fzf with multiselect support with Tab and S-Tab
+set -e
+
+_GIT_IGNORE_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/gitignore"
+_GIT_IGNORE_CACHE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/gitignore_list"
+[[ ! -d "$_GIT_IGNORE_CACHE_DIR" ]] && mkdir -p $_GIT_IGNORE_CACHE_DIR
+if [[ ! -f "$_GIT_IGNORE_CACHE_FILE" ]]; then
+  echo "downloading list of available languages/platforms..." >&2
+  curl -sfL https://www.toptal.com/developers/gitignore/api/list | tr "," "\n" >> "$_GIT_IGNORE_CACHE_FILE"
+fi
+
+_gitignore_fetch () {
+  local cachefile="$(echo $@ | xargs | tr ' ' '\n' | sort | tr '\n' '_' )"
+  if [[ -f "$_GIT_IGNORE_CACHE_DIR/$cachefile" ]] && [[ -n "$(cat "$_GIT_IGNORE_CACHE_DIR/$cachefile")" ]]; then
+    cat "$_GIT_IGNORE_CACHE_DIR/$cachefile" > .gitignore
+  else
+    printf "fetching 'gitignore_$cachefile'..." >&2
+    curl -sSfLw '\n' https://www.toptal.com/developers/gitignore/api/"${(j:,:)@}" > "$_GIT_IGNORE_CACHE_DIR/$cachefile"
+    if [[ "$?" -eq 0 ]]; then
+      cat "$_GIT_IGNORE_CACHE_DIR/$cachefile" > .gitignore
+      echo "done" >&2
+    else
+      echo "failed" >&2
+	    rm "$_GIT_IGNORE_CACHE_DIR/$cachefile"
+    fi
+  fi
+}
+
+if [[ "$#" -lt 1 ]]; then
+    CHOICES=$(cat "$_GIT_IGNORE_CACHE_FILE" | fzf -m | tr "\n" " ")
+    [[ -n "$CHOICES" ]] && gitignore $(echo $CHOICES)
+else
+    _gitignore_fetch $@
+fi
+
+unset _GIT_IGNORE_CACHE_FILE
+unset _GIT_IGNORE_CACHE_DIR

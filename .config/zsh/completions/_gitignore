@@ -1,0 +1,8 @@
+#compdef gitignore
+# completion for my own gitignore command available in ~/.local/bin/gitignore
+_GIT_IGNORE_CACHE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/gitignore_list"
+[[ ! -f "$_GIT_IGNORE_CACHE_FILE" ]] && curl -sfL https://www.toptal.com/developers/gitignore/api/list | tr "," "\n" >> "$_GIT_IGNORE_CACHE_FILE"
+function _gitignore() {
+    compset -P '*,'
+    compadd -S '' $(cat "$_GIT_IGNORE_CACHE_FILE")
+}
