@@ -10,7 +10,7 @@ export HERE="${ZDOTDIR:-$(dirname $0)}"
 # enable powerlevel10k instant propmt. should stay at the top of the rc file
 # allow new shells to have zero delay displaying the prompt.
 if [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
+ source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 ####################
@@ -39,10 +39,13 @@ function load(){
   echo "failed to load plugin $PLUGIN: don't know which file to source" >&2
 }
 
+load fast-syntax-highlighting # syntax highlighting for commands
+
+# autoload compinit && compinit -d "${ZSH_COMPDUMP}"
+zstyle "*:compinit" arguments -d "${ZSH_COMPDUMP}"
+
 load powerlevel10k # zsh prompt
 load p10k_custom # my additional customizations and widgets for powerlevel10k prompt
-
-load fast-syntax-highlighting # syntax highlighting for commands
 
 # clipcopy - Copy data to clipboard
 #   Usage:
@@ -86,13 +89,12 @@ function _direnv_hook(){
 
 # show command autosuggestion (after the cursor in gray color) based on history, zsh completions, etc..
 load zsh-autosuggestions
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
-ZSH_AUTOSUGGEST_COMPLETION_IGNORE="npm *"
-ZSH_AUTOSUGGEST_STRATEGIES=(history)
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
+export ZSH_AUTOSUGGEST_COMPLETION_IGNORE="npm *"
+export ZSH_AUTOSUGGEST_STRATEGY=(history)
 
 # enable thefuck in the shell if installed
 command -v thefuck &> /dev/null && eval "$(thefuck --alias)"
-# my plugin for autosuggesting fixes for mistakes using thefuck command
 load thefuck
 
 # search in the history for previous commands that share the same prefix as the one typed in the prompt
@@ -101,9 +103,8 @@ load zsh-history-substring-search
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND=
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND=
 HISTORY_SUBSTRING_SEARCH_PREFIXED=1
-bindkey -M emacs '^[[1;5A' history-substring-search-up
-bindkey -M emacs '^[[1;5B' history-substring-search-down
-
+bindkey -M emacs '^[OA' history-substring-search-up
+bindkey -M emacs '^[OB' history-substring-search-down
 
 #load simple ohmyzsh plugins that are either only for completion or don't need configuration
 local simple_plugins
@@ -118,6 +119,9 @@ unset simple_plugins plugin
 ####################
 # OPTIONS
 ####################
+# use emacs keybindings
+bindkey -e
+
 # don't use any global rc files
 setopt no_global_rcs
 
@@ -144,12 +148,6 @@ setopt ignore_eof
 
 # no beeping
 setopt no_beep
-
-####################
-# CUSTOMIZATIONS
-####################
-
-bindkey -e # emulate emacs keybindings
 
 ####################
 # ALIASES

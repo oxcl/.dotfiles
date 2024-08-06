@@ -1,0 +1,4 @@
+#!/usr/bin/env -S expect -f
+spawn thefuck "$env(COMMAND)"
+set command [expect "*\[enter/*"]
+set command
