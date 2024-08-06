@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# simple wrapper around ungoogled-chromium
-echo "running chromium..."
-chromium "$@"
