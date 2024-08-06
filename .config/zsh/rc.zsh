@@ -36,13 +36,13 @@ function load(){
   try "$HERE/plugins/$PLUGIN/$PLUGIN.plugin.zsh" || \
   try "$HERE/plugins/$PLUGIN/$PLUGIN.zsh" || \
   try "$HERE/plugins/$PLUGIN/$(basename $PLUGIN).plugin.zsh" || \
+  [[ -f "$HERE/plugins/$PLUGIN/_$(basename $PLUGIN)" ]] || \
   echo "failed to load plugin $PLUGIN: don't know which file to source" >&2
 }
 
 load fast-syntax-highlighting # syntax highlighting for commands
 
 # autoload compinit && compinit -d "${ZSH_COMPDUMP}"
-zstyle "*:compinit" arguments -d "${ZSH_COMPDUMP}"
 
 load powerlevel10k # zsh prompt
 load p10k_custom # my additional customizations and widgets for powerlevel10k prompt
@@ -107,21 +107,29 @@ bindkey -M emacs '^[OA' history-substring-search-up
 bindkey -M emacs '^[OB' history-substring-search-down
 
 #load simple ohmyzsh plugins that are either only for completion or don't need configuration
-local simple_plugins
-alias() { :; }
-for plugin in $simple_plugins; do
-  load ohmyzsh/plugins/$plugin
-done
-unfunction alias
-unset simple_plugins plugin
+function load_plugins(){
+  alias() { :; }
+  while [ -n "$1" ]; do
+    load ohmyzsh/plugins/$1
+    shift
+  done
+  unfunction alias
+  unset plugin
+}
+# plugins that sould be loaded before compinit
+load_plugins docker-compose fancy-ctrl-z gitfast git-extras flutter golang gh pylint redis-cli
 
+# start the completion system
+autoload -Uz compinit && compinit -i -d $ZSH_COMPDUMP
+
+# plugins that sould be loaded after compinit
+load_plugins dotnet lxd
+
+unfunction load_plugins
 
 ####################
 # OPTIONS
 ####################
-# use emacs keybindings
-bindkey -e
-
 # don't use any global rc files
 setopt no_global_rcs
 
@@ -150,6 +158,16 @@ setopt ignore_eof
 setopt no_beep
 
 ####################
+# KEYBINDINGS
+####################
+# use emacs keybindings
+bindkey -e
+WORDCHARS=
+bindkey "^H" backward-kill-word # Ctrl+Backspace
+bindkey "^Oc" forward-word # Ctrl+<Right>
+bindkey "^Od" backward-word # Ctrl+<Left>
+
+####################
 # ALIASES
 ####################
 source "$HERE/alias.zsh"
@@ -159,9 +177,6 @@ source "$HERE/alias.zsh"
 # COMPLETIONS
 ####################
 fpath+=("$HERE/completions")
-
-# start the completion system
-autoload -Uz compinit && compinit -i -d $ZSH_COMPDUMP
 
 [[ -f "$HERE/p10k.zsh" ]] && source "$HERE/p10k.zsh"
 unfunction load
