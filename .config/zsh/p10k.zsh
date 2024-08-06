@@ -57,8 +57,6 @@
     command_execution_time  # duration of the last command
     vpn_ip                  # virtual private network indicator
     my_direnv
-    my_global_history
-    my_per_directory_history
     my_asciinema
     prompt_char             # prompt symbol
   )

@@ -68,7 +68,6 @@ alias unarchive="extract"
 # smarter cd with frecency search
 zert-load-omz plugin zoxide
 
-
 # fish-like history search with up and down arrow keys.
 # should be loaded after syntax highlighting
 zert-load-omz plugin history-substring-search
@@ -112,6 +111,9 @@ fi
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
 ZSH_AUTOSUGGEST_MANUAL_REBIND=true # boosts performance but makes the plugin more unstable
 ZSH_AUTOSUGGEST_COMPLETION_IGNORE="npm *"
+
+# my asciinema zsh plugin adding rec, play functions for quickly recording asciinema casts
+load asciinema
 
 
 

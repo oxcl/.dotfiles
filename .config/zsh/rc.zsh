@@ -106,6 +106,10 @@ HISTORY_SUBSTRING_SEARCH_PREFIXED=1
 bindkey -M emacs '^[OA' history-substring-search-up
 bindkey -M emacs '^[OB' history-substring-search-down
 
+# my asciinema plugin for zsh providing rec and play functions for quickly recording the terminal and automatically
+# converting them to gifs
+load asciinema
+
 
 #load simple ohmyzsh plugins that are either only for completion or don't need configuration
 function load_plugins(){
