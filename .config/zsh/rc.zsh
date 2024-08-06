@@ -106,6 +106,7 @@ HISTORY_SUBSTRING_SEARCH_PREFIXED=1
 bindkey -M emacs '^[OA' history-substring-search-up
 bindkey -M emacs '^[OB' history-substring-search-down
 
+
 #load simple ohmyzsh plugins that are either only for completion or don't need configuration
 function load_plugins(){
   alias() { :; }
@@ -116,14 +117,17 @@ function load_plugins(){
   unfunction alias
   unset plugin
 }
+
 # plugins that sould be loaded before compinit
 load_plugins docker-compose fancy-ctrl-z gitfast git-extras flutter golang gh pylint redis-cli
 
 # start the completion system
+fpath+=("$HERE/completions")
 autoload -Uz compinit && compinit -i -d $ZSH_COMPDUMP
 
 # plugins that sould be loaded after compinit
 load_plugins dotnet lxd
+command -v fzf-share &> /dev/null && source "$(fzf-share)/completion.zsh"
 
 unfunction load_plugins
 
@@ -173,10 +177,9 @@ bindkey "^Od" backward-word # Ctrl+<Left>
 source "$HERE/alias.zsh"
 
 
-####################
-# COMPLETIONS
-####################
-fpath+=("$HERE/completions")
+
+
+
 
 [[ -f "$HERE/p10k.zsh" ]] && source "$HERE/p10k.zsh"
 unfunction load
