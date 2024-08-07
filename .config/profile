@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# run different programs and daemons when graphical session starts. this file works for both wayland and x11
+# for x11 specific profile see ~/.config/x11/profile
+# for wayland specific profile see ~/.config/wayland/profile
+
+# loading necessary environment variables for x11 and wayland ( environment variables are automatically loaded for terminals and shells that are called from your desktop environment or window manager)
+source "${XDG_CONFIG_HOME:-$HOME/.config}/env"
+
+# running simple python web server for my custom firefox/chrome user-scripts and home page
+if command -v user-scripts &>/dev/null; then
+  user-scripts &
+fi

@@ -7,10 +7,12 @@ function ensure_dir(){
 
 # directories are created to prevent symlinking of these directories by stow
 # because some programs add data/cache files into these directories
-ensure_dir "${XDG_DATA_HOME:-$HOME/.local}"
-ensure_dir "${XDG_CONFIG_HOME:-$HOME/.config}/chromium"
-ensure_dir "${XDG_CONFIG_HOME:-$HOME/.config}/asciinema"
-ensure_dir "${XDG_CONFIG_HOME:-$HOME/.config}/fontconfig/conf.d"
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
+DATA="${XDG_DATA_HOME:-$/.local}"
+
+ensure_dir "$DATA"
+ensure_dir "$CONFIG/asciinema"
+ensure_dir "$CONFIG/fontconfig/conf.d"
 ensure_dir "$HOME/.mozilla/firefox/default"
-ensure_dir "${XDG_CONFIG_HOME:-$HOME/.config}/thefuck"
+ensure_dir "$CONFIG/thefuck"
 (cd $HOME/.dotfiles && stow . --target=$HOME --ignore "bootstrap.sh")

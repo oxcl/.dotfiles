@@ -97,14 +97,6 @@
     nativeMessagingHosts = with pkgs; [
       tridactyl-native
     ];
-    policies = (builtins.fromJSON (builtins.readFile ../../home/.mozilla/firefox/default/policies.json)).policies;
-    profiles = {
-      default = {
-        isDefault =  true;
-        name = "default";
-        path = "default";
-      };
-    };
   };
 
   # services.gpg-agent = {

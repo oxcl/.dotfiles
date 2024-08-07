@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# simple python web server for my custom firefox homepage and user-scripts
+cd "${XDG_CONFIG_HOME:-$HOME/.config}/user-scripts"
+exec python3 -m http.server 36712 --bind 127.0.0.1 &>> "${XDG_CACHE_HOME:-$HOME/.cache}/user-scripts"

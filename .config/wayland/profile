@@ -1,44 +1,6 @@
 #!/usr/bin/env sh
 # make sure .profile is only sourced once for wayland
 if [ ! -z $_WAYLAND_PROFILE_SOURCED ]; then return; else export _WAYLAND_PROFILE_SOURCED=1; fi
-echo "me is executed" > $HOME/test
-# loading necessary environment variables for wayland ( environment variables are automatically loaded for terminals and shells that are called from your desktop environment or window manager)
-source "${XDG_CONFIG_HOME:-$HOME/.config}/env"
 
-# load settings related to xterm, urxvt, emacs and other programs that respect x11 settings
-#xrdb "${XDG_CONFIG_HOME:-$HOME/.config}/x11/resources"
-#xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/theme"
-
-# set keyboard repeat delay and frequency
-#xset r rate 140 30
-#for keycode in {9..130}; do
-#    xset -r ${keycode};
-#done
-#xset r 113 # left arrow
-#xset r 114 # right arrow
-#xset r 111 # up arrow
-#xset r 116 # down arrow
-#xset r 117 # page down
-#xset r 112 # page up
-#xset r 23  # tab
-#xset r 22  # backspace
-#xset r 20  # underscore and minus
-#xset r 57  # n
-#xset r 26  # e
-#xset r 31  # i
-#xset r 58  # m
-#xset r 21  # plus and equal
-#xset r 13  # dollar sign
-#xset r 49  # tild sign
-#xset r 65  # space
-
-# run ssh-agent daemon
-# [[ -z "$SSH_AGENT_PID" ]] && eval "$(ssh-agent)"
-
-# run gpg-agent daemon
-# command -v gpg-agent &> /dev/null && [[ -z "$GPG_AGENT_INFO" ]] && eval "$(gpg-agent --daemon)"
-
-# run urxvt daemon
-# if [[ "$TERMINAL" == "urxvt" ]] && command -v urxvtd &>/dev/null; then
-#  urxvtd -q -o &
-# fi
+# general profile which is used for x11 and wayland
+source "${XDG_CONFIG_HOME:-$HOME/.config}/profile"
