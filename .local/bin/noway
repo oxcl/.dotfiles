@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# force gui applications to run under x11 (xwayland)
+exec env -u WAYLAND_DISPLAY $(echo $@)

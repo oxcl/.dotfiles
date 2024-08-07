@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec noway $(which -a firefox | head -n2 | tail -n1) $(echo $@)
