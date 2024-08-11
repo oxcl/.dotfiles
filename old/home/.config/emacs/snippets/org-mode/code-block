@@ -1,7 +1,0 @@
-# name: org-mode code block
-# contributor: oxcl
-# key: #+
-# --
-#+begin_src ${1:`(if (boundp 'oxcl/prev-code-block) oxcl/prev-code-block "elisp")`$(when yas-moving-away-p (setq-local oxcl/prev-code-block yas-text))}
-    $0
-#+end_src

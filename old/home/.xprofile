@@ -1,2 +1,0 @@
-#!/usr/bin/env sh
-source "${XDG_CONFIG_HOME:-$HOME/.config}/x11/profile"
