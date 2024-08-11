@@ -19,6 +19,7 @@
 }
 #tabbrowser-tabs .tab-label-container {
   height: 2em !important;
+  font-size: 90%;
 }
 
 #statusbar-display {
