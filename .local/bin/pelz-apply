@@ -10,6 +10,7 @@ apply(){
 }
 apply foot "$HOME/.config/foot/theme.ini"
 apply bat "$HOME/.config/bat/themes/pelz.tmTheme"
+apply hyprland "$HOME/.config/hypr/theme.conf"
 
 for pid in ${pids[@]}; do
   wait $pid

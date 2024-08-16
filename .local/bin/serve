@@ -1,5 +1,28 @@
 #!/usr/bin/env zsh
-# simple and quick command to serve the current directory over local Network with python SimpleHTTPServer module + displaying devices private ip address
-echo "IPs: \033[0;33m$(ifconfig | grep inet | awk '{print $2}' | grep -v '::' | tr '\n' '\t')\033[0;m"
-python -m http.server "$@"
+# simple and quick command to serve the current directory over local Network with python SimpleHTTPServer module + displaying all ip addresses
+# also open a http server with woof on the next port for uploading files from other devices to current directory!
 
+ensure(){
+    while [ -n "$1" ]; do
+        if ! command -v "$1" &>/dev/null; then
+            echo "$0 requires $1 to work..." >&2
+        fi
+        shift
+    done
+}
+
+ensure python woof
+
+DOWNLOAD_PORT="${1:-8000}"
+UPLOAD_PORT="$(($DOWNLOAD_PORT + 1))"
+COLOR="\033[0;33m"
+NC="\033[0;m"
+echo "IPs: ${COLOR}$(ifconfig | grep inet | awk '{print $2}' | grep -v '::' | tr '\n' '\t')${NC}"
+echo "Download Port: ${COLOR}${DOWNLOAD_PORT}${NC}\tUpload Port: ${COLOR}${UPLOAD_PORT}${NC}"
+
+trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+
+woof -U -c 99999 -p "$UPLOAD_PORT" &>/dev/null &
+
+
+python -m http.server "$DOWNLOAD_PORT" --cgi >/dev/null

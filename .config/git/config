@@ -8,3 +8,6 @@
   import = submodule add --filter=blob:none
 [core]
   compression = 0
+[user]
+	name = oxcl
+	email = oxcl@proton.me
