@@ -66,6 +66,10 @@ replace cat bat
 # use bat to show pretified --help output for every command
 command -v bat &> /dev/null && alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
 
+# base64
+alias encode64="base64"
+alias decode64="base64 -d"
+
 # nixos aliases
 alias hms="home-manager switch --flake ~/.nixconf"
 alias nrs="sudo nixos-rebuild switch --flake ~/.nixconf"
