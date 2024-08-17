@@ -85,3 +85,8 @@ if has gtrash; then
   alias restore="gtrash restore"
 fi
 
+
+# qrcode generator
+alias qrencode="qrencode -t ANSI256"
+alias qr="qrencode"
+alias qrcode="qrencode"
