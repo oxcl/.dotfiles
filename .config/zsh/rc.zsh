@@ -129,7 +129,7 @@ function load_plugins(){
 }
 
 # plugins that sould be loaded before compinit
-load_plugins docker-compose fancy-ctrl-z gitfast git-extras flutter golang gh pylint redis-cli
+load_plugins docker-compose gitfast git-extras flutter golang gh pylint redis-cli
 
 # start the completion system
 fpath+=("$HERE/completions")
