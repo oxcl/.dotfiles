@@ -7,6 +7,10 @@ function replace(){
   command -v "$1" &> /dev/null && alias $command="$@"
 }
 
+function has(){
+  command -v $1 &>/dev/null && return 0 || return 1
+}
+
 unalias run-help # because run-help=man is a dumb default alias!
 
 # aliases for ohmyzsh clipboard library
@@ -49,12 +53,12 @@ alias du="du -h"
 alias json="jq . --color-output"
 
 # python aliases
-command -v python3 &>/dev/null && alias python="python3"
-command -v pip3 &>/dev/null && alias pip="pip3"
+has python3 && alias python="python3"
+has pip3 && alias pip="pip3"
 
-if command -v python3 &>/dev/null; then
+if has python3; then
   alias venv="python3 -m venv"
-elif command -v python &>/dev/null; then
+elif has python; then
   alias venv="python -m venv"
 fi
 
@@ -64,7 +68,7 @@ alias clear=" echo 'use Ctrl-l'"
 # use bat instead of cat if possible
 replace cat bat
 # use bat to show pretified --help output for every command
-command -v bat &> /dev/null && alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
+has bat && alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
 
 # base64
 alias encode64="base64"
@@ -73,3 +77,11 @@ alias decode64="base64 -d"
 # nixos aliases
 alias hms="home-manager switch --flake ~/.nixconf"
 alias nrs="sudo nixos-rebuild switch --flake ~/.nixconf"
+
+
+# replace rm with rmtrash if possible
+if has gtrash; then
+  alias rm="gtrash put --rm-mode"
+  alias restore="gtrash restore"
+fi
+
