@@ -8,13 +8,19 @@ apply(){
     pelz $1 $MY_THEME > $2 &
     pids+=( $! )
 }
-apply foot "$HOME/.config/foot/theme.ini"
-apply bat "$HOME/.config/bat/themes/pelz.tmTheme"
-apply hyprland "$HOME/.config/hypr/theme.conf"
+
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+
+apply foot "$CONFIG/foot/theme.ini"
+apply bat "$CONFIG/bat/themes/pelz.tmTheme"
+apply hyprland "$CONFIG/hypr/theme.conf"
+apply glow "$CONFIG/glow/style.json"
 
 for pid in ${pids[@]}; do
   wait $pid
 done
+
 # apply alacritty "$HOME/.config/alacritty/theme.toml"
 # apply Xresources "$HOME/.config/x11/theme"
 # apply wezterm "$HOME/.config/wezterm/theme.lua"
@@ -22,3 +28,5 @@ done
 
 
 # source "${XDG_CONFIG_HOME:-$HOME/.config}/x11/profile"
+
+unset CONFIG

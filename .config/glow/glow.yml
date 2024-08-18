@@ -1,0 +1,8 @@
+# style name or JSON path (default "auto")
+style: "$XDG_CONFIG_HOME/glow/style.json"
+# show local files only; no network (TUI-mode only)
+local: true
+# mouse support (TUI-mode only)
+mouse: false
+# use pager to display markdown
+pager: false
