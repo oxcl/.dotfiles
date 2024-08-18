@@ -11,7 +11,7 @@ function has(){
   command -v $1 &>/dev/null && return 0 || return 1
 }
 
-unalias run-help # because run-help=man is a dumb default alias!
+unalias run-help &>/dev/null # because run-help=man is a dumb default alias!
 
 # aliases for ohmyzsh clipboard library
 alias copy=clipcopy

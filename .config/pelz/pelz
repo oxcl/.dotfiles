@@ -6,14 +6,14 @@ set -e
 TEMPLATE="$1"
 if [ -z "$TEMPLATE" ]; then
     echo "first argument of script should be the template name or path" >&2
-    exit -1
+    exit 1
 elif [ -f "$PELZ_DIR/templates/$TEMPLATE" ]; then
     TEMPLATE_FILE="$PELZ_DIR/templates/$TEMPLATE"
 elif [ -f "$TEMPLATE" ]; then
     TEMPLATE_FILE="$TEMPLATE"
 else
     echo "template '${TEMPLATE}' does not exist." >&2
-    exit -1
+    exit 1
 fi
 
 # parse the theme 
@@ -30,7 +30,7 @@ get_name(){
 look_for_prop(){
     LINE=$(echo "$THEME_TOML" | grep -E "^ *$1 *= *\"#[0-9a-fA-F]{6}\" *$")
     if [ -z "$LINE" ]; then
-        return -1
+        return 1
     fi
     echo "$LINE" | grep -oP '(?<="#)[0-9a-fA-Z]{6}(?=")'
     return 0
