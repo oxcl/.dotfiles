@@ -7,7 +7,36 @@
 # loading necessary environment variables (environment variables are automatically loaded for terminals and shells that are called from your desktop environment or window manager)
 source "${XDG_CONFIG_HOME:-$HOME/.config}/env"
 
+has(){
+  command -v $1 &>/dev/null && return 0 || return 1
+}
+
+not_running(){
+  # returns false if the daemon is not started yet or has stopped for some reason
+  local daemon="$(echo $1 | tr '-' '_')"
+  eval "$(printf '[[ -z $_DAEMON_%s ]] || ! ps -p $_DAEMON_%s > /dev/null' $daemon $daemon)"
+}
+
+run_daemon(){
+  if has $1 && not_running $1; then
+    $(echo $@) &
+    local pid=$!
+    local daemon="$(echo $1 | tr '-' '_')"
+    eval $(printf 'export _DAEMON_%s=%s' $daemon $pid)
+  fi
+}
+
 # running simple python web server for my custom firefox/chrome user-scripts and home page
-if command -v user-scripts &>/dev/null && [ -z "$USER_SCRIPT_SERVER_RUNNING" ]; then
-  user-scripts &
-fi
+run_daemon user-scripts
+
+
+# run ssh daemon
+eval $(ssh-agent)
+
+
+
+
+
+
+unset has not_running run_daemon
+

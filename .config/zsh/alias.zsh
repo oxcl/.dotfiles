@@ -90,3 +90,7 @@ fi
 alias qrencode="qrencode -t ANSI256"
 alias qr="qrencode"
 alias qrcode="qrencode"
+
+
+alias tolower="tr '[:upper:]' '[:lower:]'"
+alias toupper="tr '[:lower:]' '[:upper:]'"
