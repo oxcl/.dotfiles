@@ -30,11 +30,6 @@ run_daemon(){
 run_daemon user-scripts
 
 
-# run ssh daemon
-#eval $(ssh-agent)
-
-
-
 
 
 
