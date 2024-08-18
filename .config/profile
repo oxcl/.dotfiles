@@ -31,7 +31,7 @@ run_daemon user-scripts
 
 
 # run ssh daemon
-eval $(ssh-agent)
+#eval $(ssh-agent)
 
 
 
