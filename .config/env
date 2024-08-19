@@ -7,7 +7,6 @@ export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_BIN_HOME="${HOME}/.local/bin"
 
-
 #move application specific config, data and cache to XDG directories for cleaner $HOME
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 export LESSHISTFILE="${XDG_CACHE_HOME}/lesshst"

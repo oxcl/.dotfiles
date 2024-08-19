@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 # this is a wrapper around urxvt. it checks if the urxvt daemon is running and if it is,
 # it runs urxvtc instead
+
+if ! command -v urxvtc &>/dev/null; then
+    echo "urxvt is not installed on this machine" >&2
+    exit 1
+fi
+
 if [[ -n "$(ps cax | grep urxvtd)" ]]; then # urxvt daemon is running
     echo "running urxvtc instead..."
     exec urxvtc "$@"
 else
     exec $(which -a urxvt | head -n2 | tail -n1) "$@"
 fi
-    

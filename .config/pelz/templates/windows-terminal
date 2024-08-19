@@ -1,0 +1,23 @@
+{
+    "background": "#{{bg}}",
+    "black": "#{{black}}",
+    "blue": "#{{blue}}",
+    "brightBlack": "#{{blackBright}}",
+    "brightBlue": "#{{blueBright}}",
+    "brightCyan": "#{{cyanBright}}",
+    "brightGreen": "#{{greenBright}}",
+    "brightPurple": "#{{magentaBright}}",
+    "brightRed": "#{{redBright}}",
+    "brightWhite": "#{{whiteBright}}",
+    "brightYellow": "#{{yellowBright}}",
+    "cursorColor": "#{{fgDim}}",
+    "cyan": "#{{cyan}}",
+    "foreground": "#{{fg}}",
+    "green": "#{{green}}",
+    "name": "pelz theme",
+    "purple": "#{{magenta}}",
+    "red": "#{{red}}",
+    "selectionBackground": "#{{bg5}}",
+    "white": "#{{white}}",
+    "yellow": "#{{yellow}}"
+}
