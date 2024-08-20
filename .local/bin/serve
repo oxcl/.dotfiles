@@ -2,16 +2,9 @@
 # simple and quick command to serve the current directory over local Network with python SimpleHTTPServer module + displaying all ip addresses
 # also open a http server with woof on the next port for uploading files from other devices to current directory!
 
-ensure(){
-    while [ -n "$1" ]; do
-        if ! command -v "$1" &>/dev/null; then
-            echo "$0 requires $1 to work..." >&2
-        fi
-        shift
-    done
-}
-
-ensure python woof
+if ! command -v python &>/dev/null; then
+    echo "$0 requires python to work..." >&2
+fi
 
 DOWNLOAD_PORT="${1:-8000}"
 UPLOAD_PORT="$(($DOWNLOAD_PORT + 1))"
@@ -22,7 +15,11 @@ echo "Download Port: ${COLOR}${DOWNLOAD_PORT}${NC}\tUpload Port: ${COLOR}${UPLOA
 
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
-woof -U -c 99999 -p "$UPLOAD_PORT" &>/dev/null &
+if command -v woof &>/devu/null; then
+    woof -U -c 99999 -p "$UPLOAD_PORT" &>/dev/null &
+else
+    echo "woof is not installed on the system so the upload server won't work..." >&2
+fi
 
 
 python -m http.server "$DOWNLOAD_PORT" --cgi >/dev/null

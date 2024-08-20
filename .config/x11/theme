@@ -1,0 +1,43 @@
+! Theme
+!----------------------------------
+
+*.cursor:                #c5b18d
+*.background:            #202020
+*.foreground:            #d4be98
+
+! Black
+*.color0:                #070808
+*.color8:                #7c6f64
+
+! Red
+*.color1:                #ea6962
+*.color9:                #ef8f8a
+
+! Green
+*.color2:                #a9b665
+*.color10:               #b6c17c
+
+! Yellow
+*.color3:                #d8a657
+*.color11:               #deb472
+
+! Blue
+*.color4:                #7daea3
+*.color12:               #94bcb3
+
+! Magenta
+*.color5:                #d3869b
+*.color13:               #dc9eaf
+
+! Cyan
+*.color6:                #89b482
+*.color14:               #a5c69f
+
+! White
+*.color7:                #e7d7bc
+*.color15:               #f1e9da
+
+! Misc
+!----------------------------------------
+! colors to use for selected text
+*.highlightColor:        #46403d

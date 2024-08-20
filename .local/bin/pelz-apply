@@ -16,13 +16,15 @@ apply foot "$CONFIG/foot/theme.ini"
 apply bat "$CONFIG/bat/themes/pelz.tmTheme"
 apply hyprland "$CONFIG/hypr/theme.conf"
 apply glow "$CONFIG/glow/style.json"
+apply Xresources "$HOME/.config/x11/theme"
+apply Xresources "$HOME/.Xdefaults"
+cat "$HOME/.config/x11/resources" >> "$HOME/.Xdefaults"
 
 for pid in ${pids[@]}; do
   wait $pid
 done
 
 # apply alacritty "$HOME/.config/alacritty/theme.toml"
-# apply Xresources "$HOME/.config/x11/theme"
 # apply wezterm "$HOME/.config/wezterm/theme.lua"
 # apply emacs-modus-themes "$HOME/.config/emacs/lisp/modus-colors.el"
 

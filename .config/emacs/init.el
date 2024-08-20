@@ -1,5 +1,5 @@
 ;; -*- lexical-binding: t -*-
-    (setq oxcl/load-only-essentials nil ; only load bare-minimum configurations
+    (setq oxcl/load-only-essentials t ; only load bare-minimum configurations
           oxcl/load-only-builtins nil ; only load configurations that are builtin to emacs without loading any 3rd party packages
           oxcl/load-only-elpaca nil) ; only load builtin configurations plus elpaca but without any 3rd party packages.
 
@@ -540,7 +540,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
 (let ((lang-list '((typescript "\\.ts\\'"    typescript-ts-mode)
                   (tsx         "\\.tsx\\'"   tsx-ts-mode)
                   (gomod       "go\\.mod\\'" go-mod-ts-mode)
-                  (yaml        "\\.yaml\\'"  yaml-ts-mode)
+                  (yaml        "\\.\\(yaml\\|yml\\)\\'"  yaml-ts-mode)
                   (go          "\\.go\\'"    go-ts-mode)
                   (rust        "\\.rs\\'"    rust-ts-mode)
                   (dockerfile  "\\(/Dockerfile\\|\\.Dockerfile\\|/dockerfile\\|\\.dockerfile\\)\\'" dockerfile-ts-mode)
@@ -890,7 +890,7 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   :if (display-graphic-p))
 
 (use-package nerd-icons
-  :demand t)
+  :if (not (display-graphic-p)))
 
 (use-package dashboard
   :after all-the-icons
@@ -938,11 +938,4 @@ tls-program '("openssl s_client -connect %h:%p -CAfile %t -nbio -no_ssl3 -no_tls
   :bind ("<escape>" . goto-line-preview))
 
 (use-package vterm
-  :demand t)
-
-(use-package jsonrpc)
-(use-package dape
-  :demand t)
-
-(use-package realgud
   :demand t)

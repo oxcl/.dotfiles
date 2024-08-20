@@ -6,7 +6,7 @@
 * Configuration Flags
 #+begin_src elisp
 ;; -*- lexical-binding: t -*-
-    (setq oxcl/load-only-essentials nil ; only load bare-minimum configurations
+    (setq oxcl/load-only-essentials t ; only load bare-minimum configurations
           oxcl/load-only-builtins nil ; only load configurations that are builtin to emacs without loading any 3rd party packages
           oxcl/load-only-elpaca nil) ; only load builtin configurations plus elpaca but without any 3rd party packages.
 #+end_src
@@ -1175,13 +1175,13 @@ enable support for font ligatures
 #+end_src
 
 ** dape.el
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package jsonrpc)
   (use-package dape
     :demand t)
 #+end_src
 ** realgud
-#+begin_src elisp
+#+begin_src elisp :tangle no
   (use-package realgud
     :demand t)
 #+end_src
