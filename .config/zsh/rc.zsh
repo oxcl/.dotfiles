@@ -91,7 +91,7 @@ function _direnv_hook(){
 load zsh-autosuggestions
 export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=200
 export ZSH_AUTOSUGGEST_COMPLETION_IGNORE="npm *"
-export ZSH_AUTOSUGGEST_STRATEGY=(history)
+export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 # enable thefuck in the shell if installed
 command -v thefuck &> /dev/null && eval "$(thefuck --alias)"
