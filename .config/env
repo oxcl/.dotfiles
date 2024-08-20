@@ -47,3 +47,6 @@ eval $(pelz env $MY_THEME)
 
 # xdg
 export GTK_THEME=Gruvbox-Material-Dark
+
+# load environment variables local to this device
+[[ -f "${XDG_CONFIG_HOME}/env.local" ]] && source "${XDG_CONFIG_HOME}/env.local"

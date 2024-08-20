@@ -75,7 +75,7 @@ alias encode64="base64"
 alias decode64="base64 -d"
 
 # nixos aliases
-alias hms="home-manager switch --flake ~/.nixconf"
+alias hms="home-manager switch --flake ~/.nixconf#${_HOME_MANAGER_PROFILE}"
 alias nrs="sudo nixos-rebuild switch --flake ~/.nixconf"
 
 
