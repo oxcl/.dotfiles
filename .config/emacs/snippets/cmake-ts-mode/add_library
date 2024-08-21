@@ -1,8 +1,0 @@
-# name: add a local or internal library to cmake
-# contributor: oxcl
-# key: add_library(
-# expand-env: ((target-name (save-match-data (and (string-match "^add_executable(\\(\\w*\\)\\b" (buffer-substring-no-properties (point-min) (point-max))) (match-string 1 (buffer-substring-no-properties (point-min) (point-max))))))))
-# --
-add_library(${1:library_name} ${2:STATIC$(yas-choose-value '("STATIC" "SHARED"))} ${3:files})
-target_link_libraries(${4:`target-name`} $1)
-${5:target_include_directories($1 PRIVATE ${6:include_directories})}

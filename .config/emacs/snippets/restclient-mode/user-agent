@@ -1,6 +1,0 @@
-# name: generate a random user-agent header
-# contributor: oxcl
-# key: user-agent:
-# --
-User-Agent: `(shell-command-to-string "user-agent")`
-$0
