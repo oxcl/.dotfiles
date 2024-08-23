@@ -1,7 +1,11 @@
-here is some simple text ok?
-p -> xb -> cj -> cWelcome to GNU Emacs, one component of the GNU/Linux operating system.
-
-
-
-l -> x
-*** 
+* one
+** two
+*** three
+*** char
+** panj
+* shish
+** one or two
+*** jang
+**** jump to this
+jang and jangali
+** two three

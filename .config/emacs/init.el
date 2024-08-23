@@ -70,7 +70,6 @@
   ;; C-f is search
   (keymap-global-set "C-f" #'isearch-forward))
 
-
 (use-package org
   :custom
   ;; virtually indent headlines and their contents
@@ -87,5 +86,41 @@
 		       (,(kbd "S-<left>")    . ,(kbd "M-,"))
 		       (,(kbd "C-S-<right>") . ,(kbd "C-M-."))
 		       (,(kbd "C-S-<left>")  . ,(kbd "C-M-,"))))
+  ;; start a org document folded
+  (org-startup-folded t)
+  :config
+  (defun oxcl/jump-in ()
+    """if the cursor is on a heading jump to its first subheading if it has any otherwise show its folded contents
+       and if the cursor is not on a heading jump to next heading"""
+    (interactive)
+    (if (org-at-heading-p)
+	(if (org-goto-first-child)
+	    (org-fold-reveal)
+	  (org-show-subtree))
+      (org-forward-heading-same-level 1)))
+
+  (defun oxcl/jump-out ()
+    """if the cursor is on a heading fold its contents, and if it is already folded jump to its parent heading
+       and if the cursor is not on a heading jump to previous heading"""
+    (interactive)
+    (if (org-at-heading-p)
+	(if (org-invisible-p (point-at-eol))
+            (progn (outline-up-heading 1) (org-fold-hide-subtree))
+	  (org-fold-hide-subtree)
+	  (when (not (org-invisible-p (point-at-eol)))
+		(progn (outline-up-heading 1) (org-fold-hide-subtree))))
+      (org-backward-heading-same-level 1)))
+
+  (defun oxcl/jump-next ()
+    (interactive))
+  (defun oxcl/jump-prev ()
+    (interactive))
+  :bind (:map org-mode-map
+	      ("C-c C-b"     . org-copy-visible) ; this is will actually be C-p C-c
+	      ;; structural movement in org-mode
+	      ("C-M-<up>"    . org-backward-heading-same-level)
+	      ("C-M-<down>"  . org-forward-heading-same-level)
+	      ("C-M-<left>"  . oxcl/jump-out)
+	      ("C-M-<right>" . oxcl/jump-in))
   :commands (org-mode))
   
