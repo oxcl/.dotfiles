@@ -51,7 +51,25 @@
   (keymap-global-set "C-a" #'mark-whole-buffer)
 
   ;; Alt-F4 is quit
-  (keymap-global-set "M-<f4>" #'save-buffers-kill-terminal))
+  (keymap-global-set "M-<f4>" #'save-buffers-kill-terminal)
+
+  ;; C-z is undo
+  (keymap-global-set "C-z" #'undo-only)
+  (keymap-global-set "C-S-z" #'undo-redo)
+  (keymap-global-set "C-y" #'undo-redo)
+
+  ;; C-o is find-file
+  (keymap-global-set "C-o" #'find-file)
+
+  ;; C-+/C-- is zoom in/out and C-= is zoom back to normal
+  (keymap-global-set "C-+" #'text-scale-increase)
+  (keymap-global-set "C--" #'text-scale-decrease)
+  (keymap-global-set "C-=" #'oxcl/reset-zoom)
+  (defun oxcl/reset-zoom () (interactive) (text-scale-set 0))
+
+  ;; C-f is search
+  (keymap-global-set "C-f" #'isearch-forward))
+
 
 (use-package org
   :custom
