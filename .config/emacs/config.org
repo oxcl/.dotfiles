@@ -1,13 +1,7 @@
-* three
-** five
-#+begin_src thing :tangle no
-#+end_src
-** six [2024-07-15 Mtagsn]
-1. [ ] one hundred
-2. [ ] two
-3. [ ] three
-* seven
-fse two three
+here is some simple text ok?
+p -> xb -> cj -> cWelcome to GNU Emacs, one component of the GNU/Linux operating system.
 
-* what everpe
-** two
+
+
+l -> x
+*** 

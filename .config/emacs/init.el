@@ -24,7 +24,34 @@
   ;; swap <escape> and Ctrl-g because Ctrl-g is just too good to just quit
   ;; so in key bindings <escape> is actually C-g
   (define-key input-decode-map [?\C-g] [escape] )
-  (define-key input-decode-map [escape] [?\C-g] ))
+  (define-key input-decode-map [escape] [?\C-g] )
+
+  ;; replace C-x with C-p and C-l and replace C-c with C-b and C-j
+  ;; this way C-x/C-c keys are available on both sides of the keyboard preserving tempo
+  (keymap-set input-decode-map "C-p" "C-x")
+  (keymap-set input-decode-map "C-l" "C-x")
+  (keymap-set input-decode-map "C-b" "C-c")
+  (keymap-set input-decode-map "C-j" "C-c")
+
+  ;; translate C-x as C-p and translate C-c as C-b
+  (keymap-set input-decode-map "C-x" "C-p")
+  (keymap-set input-decode-map "C-c" "C-b")
+
+  ;; C-c is copy
+  (keymap-global-set "C-b" #'kill-ring-save) ; C-b is actually C-c
+  ;; C-x is cut
+  (keymap-global-set "C-p" #'kill-region) ; C-p is actually C-x
+  ;; C-v is paste
+  (keymap-global-set "C-v" #'yank)
+
+  ;; C-s is save
+  (keymap-global-set "C-s" #'save-buffer)
+
+  ;; C-a is select all
+  (keymap-global-set "C-a" #'mark-whole-buffer)
+
+  ;; Alt-F4 is quit
+  (keymap-global-set "M-<f4>" #'save-buffers-kill-terminal))
 
 (use-package org
   :custom
@@ -42,10 +69,5 @@
 		       (,(kbd "S-<left>")    . ,(kbd "M-,"))
 		       (,(kbd "C-S-<right>") . ,(kbd "C-M-."))
 		       (,(kbd "C-S-<left>")  . ,(kbd "C-M-,"))))
-  ;; don't remove highlighted matches when searching with org-occur
-  (org-remove-highlights-with-change nil)
-  :bind (:map org-mode-map
-	      ("<escape>" . next-error)
-	      ("C-S-g"    . previous-error))
   :commands (org-mode))
   
