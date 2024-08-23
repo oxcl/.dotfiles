@@ -15,7 +15,7 @@ echo "Download Port: ${COLOR}${DOWNLOAD_PORT}${NC}\tUpload Port: ${COLOR}${UPLOA
 
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
-if command -v woof &>/devu/null; then
+if command -v woof &>/dev/null; then
     woof -U -c 99999 -p "$UPLOAD_PORT" &>/dev/null &
 else
     echo "woof is not installed on the system so the upload server won't work..." >&2
