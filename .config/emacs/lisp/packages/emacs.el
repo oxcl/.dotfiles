@@ -1,6 +1,8 @@
 (provide 'packages/emacs)
 
 (use-package emacs
+  :custom
+  (custom-file (expand-file-name "custom.el" user-emacs-directory))
   :config
   ;; the following code snippet is used to enable the <escape> key to work in terminal environments
   ;; taken from: https://github.com/emacsorphanage/god-mode/issues/43#issuecomment-67193877

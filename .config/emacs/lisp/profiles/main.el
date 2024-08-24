@@ -1,4 +1,5 @@
 (provide 'profiles/main)
 
-(require 'features/defaults)
+(require 'profiles/bare)
+
 (require 'features/org)

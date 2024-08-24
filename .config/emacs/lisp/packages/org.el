@@ -20,6 +20,8 @@
   (org-startup-folded t)
   ;; when creating a new heading or item with M-RET don't split the line if the cursor is in the middle of the line
   (org-M-RET-may-split-line nil)
+  ;; record timestamp for current time when a todo items moves to DONE state
+  (org-log-done 'time)
   :config
   (defun oxcl/org-jump-in ()
     """if the cursor is on a heading jump to its first subheading if it has any otherwise show its folded contents
