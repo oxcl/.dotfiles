@@ -1,20 +1,20 @@
 /******************************
     UI CUSTOMIZATIONS
 ******************************/
-// arabic and farsi fonts
+/** arabic and farsi fonts **/
 user_pref("font.default.ar", "serif");
 user_pref("font.name.serif.ar", "Vazirmatn");
 user_pref("font.name.sans-serif.ar", "Vazirmatn UI");
 user_pref("font.name.monospace.ar", "Vazir Code");
 user_pref("font.name.sans-serif.ar", "Value");
 
-// english font
+/** english font **/
 user_pref("font.language.group", "x-western");
 user_pref("font.name.serif.x-western", "Noto Serif");
 user_pref("font.name.sans-serif.x-western", "Noto Sans");
 user_pref("font.name.monospace.x-western", "ioZevka Mono");
 
-
+user_pref("browser.sessionstore.resume_from_crash",false); // disable the restore session page
 user_pref("browser.privatebrowsing.vpnpromourl", "");
 user_pref("extensions.getAddons.showPane", false);
 user_pref("extensions.htmlaboutaddons.recommendations.enabled", false);
