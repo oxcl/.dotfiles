@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# script to load emacs with a custom set of profiles, features or packages
+# useful for testing new packages and debugging
+set -e
+
+PROFILES=()
+FEATURES=()
+PACKAGES=()
+
+DIR="${XDG_CONFIG_HOME:-$HOME/.config}/emacs/lisp"
+
+AVAILABLE_PROFILES=( $(ls "$DIR/profiles") )
+AVAILABLE_FEATURES=( $(ls "$DIR/features") )
+AVAILABLE_PACKAGES=( $(ls "$DIR/packages") )
+
+has_profile(){
+    [[ "${AVAILABLE_PROFILES[@]}" =~ "$1.el" ]] && return 0 || return 1
+}
+has_feature(){
+    [[ "${AVAILABLE_FEATURES[@]}" =~ "$1.el" ]] && return 0 || return 1
+}
+has_package(){
+    [[ "${AVAILABLE_PACKAGES[@]}" =~ "$1.el" ]] && return 0 || return 1
+}
+
+parse_args(){
+    local SCOPE="auto" # auto | feature | package
+    while [[ -n $1 ]]; do
+        case $1 in
+            "-p") SCOPE="package" ;;
+            "-f") SCOPE="feature" ;;
+            * )
+		if   [[ $SCOPE == "package" ]]; then has_package $1 && PACKAGES=( $PACKAGES $1 ) || echo "package $1 not found" >&2
+                elif [[ $SCOPE == "feature" ]]; then has_feature $1 && FEATURES=( $FEATURES $1 ) || echo "feature $1 not found" >&2
+                else
+                    if   has_profile $1; then PROFILES=( $PROFILES $1 )
+                    elif has_feature $1; then FEATURES=( $FEATURES $1 )
+                    elif has_package $1; then PACKAGES=( $PACKAGES $1 )
+                    else
+                        echo "could not find a profile, feature or a package with name '$1'" >&2;
+                    fi
+                fi
+        esac
+        shift
+    done
+}
+
+generate_lisp(){
+  for profile in ${PROFILES[@]}; do printf "(require 'profiles/$profile) '"; done
+  for feature in ${FEATURES[@]}; do printf "(require 'features/$feature) '"; done
+  for package in ${PACKAGES[@]}; do printf "(require 'packages/$package) '"; done
+}
+
+parse_args $@
+
+echo "profiles: " $PROFILES
+echo "features: " $FEATURES
+echo "packages: " $PACKAGES
+
+exec emacs --eval "$(generate_lisp)"
