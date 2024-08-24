@@ -18,13 +18,13 @@ apply hyprland "$CONFIG/hypr/theme.conf"
 apply glow "$CONFIG/glow/style.json"
 apply Xresources "$HOME/.config/x11/theme"
 apply Xresources "$HOME/.Xdefaults"
+apply alacritty "$HOME/.config/alacritty/theme.toml"
 cat "$HOME/.config/x11/resources" >> "$HOME/.Xdefaults"
 
 for pid in ${pids[@]}; do
   wait $pid
 done
 
-# apply alacritty "$HOME/.config/alacritty/theme.toml"
 # apply wezterm "$HOME/.config/wezterm/theme.lua"
 # apply emacs-modus-themes "$HOME/.config/emacs/lisp/modus-colors.el"
 
