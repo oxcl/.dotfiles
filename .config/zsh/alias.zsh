@@ -85,12 +85,11 @@ if has gtrash; then
   alias restore="gtrash restore"
 fi
 
-
 # qrcode generator
 alias qrencode="qrencode -t ANSI256"
 alias qr="qrencode"
 alias qrcode="qrencode"
 
-
 alias tolower="tr '[:upper:]' '[:lower:]'"
 alias toupper="tr '[:lower:]' '[:upper:]'"
+

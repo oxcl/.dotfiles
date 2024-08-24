@@ -23,38 +23,43 @@ has_package(){
     [[ "${AVAILABLE_PACKAGES[@]}" =~ "$1.el" ]] && return 0 || return 1
 }
 
-parse_args(){
-    local SCOPE="auto" # auto | feature | package
-    while [[ -n $1 ]]; do
-        case $1 in
-            "-p") SCOPE="package" ;;
-            "-f") SCOPE="feature" ;;
-            * )
+# parse args
+SCOPE="auto" # auto | feature | package
+while [[ -n $1 ]]; do
+    case $1 in
+        "--")
+            shift
+            break
+            ;;
+        "-p") SCOPE="package" ;;
+        "-f") SCOPE="feature" ;;
+        * )
 		if   [[ $SCOPE == "package" ]]; then has_package $1 && PACKAGES=( $PACKAGES $1 ) || echo "package $1 not found" >&2
-                elif [[ $SCOPE == "feature" ]]; then has_feature $1 && FEATURES=( $FEATURES $1 ) || echo "feature $1 not found" >&2
+            elif [[ $SCOPE == "feature" ]]; then has_feature $1 && FEATURES=( $FEATURES $1 ) || echo "feature $1 not found" >&2
+            else
+                if   has_profile $1; then PROFILES=( $PROFILES $1 )
+                elif has_feature $1; then FEATURES=( $FEATURES $1 )
+                elif has_package $1; then PACKAGES=( $PACKAGES $1 )
                 else
-                    if   has_profile $1; then PROFILES=( $PROFILES $1 )
-                    elif has_feature $1; then FEATURES=( $FEATURES $1 )
-                    elif has_package $1; then PACKAGES=( $PACKAGES $1 )
-                    else
-                        echo "could not find a profile, feature or a package with name '$1'" >&2;
-                    fi
+                    echo "could not find a profile, feature or a package with name '$1'" >&2;
                 fi
-        esac
-        shift
-    done
-}
+            fi
+            ;;
+    esac
+    shift
+done
 
 generate_lisp(){
-  for profile in ${PROFILES[@]}; do printf "(require 'profiles/$profile) '"; done
-  for feature in ${FEATURES[@]}; do printf "(require 'features/$feature) '"; done
-  for package in ${PACKAGES[@]}; do printf "(require 'packages/$package) '"; done
+    printf "(progn "
+    printf "(add-to-list 'load-path (expand-file-name \"lisp\" user-emacs-directory)) "
+    for profile in ${PROFILES[@]}; do printf "(require 'profiles/$profile) "; done
+    for feature in ${FEATURES[@]}; do printf "(require 'features/$feature) "; done
+    for package in ${PACKAGES[@]}; do printf "(require 'packages/$package) "; done
+    printf ")"
 }
-
-parse_args $@
 
 echo "profiles: " $PROFILES
 echo "features: " $FEATURES
 echo "packages: " $PACKAGES
 
-exec emacs --eval "$(generate_lisp)"
+exec emacs --eval "$(generate_lisp)" $@
