@@ -23,6 +23,11 @@
   (org-M-RET-may-split-line nil)
   ;; record timestamp for current time when a todo items moves to DONE state
   (org-log-done 'time)
+  ;; by default org will always use #B when adding priority to a heading. which is annoying, just cycle through!
+  (org-priority-start-cycle-with-default nil)
+  ;; directory to main org files to be consumed by org and org-agenda
+  (org-directory (expand-file-name "Documents/Org/" "~"))
+  (org-agenda-files `(,org-directory))
   :config
   (defun oxcl/org-jump-in ()
     """if the cursor is on a heading jump to its first subheading if it has any otherwise show its folded contents

@@ -20,19 +20,10 @@ export ZSHZ_DATA="${XDG_DATA_HOME}/z" # zsh-z plugin
 # add extra folders to $PATH
 export PATH="${XDG_DATA_HOME}/npm/bin:$PATH" # add npm global packages
 export PATH="$XDG_BIN_HOME:$PATH" # add my own scripts and binaries
-export PATH="/test:$PATH"
 
-# set default terminal for window manager and desktop environments that respect it
-if command -v wezterm &>/dev/null; then
-  export TERMINAL="wezterm"
-elif command -v urxvt &>/dev/null; then
-  export TERMINAL="urxvt"
-else
-  export TERMINAL="xterm"
-fi
-
-# set default editor to emacs
+# set defaults
 export EDITOR="emacs"
+export BROWSER="firefox"
 
 export SAVEHIST=4000 # maximum size for $HISTFILE
 

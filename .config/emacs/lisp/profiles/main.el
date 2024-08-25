@@ -6,3 +6,4 @@
 
 (require 'packages/drag-stuff)
 (require 'packages/which-key)
+(require 'packages/dired)
