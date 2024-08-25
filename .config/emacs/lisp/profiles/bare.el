@@ -2,4 +2,4 @@
 
 (require 'features/defaults)
 
-(require 'packages/use-package)
+(require 'packages/elpaca)

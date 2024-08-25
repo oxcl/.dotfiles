@@ -1,12 +1,11 @@
 * one
+* char
 ** two
-
 *** three
-*** char
 ** panj
 * shish
 ** one or two
-*** jang
 **** jump to this
 jang and jangali
+*** jang
 ** two three

@@ -1,6 +1,7 @@
 (provide 'packages/org)
 
 (use-package org
+  :ensure nil
   :custom
   ;; indent headings and their contents
   (org-startup-indented t)
@@ -57,6 +58,18 @@
     (org-backward-heading-same-level 1)
     (org-end-of-line)
     (org-beginning-of-line))
+
+  (defun oxcl/org-shiftmetadown ()
+    (interactive)
+    (if (region-active-p)
+         (drag-stuff-down 1)
+      (org-shiftmetadown)))
+   (defun oxcl/org-shiftmetaup ()
+     (interactive)
+     (if (region-active-p)
+         (drag-stuff-up 1)
+      (org-shiftmetaup)))
+  
   :bind (:map org-mode-map
 	      ("C-c C-b"     . org-copy-visible) ; this is will actually be C-p C-c
 	      ;; structural movement in org-mode
@@ -69,8 +82,8 @@
 	      ("C-M-<return>"   . org-insert-heading-respect-content)
 	      ("C-M-S-<return>" . org-insert-todo-heading-respect-content)
 	      ;; M-<up/down> to move individual lines and M-S-<up/down> to move by heading
-	      ("M-<up>"         . org-shiftmetaup)
-	      ("M-<down>"       . org-shiftmetadown)
+	      ("M-<up>"         . oxcl/org-shiftmetaup)
+	      ("M-<down>"       . oxcl/org-shiftmetadown)
 	      ("M-S-<up>"       . org-metaup)
 	      ("M-S-<down>"     . org-metadown))
   :commands (org-mode))
