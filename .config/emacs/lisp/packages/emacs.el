@@ -2,7 +2,12 @@
 
 (use-package emacs
   :custom
+  ;; don't add customizations made by customize interface to init.el and add it to custom.el instead
   (custom-file (expand-file-name "custom.el" user-emacs-directory))
+
+  ;; disable visual and audible bell
+  (ring-bell-function #'ignore)
+  
   :config
   ;; the following code snippet is used to enable the <escape> key to work in terminal environments
   ;; taken from: https://github.com/emacsorphanage/god-mode/issues/43#issuecomment-67193877

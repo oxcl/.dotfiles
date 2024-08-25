@@ -5,10 +5,13 @@
   :custom
   ;; indent headings and their contents
   (org-startup-indented t)
+  
   ;; jump to the beginning/end of the headline with ctrl-a/ctrl-k and home/end instead of beginning/end of the line
   (org-special-ctrl-a/e t)
+  
   ;; try to be smart when killing a line with ctrl-k on a headline based on where the cursor is placed
   (org-special-ctrl-k t)
+  
   ;; signal org to not use Shift+Arrow-Keys and use the replacements instead
   (org-replace-disputed-keys t)
   (org-disputed-keys `((,(kbd "S-<up>")      . ,(kbd "M-_"))
@@ -17,18 +20,26 @@
 		       (,(kbd "S-<left>")    . ,(kbd "M-,"))
 		       (,(kbd "C-S-<right>") . ,(kbd "C-M-."))
 		       (,(kbd "C-S-<left>")  . ,(kbd "C-M-,"))))
+  
   ;; start a org document folded
-  (org-startup-folded t)
+  ;;(org-startup-folded t)
+  
   ;; when creating a new heading or item with M-RET don't split the line if the cursor is in the middle of the line
   (org-M-RET-may-split-line nil)
+  
   ;; record timestamp for current time when a todo items moves to DONE state
   (org-log-done 'time)
+  
   ;; by default org will always use #B when adding priority to a heading. which is annoying, just cycle through!
   (org-priority-start-cycle-with-default nil)
+  
   ;; directory to main org files to be consumed by org and org-agenda
   (org-directory (expand-file-name "Documents/Org/" "~"))
   (org-agenda-files `(,org-directory))
+  
   :config
+  ;; enable word-wrap in org-mode
+  (add-hook 'org-mode-hook #'visual-line-mode)
   (defun oxcl/org-jump-in ()
     """if the cursor is on a heading jump to its first subheading if it has any otherwise show its folded contents
        and if the cursor is not on a heading jump to next heading"""
@@ -54,41 +65,51 @@
       (org-beginning-of-line)))
 
   (defun oxcl/org-jump-next ()
+    """jump to next heading at same level and put the cursor at the beginning of the headline"""
     (interactive)
     (org-forward-heading-same-level 1)
     (org-end-of-line)
     (org-beginning-of-line))
+  
   (defun oxcl/org-jump-prev ()
+    """jump to previous heading at same level and put the cursor at the beginning of the headline"""    
     (interactive)
     (org-backward-heading-same-level 1)
     (org-end-of-line)
     (org-beginning-of-line))
 
   (defun oxcl/org-shiftmetadown ()
+    """if a region is active move the region down otherwise do whatever org-mode wants to do"""
     (interactive)
     (if (region-active-p)
          (drag-stuff-down 1)
       (org-shiftmetadown)))
-   (defun oxcl/org-shiftmetaup ()
+   
+  (defun oxcl/org-shiftmetaup ()
+    """if a region is active move the region up otherwise do whatever org-mode wants to do"""
      (interactive)
      (if (region-active-p)
          (drag-stuff-up 1)
-      (org-shiftmetaup)))
-  
+       (org-shiftmetaup)))
+ 
   :bind (:map org-mode-map
 	      ("C-c C-b"     . org-copy-visible) ; this is will actually be C-p C-c
+	      
 	      ;; structural movement in org-mode
 	      ("C-M-<up>"       . oxcl/org-jump-prev)
 	      ("C-M-<down>"     . oxcl/org-jump-next)
 	      ("C-M-<left>"     . oxcl/org-jump-out)
 	      ("C-M-<right>"    . oxcl/org-jump-in)
+	      
 	      ;; move C-RET and C-S-RET org mode functionality to M-C-RET and M-C-S-RET because
 	      ;; i want C-RET for completion
 	      ("C-M-<return>"   . org-insert-heading-respect-content)
 	      ("C-M-S-<return>" . org-insert-todo-heading-respect-content)
+	      
 	      ;; M-<up/down> to move individual lines and M-S-<up/down> to move by heading
 	      ("M-<up>"         . oxcl/org-shiftmetaup)
 	      ("M-<down>"       . oxcl/org-shiftmetadown)
 	      ("M-S-<up>"       . org-metaup)
 	      ("M-S-<down>"     . org-metadown))
+  
   :commands (org-mode))

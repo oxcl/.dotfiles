@@ -8,3 +8,4 @@
 (require 'packages/which-key)
 (require 'packages/dired)
 (require 'packages/jinx)
+(require 'packages/helpful)
