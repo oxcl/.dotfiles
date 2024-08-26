@@ -91,9 +91,12 @@
      (if (region-active-p)
          (drag-stuff-up 1)
        (org-shiftmetaup)))
- 
+
+  
   :bind (:map org-mode-map
-	      ("C-c C-b"     . org-copy-visible) ; this is will actually be C-p C-c
+	      ("C-c C-b"     . org-special-copy) ; this will actually be C-p/C-j C-c
+	      ("C-c C-p"     . org-special-cut)  ; this will actually be C-p/C-j C-x
+	      ;; and regular C-v is for pasting
 	      
 	      ;; structural movement in org-mode
 	      ("C-M-<up>"       . oxcl/org-jump-prev)
