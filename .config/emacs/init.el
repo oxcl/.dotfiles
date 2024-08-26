@@ -23,5 +23,5 @@
 ;; the emacs-with script I wrote (~/.local/bin/emacs-with) 
 ;; this is really handy for debugging the configuration when it breaks or testing out new packages and features
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp" (or real-user-emacs-directory user-emacs-directory)))
 (require 'profiles/main)
