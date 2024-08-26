@@ -19,7 +19,7 @@
 ;; packages. each package should have its own file. also I put custom elisp code, functions and commands
 ;; in their own file as a package module despite the fact that they are not 'real' packages
 ;;
-;; following this system you can modularly enable specific modules (profile,feature or package) using 
+;; following this system you can enable specific modules (profile,feature or package) using 
 ;; the emacs-with script I wrote (~/.local/bin/emacs-with) 
 ;; this is really handy for debugging the configuration when it breaks or testing out new packages and features
 

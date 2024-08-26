@@ -41,9 +41,6 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-;; remove non gnu elpa repositories because it causes freezes with some ISPs
-(delq #'elpaca-menu-non-gnu-elpa elpaca-menu-functions)
-(delq #'elpaca-menu-non-gnu-devel-elpa elpaca-menu-functions)
 
 ;; enable use-package integration
 (elpaca elpaca-use-package

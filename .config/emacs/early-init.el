@@ -1,4 +1,3 @@
-
 (setq real-user-emacs-directory user-emacs-directory)
 (setq user-emacs-directory (expand-file-name "emacs" (or (getenv "XDG_CACHE_HOME") (expand-file-name "~/.cache"))))
 

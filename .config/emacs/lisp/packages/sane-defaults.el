@@ -24,3 +24,12 @@
 (fset 'yes-or-no-p 'y-or-n-p)           ; why should i type the whole world "yes" instead of just "y" richard stallman? why??
 (delete-selection-mode 1)               ; Selected text will be overwritten when you start typing
 (global-auto-revert-mode t)             ; Auto-update buffer if file has changed on disk
+
+;; teach emacs to keep your folders clean
+(setq create-lockfiles nil
+      backup-directory-alist `((".*" . ,(expand-file-name "backups/" user-emacs-directory)))
+      auto-save-list-file-prefix (expand-file-name "auto-saves/" user-emacs-directory))
+
+(make-directory auto-save-list-file-prefix t)
+
+
