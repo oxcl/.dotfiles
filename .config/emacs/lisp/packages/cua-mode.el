@@ -74,7 +74,7 @@
 
 ;; Ctrl-+/Ctrl-- is zoom in/out and Ctrl-= is zoom back to normal (text-scale commands) instead of C-x C-= and others
 (oxcl/unset "C-x C-0" "C-x C-=" "C-x C--" "C-x C-+")
-(oxcl/unset-map ctl-x-map "x" "0" "C-=" "C--" "C-+")
+(oxcl/unset-map ctl-x-map "C-0" "C-=" "C--" "C-+")
 (keymap-global-set "C-+" #'text-scale-increase)
 (keymap-global-set "C--" #'text-scale-decrease)
 (keymap-global-set "C-=" #'oxcl/cua-reset-zoom)

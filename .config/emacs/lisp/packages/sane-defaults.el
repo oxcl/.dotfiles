@@ -13,7 +13,6 @@
 
 (setq initial-scratch-message  ""        ; Make *scratch* buffer blank
       ring-bell-function       #'ignore  ; disable visual and audible bell
-      create-lockfiles         nil       ; lockfiles unfortunately cause more pain than benefit
       vc-follow-symlinks       t         ; follow a symlink without asking wtf?
       inhibit-startup-message  t         ; don't present the infamous emacs startup buffer
       

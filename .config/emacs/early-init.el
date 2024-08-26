@@ -1,3 +1,5 @@
+(setq oxcl/cache-dir (expand-file-name "emacs" (or (getenv "XDG_CACHE_HOME") (expand-file-name "~/.cache"))))
+
 (setq package-enable-at-startup nil) ; disable package.el in favor of elpaca
 
 ;; disable garbage collection threshold at startup
