@@ -29,7 +29,12 @@
 (setq create-lockfiles nil
       backup-directory-alist `((".*" . ,(expand-file-name "backups/" user-emacs-directory)))
       auto-save-list-file-prefix (expand-file-name "auto-saves/" user-emacs-directory))
-
 (make-directory auto-save-list-file-prefix t)
+
+;; save the cursor position for files across emacs sessions
+(save-place-mode)
+
+;; save mini buffer history across emacs sessions
+(savehist-mode)
 
 

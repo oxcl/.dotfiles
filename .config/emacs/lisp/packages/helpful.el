@@ -1,8 +1,6 @@
 (provide 'packages/helpful)
 
 (use-package helpful
-  :config
-  (add-hook 'helpful-mode-hook #'scroll-lock-mode)
   :bind
   ("C-h f" . #'helpful-callable)
   ("C-h v" . #'helpful-variable)
