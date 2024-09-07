@@ -6,6 +6,8 @@
   amend = commit --amend
   clone-light = clone --filter=blob:none
   import = submodule add --filter=blob:none
+  pul = pull
+  pulll = pull
 [core]
   compression = 0
 [user]

@@ -10,7 +10,11 @@ DOWNLOAD_PORT="${1:-8000}"
 UPLOAD_PORT="$(($DOWNLOAD_PORT + 1))"
 COLOR="\033[0;33m"
 NC="\033[0;m"
-echo "IPs: ${COLOR}$(ifconfig | grep inet | awk '{print $2}' | grep -v '::' | tr '\n' '\t')${NC}"
+if command -v ifconfig &>/dev/null; then
+  echo "IPs: ${COLOR}$(ifconfig | grep inet | awk '{print $2}' | grep -v '::' | tr '\n' '\t')${NC}"
+elif command -v ip &>/dev/null; then
+  echo "IPs: ${COLOR}$(ip address | grep inet | awk '{print $2}' | grep -v '::' | cut -d'/' -f1 | tr '\n' '\t')${NC}"
+fi
 echo "Download Port: ${COLOR}${DOWNLOAD_PORT}${NC}\tUpload Port: ${COLOR}${UPLOAD_PORT}${NC}"
 
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
