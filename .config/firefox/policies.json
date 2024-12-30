@@ -46,6 +46,23 @@
     },
     "AutofillAddressEnabled": false,
     "AutofillCreditCardEnabled": false,
+    "Bookmarks": [
+      {
+        "Title": "V-",
+        "URL": "javascript:(()=> {if(!window._gainNode){const audioCtx = new (window.AudioContext || window.webkitAudioContext)();window._gainNode = audioCtx.createGain();_gainNode.connect(audioCtx.destination);[...document.getElementsByTagName('video')].filter(elem => !elem.paused).forEach(elem => { let source = audioCtx.createMediaElementSource(elem);source.connect(_gainNode);}); _gainNode.gain.value = 2;} else {_gainNode.gain.value *= 2;}})()",
+        "Favicon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAADI0lEQVR4Xu2az2sTQRTHu2mCBiGsFJQexCjFgwcLPQlCKZ685dJooZ5aCIWA5NdCRNTYg9L8wJy8iCc9BK0XD6K00B/YU2/+Cx699JBTIInfkRXCusnO7DaT6dsJLF26b3bm+5n33r6dHWMq5D8j5PqnNADtASEnoEMg5A6gk6AOAR0CkgkUCoUb0Wj0aqfTOW42myeSu/+vO6khUCwWtwzDsHAY/X7/BEeq0WgcThKCNAAQ/ywSibxwiP1Zq9XmyQOA+A1M+hs284Ni4QHder0eJQ0A4pehu4Vj2k0oPECaF7r1P9bOS6XSXXT6FeLPDZtlsgAsy1qAi+9BfGKUi5MEkM/n5/Co+wHhl73imxyAXC43G4vFmPjrXuLZdVIAIN7EzB/A7W/xiCcFoFKpnG+3298hfpFXPBkA6XR6OplMfoaglIh4MgCQ8d9BzJqoeBIAIP4VhJT9iFcaAIqYJxjgIxwzo8Qh5iO47rugUvIpgPJ1FS8uH/zOqkg7JQHArd9DxEMRIX5tVQXwEYLSfkWJtNMAVHwbRAhoD9AhoHPA5JIgQrCFtYRlkWTqZYt6ZRsJd8Vp51rATDoHjKn/TwBwXwNwENAe4BY7Y3JB1zB1K4TG1P+ZCoE7SIJXvBKbyHUkwV+AfXQmcoCIsKC2SuaAoKJE2msAKiZBkRkMajvMA1q48YOgN+dpr+TrMJbDNpE1n/IICGqjJIByuXyx2+3uQxz3Bw6/IJQEwMRkMpmYaZpLvV7Pa1HUgvkCOQC8ghAul2B7hJCZ420zaKesB4iIAYRrNoRZkXbMlgQAJgS7v+axlL4PTzBFIJABwETje8IiIHzDaZwXAikATDTCIcVWX3DKtfmJHAAbwjr+vnXuCnPzCpIAbAiPAeClVyiQBWBDeA0IuVEQSAOAcMP+zrg6DAJ1AH8rykQi8QWecC9UOWBQLJ4MFwBgF/+77YDwGx7AKsmJ/XxvbBAdcTabnYnH44cAcfNfW7xnPMdu8U3Re52mvTQAbND2NroCTpMomHaq1SrbhNE/TUGi95IKQHRwMuw1ABmUVe5De4DKsyNjbH8A5+0MUPHfwMsAAAAASUVORK5CYII="
+      },
+      {
+        "Title": "V0",
+        "URL": "javascript:(()=> {if(window._gainNode){_gainNode.gain.value = 1;}})()",
+        "Favicon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAGIUlEQVR4Xu2aW2xUVRSGO73YmxKR4I2HChgfCFDb8KRGELnoi6ihEmgC8UZom9p7rUnVGkxq7y3V6uOgINXGgASJEaOiYNKopWqMUlHTB4MNxahtY5ve/FYyY6an+1x7TjsznZ3szMyZfdZa/7/X2nuftY4vbpE33yLHHxcjIOYBi5yBWAgscgeILYLzGgIVFRUb8bhD9JXT09NnkpKS9tfW1l5dSC+cNwIAfzdAP6KnhQA+0dDQ8EjUE1BeXr7W5/N9DtClGrD/QkAoIfPOheceUFxcfBuufg5kK1ToIMBzG4xY9VR5YWHh8uTk5HPM/h16RkQtAfn5+demp6d/CvANRjOgIoD1opB71tIH6RdZMHsaGxt/4Pu02zHiiQfk5ORck5GR8QEzv8XMYB0C3uW+HM29A/w+Dhl+yOg2k2v1f9cJqKmpiR8eHj4G+MesGGGDgFBxZ6empqqbmppkbZlTc50A3PdVLCqwapVDAuLwhGlIPjw6OlrU3t7+j1V92nGuEgD4F1Dwkh1jnBIQ1AEPlyYnJx9taWn53o7e4FjXCCgrKzvAjHTQbclUEcC5oQIx2zByZaDHG4GDhL8Y/xCyvrBLgi1j9YQDficGdNIT7Bpgtg0WFBQsS01N3Y7sfQDdakDwEOvCfawL39ixYc4EMFubUXgaw5LtKA6ONSMgVGZJScmGhISENnTdpdIFQZfHx8ez2traZMew1HQJIJ7vRODTKFtm4n4PMmaJJW2KQXYIkNtllxkaGqqOj49/kZ+zQgObP2ab3GrVHiUBAh4BX9JTrQpyOs4uAUE9lZWVubj8YVXYcW1vfX39W1Zs0iPgdW4+YEXAXMc4JUD0Bk6M8ng9o+EFv4+Nja1mexwzs0+PANVJzEyWo/91tsG3EbYRIN24+pG0tLQTuP6USgEkKG3FO/JYEN8wMypcCdCC+hogeyDrZy0gCLiZa33060L/g7wLrAXZ0UKA4LgKqM2A+k5BQh3XKrWRgBeswQt+MiIhUjwgiOG3kZGR9R0dHcOhoKqqqlZNTExcUpwRnsFr2qOJAHkGOIgXyJF7RuM80gsBmZow6GTs7ogjADCbMPpJeq5iVv8gz7BCuyiqHsKsrANhGQLBGWOvrwGEHHhmNHaG9XV1dTMeflRbIvcO4gHLI84DggZz9L0hMTFxVtqcp78dzc3NJ0OB8TySK1umBuwYa0BKjAADBsI6BPTyC7h2pnY7jKoQwJ3vZfF7gonbq1gEB1gEb7WyCHJ/LyGQFXEhoHe8DQB5GVDPKw5DF7gmD3H/NzwlMrdBPQIA1M9Ct44nvaFQoGybkjn6JdoPQn8C8n5mv1c7+xDwCuCf1V4nObKmtbX1x2gIgR4A7mHmL2rBFBUV3UTprU+RlDGNf5EVlrsAIdCJbZvo3bj90f7+/ve6uromVTMZGLtL8V8+3iJ5DcMW0QkRdot81oTXtAglNzg4OLjK7/ePOiKAim42bnWemw1PUWbCrfzvNCME+N2AfxMdiQo9jyPXb0W/UVI0Gyb3I8QwKUrsbWfMjGSEFcXBMQ4I8OH2z3H/QbqqXvAJMqUmaamQ6kZafAsknEKh52nx0tLSLGb9EPru0SF5QNLirPyXrU7CnAkQRRi2i3z9Ub66XhjJy8tbSmFkG8D3If8BvcII3josGSMyQF9ZBS/jXCFABOGWBRjQ7kZpjPguQ47k9uWAs9pCxelvxu3A9c/aAe8qAQESpDA6K1tjZNRci6PI/lWKozwef2sXvOsEBEiwVVNwSoCUx9F3hNArJDkiHuCouRYCQe2BFyTewW13WrHICQFgl/eOqp24vNYm1wkQBbwclZySknKar1I4NWxWCZD0FoKOk+r24+5StnOleUJAgIQlkCAvSRkWJ3QIKALwOmb5Cp99gO4BtNQDLO3tdpjxjAAxgqe0G/k4D5Db9YxycBCyg890rKcEBEiQrUxIuEVlTdQTIKA5KGVykPkMEq7XkBD9r8oGAUueDxI+5HfoOwfv4wEPm/qphwM8D4FQ2+V1GrxAanUSFmd4xe0pavhXPMRnKnpeCTC1ZgEGxAhYANLDSmXMA8JqOhbAmJgHLADpYaVy0XvAf50Sr19XltPqAAAAAElFTkSuQmCC"
+      },
+      {
+        "Title": "V+",
+        "URL": "javascript:(()=> {if(!window._gainNode){const audioCtx = new (window.AudioContext || window.webkitAudioContext)();window._gainNode = audioCtx.createGain();_gainNode.connect(audioCtx.destination);[...document.getElementsByTagName('video')].filter(elem => !elem.paused).forEach(elem => { let source = audioCtx.createMediaElementSource(elem);source.connect(_gainNode);}); _gainNode.gain.value = 0.5;} else {_gainNode.gain.value /= 2;}})()",
+        "Favicon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAC0ElEQVRoQ+2Zz2sTQRTHs5ukNlI2VQS1FhIEQfDQg6QHQQh48GDFesjVQw8BSw75fc5JCslRUUIP3iOIoBdFkdZ/JIfkKKSYS4tJv092y3Z3dmdiNuuszMLCpLvz5vt57817u1stFvFDi7j+mAL41xFUEVARmNMDKoWcDqzX6481TXtJf59Op7udTufTnE72nR5oBKrV6oN4PP4RKy6bAAMArEcCoFar3YXnv+E0LMGIwBQAuvQAjUbjFkQe4rzqFNtutwONstP+3MZLpdJaKpUi8TdZnpYaoFwuryYSie9Imw2vNJEWoNVqLY/H488Qft8vx6UEyOfziVwu9w7Cn/A2qIwAGjbtPoTv8MTTdekA0Kj2oKuJvBcqAKEDwLtbKN9vIPKah4d1UfGiESgWi8l0On2EdZM0B/ZPRqOR0e12T3hRdnkRAANMWuNNFL0uEgET4BdsLpl2jwGwMjMAw5CoTs/7FADHhedSSEWA4a3/KoWc1cbBe1bd6CkW1yauBzdGdQo1hQJIUVd1UgC8OmvfA2YERpjzp2HZD2RN3GqQlEIY/2bYpgaXtveHUCNAggqFgtWszvRlMpkkBP+0Ghn0Uwe+1O/3XZ241+sd28FCB2BFTHViyysBVAmXg0PtA7Q6HpeHyMfrvM0pej10AHwe2dZ1/TUEXmGJtFcLEYgZAOzVyVVtvNbyeinRUC1cpY6MZLPZF4Coir4TiACwqpOz2swK4OdceqV8ixueBRUBETtBAsRosxuG8R5ReMRbXDQCPDuBApAxQFwExBdA3PNbXFoAEl2pVC7jw9YBhne8IKQGINHNZnMdm/oHhhkWhPQAJBql9zZS6RCnq/RGAsCMxOZkMvkKiBV7JCIDYEbiIZrgB4wvmBBDANz42wojMk/o65qIIesePIo8xfiV+fs5/sFBQAs7AgewKSXb9G670GORAAsVbhlXAKG42WeRU9PbXEBi+n2RAAAAAElFTkSuQmCC"
+      }
+    ],
     "Cookies": {
       "Behavior": "reject-tracker-and-partition-foreign",
       "BehaviorBrivateBrowsing": "reject-tracker-and-partition-foreign",
@@ -59,7 +76,7 @@
     "DisableProfileImport": true,
     "DisableProfileRefresh": true,
     "DisableTelemetry": true,
-    "DisplayBookmarksToolbar": "newtab",
+    "DisplayBookmarksToolbar": "always",
     "DisplayMenuBar": "never",
     "DNSOverHTTPS": {
       "Enabled": false,
@@ -128,7 +145,10 @@
     },
     "HttpsOnlyMode": "force_enabled",
     "HttpAllowlist": [
-
+      "fileniko.com",
+      "fileniko.ir",
+      "dl1.fileniko.ir",
+      "dl2.fileniko.ir"
     ],
     "NoDefaultBookmarks": true,
     "OfferToSaveLogins": false,
