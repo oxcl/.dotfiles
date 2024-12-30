@@ -1,0 +1,204 @@
+{
+  "policies": {
+    "3rdparty": {
+      "Extensions": {
+        "uBlock0@raymondhill.net": {
+          "toOverwrite": {
+            "filterLists": [
+              "ublock-filters",
+              "ublock-badware",
+              "ublock-privacy",
+              "ublock-abuse",
+              "ublock-annoyances",
+              "ublock-unbreak",
+              "ublock-quick-fixes",
+              "urlhaus-1",
+              "awrl-0",
+              "easylist",
+              "easyprivacy",
+              "malware-0",
+              "malware-1",
+              "plowe-0",
+              "DEU-0",
+              "IRN-0",
+              "adguard-cookies",
+              "ublock-cookies-adguard",
+              "fanboy-cookiemonster",
+              "ublock-cookies-easylist",
+              "adguard-social",
+              "fanboy-social",
+              "adguard-popup-overlays",
+              "adguard-other-annoyances",
+              "adguard-widgets",
+              "easylist-annoyances",
+              "easylist-chat",
+              "easylist-newsletters",
+              "easylist-notifications",
+              "adguard-annoyance",
+              "fanboy-annoyance",
+              "https://raw.githubusercontent.com/DandelionSprout/adfilt/refs/heads/master/BrowseWebsitesWithoutLoggingIn.txt",
+              "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/ClearURLs%20for%20uBo/clear_urls_uboified.txt",
+              "https://raw.githubusercontent.com/yokoffing/filterlists/refs/heads/main/block_third_party_fonts.txt"
+            ]
+          }
+        }
+      }
+    },
+    "AutofillAddressEnabled": false,
+    "AutofillCreditCardEnabled": false,
+    "Cookies": {
+      "Behavior": "reject-tracker-and-partition-foreign",
+      "BehaviorBrivateBrowsing": "reject-tracker-and-partition-foreign",
+      "Locked": true
+    },
+    "DefaultDownloadDirectory": "${home}/Downloads",
+    "DisableDefaultBrowserAgent": true,
+    "DisableFeedbackCommands": true,
+    "DisableFirefoxStudies": true,
+    "DisablePocket" : true,
+    "DisableProfileImport": true,
+    "DisableProfileRefresh": true,
+    "DisableTelemetry": true,
+    "DisplayBookmarksToolbar": "newtab",
+    "DisplayMenuBar": "never",
+    "DNSOverHTTPS": {
+      "Enabled": false,
+      "Locked": true
+    },
+    "DontCheckDefaultBrowser": true,
+    "EnableTrackingProtection": {
+      "Value": true,
+      "Locked": true,
+      "Cryptomining": true,
+      "Fingerprinting": true,
+      "EmailTracking": true
+    },
+    "EncryptedMediaExtensions": {
+      "Enabled": false,
+      "Locked": true
+    },
+    "ExtensionSettings": {
+      "addon@darkreader.org": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/darkreader/latest.xpi",
+        "default_area": "navbar"
+      },
+      "{06d0794d-1297-4343-b542-a408f483e940}": {
+        "installation_mode": "force_installed",
+        "install_url":  "https://addons.mozilla.org/firefox/downloads/latest/gruvbox-dark-hard/latest.xpi"
+      },
+      "{446900e4-71c2-419f-a6a7-df9c091e268b}": {
+        "installation_mode": "force_installed",
+        "default_area": "navbar",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi"
+      },
+      "uBlock0@raymondhill.net": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi",
+        "default_area": "navbar"
+      },
+      "{aecec67f-0d10-4fa7-b7c7-609a2db280cf}": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/violentmonkey/latest.xpi",
+        "default_area": "navbar"
+      }
+    },
+    "FirefoxHome": {
+      "Search": false,
+      "TopSites": false,
+      "SponsoredTopSites": false,
+      "Highlights": false,
+      "Pocket": false,
+      "SponsoredPockets": false,
+      "Snippets": false,
+      "Locked": true
+    },
+    "FirefoxSuggest": {
+      "WebSuggestions" : false,
+      "SponsoredSuggestions": false,
+      "ImproveSuggest": false,
+      "Locked": true
+    },
+    "GoToIntranetSiteForSingleWordEntryInAddressBar": false,
+    "HardwareAcceleration": true,
+    "Homepage": {
+      "URL": "localhost:36712",
+      "StartPage": "homepage-locked",
+      "Locked": true
+    },
+    "HttpsOnlyMode": "force_enabled",
+    "HttpAllowlist": [
+
+    ],
+    "NoDefaultBookmarks": true,
+    "OfferToSaveLogins": false,
+    "OverrideFirstRunPage": "",
+    "OverridePostUpdatePage": "",
+    "PasswordManagerEnabled": false,
+    "Permissions": {
+      "Notifications": {
+        "BlockNewRequests": true,
+        "Locked": true
+      },
+      "Location": {
+        "BlockNewRequests": true,
+        "Locked": true
+      },
+      "Camera": {
+        "BlockNewRequests": false,
+        "Locked": true
+      },
+      "Microphone": {
+        "BlockNewRequests": false,
+        "Locked": true
+      }
+    },
+    "PopupBlocking": {
+      "Allow": [],
+      "Default": true,
+      "Locked": true
+    },
+    "Preferences": {
+      "browser.display.use_system_colors": {
+        "Value": true,
+        "Status": "locked"
+      },
+      "toolkit.legacyUserProfileCustomizations.stylesheets": {
+        "Value": true,
+        "Status": "locked"
+      },
+      "layout.css.color-mix.enabled": {
+        "Value": true,
+        "Status": "locked"
+      },
+      "browser.translations.automaticallyPopup": {
+        "Value": false,
+        "Status": "locked"
+      },
+      "browser.aboutConfig.showWarning": {
+        "Value": false,
+        "Status": "locked"
+      },
+      "browser.newtab.extensionControlled": {
+        "Value": true,
+        "Status": "locked"
+      },
+      "browser.newtab.privateAllowed": {
+        "Value": true,
+        "Status": "locked"
+      }
+    },
+    "PromptForDownloadLocation": false,
+    "RequestedLocales": "en-US,de,fa-IR",
+    "SearchSuggestEnabled": true,
+    "UserMessaging": {
+      "WhatsNew": false,
+      "ExtensionRecommendations": false,
+      "FeatureRecommendations": false,
+      "UrlbarInterventions": false,
+      "SkipOnboarding": true,
+      "MoreFromMozilla": true,
+      "Locked": true
+    }
+  }
+}
