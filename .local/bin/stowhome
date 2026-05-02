@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+EXCLUDE=(
+	".dotfiles"
+	".git"
+	"LICENSE"
+	"README.md"
+)
+
+if ! command -v stow &>/dev/null; then
+	echo "error: stow is not installed" >&2
+	exit 1
+fi
+
+DOTFILES="$HOME/.dotfiles"
+
+ignore_pattern="^($(IFS='|'; echo "${EXCLUDE[*]}"))$"
+
+stow -t "$HOME" -d "$DOTFILES" --ignore "$ignore_pattern" .
