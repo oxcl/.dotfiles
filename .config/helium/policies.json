@@ -1,0 +1,21 @@
+{
+  "policies": {
+    "DefaultSearchProviderEnabled": true,
+    "DefaultSearchProviderSearchURL": "https://www.google.com/search?q={searchTerms}",
+    "DefaultSearchProviderName": "Google",
+    "DefaultSearchProviderKeyword": "google",
+    "DefaultSearchProviderFaviconURL": "https://www.google.com/favicon.ico",
+    "DefaultSearchProviderSuggestURL": "https://www.google.com/complete/search?q={searchTerms}&client=chrome",
+    "PasswordManagerEnabled": false,
+    "SafeBrowsingEnabled": true,
+    "BlockThirdPartyCookies": true,
+    "UpdatePolicy": 2,
+    "ExtensionInstallForcelist": [
+      "nngceckbapmuopemgbagdmalmfegpbcl;https://clients2.google.com/service/update2/crx",
+      "eimadpbcbfnmbkopoojfekhnkhdnjmi;https://clients2.google.com/service/update2/crx",
+      "mnjggcdmjocbbbhaepdhchncahnbgone;https://clients2.google.com/service/update2/crx",
+      "jinjaccalgkegednnccohejagnlnfdag;https://clients2.google.com/service/update2/crx"
+    ],
+    "ExtensionInstallBlocklist": ["*"]
+  }
+}
