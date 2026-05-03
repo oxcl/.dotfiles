@@ -42,9 +42,21 @@
     "DefaultSearchProviderSuggestURL": "https://www.google.com/complete/search?q={searchTerms}&client=chrome",
     "ExtensionSettings": {
       "*": {
-        "installation_mode": "blocked"
+        "installation_mode": "allowed"
+      },
+      "eimadpbcbfnmbkopoojfekhnkhdnjmi": {
+        "installation_mode": "force_installed",
+        "update_url": "https://clients2.google.com/service/update2/crx"
       },
       "nngceckbapebfimnlniiiahkandclblb": {
+        "installation_mode": "force_installed",
+        "update_url": "https://clients2.google.com/service/update2/crx"
+      },
+      "mnjggcdmjocbbbhaepdhchncahnbgone": {
+        "installation_mode": "force_installed",
+        "update_url": "https://clients2.google.com/service/update2/crx"
+      },
+      "jinjaccalgkegednnccohejagnlnfdag": {
         "installation_mode": "force_installed",
         "update_url": "https://clients2.google.com/service/update2/crx"
       }
