@@ -1,7 +1,7 @@
 {
   "policies": {
     "ExtensionInstallForcelist": [
-      "eimadpbcbfnmbkopoojfekhnkhdbieeh;https://clients2.google.com/service/update2/crx"
+      "eimadpbcbfnmbkopoojfekhnkhdbieeh"
     ]
   }
 }
