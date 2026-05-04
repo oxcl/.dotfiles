@@ -1,6 +1,9 @@
 {
   "policies": {
     "ExtensionSettings": {
+      "*": {
+        "update_url": "https://clients2.google.com/service/update2/crx"
+      },
       "eimadpbcbfnmbkopoojfekhnkhdbieeh": {
         "description": "Dark Reader",
         "installation_mode": "force_installed",
@@ -16,6 +19,11 @@
         "installation_mode": "force_installed",
         "toolbar_pin": "force_pinned",
         "file_url_navigation_allowed": true
+      },
+      "nngceckbapebfimnlniiiahkandclblb": {
+        "description": "bitwarden",
+        "installation_mode": "force_installed",
+        "toolbar_pin": "force_pinned"
       }
     }
   }
