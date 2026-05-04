@@ -1,31 +1,11 @@
 {
   "policies": {
-    "ExtensionSettings": {
-      "eimadpbcbfnmbkopoojfekhnkhdbieeh": {
-        "description": "Dark Reader",
-        "installation_mode": "force_installed",
-        "toolbar_pin": "force_pinned",
-        "file_url_navigation_allowed": true,
-        "update_url": "https://clients2.google.com/service/update2/crx"
-      },
-      "mnjggcdmjocbbbhaepdhchncahnbgone": {
-        "description": "SponsorBlock",
-        "installation_mode": "force_installed",
-        "update_url": "https://clients2.google.com/service/update2/crx"
-      },
-      "blockjmkbacgjkknlgpkjjiijinjdanf": {
-        "description": "uBlock Origin",
-        "installation_mode": "force_installed",
-        "toolbar_pin": "force_pinned",
-        "file_url_navigation_allowed": true,
-        "update_url": "https://clients2.google.com/service/update2/crx"
-      },
-      "nngceckbapebfimnlniiiahkandclblb": {
-        "description": "bitwarden",
-        "installation_mode": "force_installed",
-        "toolbar_pin": "force_pinned",
-        "update_url": "https://clients2.google.com/service/update2/crx"
-      }
-    }
+    "ExtensionInstallForcelist": [
+      "eimadpbcbfnmbkopoojfekhnkhdbieeh",
+      "mnjggcdmjocbbbhaepdhchncahnbgone",
+      "blockjmkbacgjkknlgpkjjiijinjdanf",
+      "nngceckbapebfimnlniiiahkandclblb"
+
+    ]
   }
 }
