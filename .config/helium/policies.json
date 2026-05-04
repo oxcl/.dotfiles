@@ -1,7 +1,22 @@
 {
   "policies": {
-    "ExtensionInstallForcelist": [
-      "eimadpbcbfnmbkopoojfekhnkhdbieeh"
-    ]
+    "ExtensionSettings": {
+      "eimadpbcbfnmbkopoojfekhnkhdbieeh": {
+        "description": "Dark Reader",
+        "installation_mode": "force_installed",
+        "toolbar_pin": "force_pinned",
+        "file_url_navigation_allowed": true
+      },
+      "mnjggcdmjocbbbhaepdhchncahnbgone": {
+        "description": "SponsorBlock",
+        "installation_mode": "force_installed"
+      },
+      "blockjmkbacgjkknlgpkjjiijinjdanf": {
+        "description": "uBlock Origin",
+        "installation_mode": "force_installed",
+        "toolbar_pin": "force_pinned",
+        "file_url_navigation_allowed": true
+      }
+    }
   }
 }
