@@ -1,10 +1,20 @@
 {
-  "policies": {
-    "ExtensionInstallForcelist": [
-      "eimadpbcbfnmbkopoojfekhnkhdbieeh",
-      "mnjggcdmjocbbbhaepdhchncahnbgone",
-      "blockjmkbacgjkknlgpkjjiijinjdanf",
-      "nngceckbapebfimnlniiiahkandclblb"
-    ]
-  }
+  "ExtensionInstallForcelist": [
+    "eimadpbcbfnmbkopoojfekhnkhdbieeh",
+    "mnjggcdmjocbbbhaepdhchncahnbgone",
+    "blockjmkbacgjkknlgpkjjiijinjdanf",
+    "nngceckbapebfimnlniiiahkandclblb",
+    "gbefmodhlophhakmoecijeppjblibmie",
+    "jinjaccalgkegednnccohejagnlnfdag"
+  ],
+  "DefaultSearchProviderEnabled": true,
+  "DefaultSearchProviderName": "Google",
+  "DefaultSearchProviderSearchURL": "https://www.google.com/search?q={searchTerms}&hl=en",
+  "DefaultSearchProviderSuggestURL": "https://www.google.com/complete/search?output=chrome&q={searchTerms}&hl=en",
+  "DefaultSearchProviderKeyword": "google.com",
+  "BrowserSignin": 0,
+  "SyncDisabled": true,
+  "ThirdPartyCookiesBlocked": true,
+  "DefaultNotificationsSetting": 2,
+  "TranslateEnabled": false
 }
