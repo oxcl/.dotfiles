@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+# this file is sourced by x11 (in .xprofile), wayland (in .profile), zsh (in .zprofile) and bash (in .bash-profile) so it works both in graphical environment and tty
+
+# XDG variables
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_BIN_HOME="${HOME}/.local/bin"
+
+#move application specific config, data and cache to XDG directories for cleaner $HOME
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+export LESSHISTFILE="${XDG_CACHE_HOME}/lesshst"
+export TMUX_TMPDIR="$XDG_RUNTIME_DIR"
+export INPUTRC="${XDG_CONFIG_HOME}/shell/inputrc"
+export VIMINIT="source ${XDG_CONFIG_HOME}/vim/init.vim"
+export HISTFILE="${XDG_CACHE_HOME}/history" # generic history file for bash & zsh
+export ZSHZ_DATA="${XDG_DATA_HOME}/z" # zsh-z plugin
+
+
+# add extra folders to $PATH
+function add_to_path(){
+  if [[ ":$PATH:" != *":$1"* ]]; then
+    export PATH="$1:$PATH"
+  fi
+}
+add_to_path "${XDG_DATA_HOME}/npm/bin"
+add_to_path "${XDG_BIN_HOME}"
+
+# set defaults
+export EDITOR="code"
+export BROWSER="helium"
+export SAVEHIST=100000 # maximum size for $HISTFILE
+
+# make direnv work silently
+export DIRENV_LOG_FORMAT=""
+
+
+# load environment variables local to this device
+[[ -f "${XDG_CONFIG_HOME}/env.local" ]] && source "${XDG_CONFIG_HOME}/env.local"
