@@ -1,0 +1,1 @@
+- [ ] Find or implement a shell prompt animation for zsh similar to coding agents like claude code

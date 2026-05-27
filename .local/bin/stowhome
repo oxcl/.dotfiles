@@ -5,6 +5,7 @@ EXCLUDE=(
 	".git"
 	"LICENSE"
 	"README.md"
+	"TODO.md"
 )
 
 if ! command -v stow &>/dev/null; then
@@ -13,6 +14,12 @@ if ! command -v stow &>/dev/null; then
 fi
 
 DOTFILES="$HOME/.dotfiles"
+
+ENSURE_DIR=(
+	".config/fontconfig"
+)
+
+mkdir -p "${ENSURE_DIR[*]/#/$HOME/}"
 
 ignore_pattern="^($(IFS='|'; echo "${EXCLUDE[*]}"))$"
 
