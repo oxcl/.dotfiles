@@ -30,6 +30,42 @@ When the user wants to add or modify configurations for a program, always search
 
 Document findings for the specific program in the relevant section below.
 
+## `~/.config/env` — central environment
+
+The file `~/.config/env` is the **single source of truth for all major environment variables**. It is a POSIX-sh script (no zsh/bash-isms) and is sourced at every entry point:
+
+- **`.profile`** — sourced by display managers (GDM, SDDM, etc.) and TTY login shells
+- **`.zprofile`** — sourced by zsh login shells
+- **`.xprofile`** — sourced by X11 display managers (if used)
+- Anything else that sources `~/.profile`
+
+This guarantees the same env vars are available in GUI apps (launched via the DE), login shells (`ssh`, `tmux`, TTY), and non-login interactive shells.
+
+### What goes in it
+
+- `XDG_*` directory variables
+- `PATH` additions
+- `EDITOR`, `BROWSER`, `SSH_AUTH_SOCK`, and similar tool defaults
+- `HISTFILE`, `ZDOTDIR`, `INPUTRC` and other dotfile relocations
+- Machine-local overrides loaded from `~/.config/env.local` (not committed to the repo)
+
+### Current variables set here
+
+| Variable | Purpose |
+|---|---|
+| `XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `XDG_CACHE_HOME`, `XDG_BIN_HOME` | XDG base directory specification |
+| `ZDOTDIR` | Moves zsh config to `~/.config/zsh` |
+| `LESSHISTFILE`, `INPUTRC`, `VIMINIT`, `HISTFILE` | Relocate dotfiles out of `$HOME` |
+| `TMUX_TMPDIR` | Points tmux to `$XDG_RUNTIME_DIR` |
+| `EDITOR` | Default editor |
+| `BROWSER` | Default browser |
+| `SSH_AUTH_SOCK` | Points SSH client to the Bitwarden SSH agent socket |
+| `DIRENV_LOG_FORMAT` | Silences direnv logs |
+
+### Adding a new variable
+
+Add the export **after** the XDG block (so you can use `$XDG_*` vars), but **before** the `env.local` source line. Use the `${HOME}` form (not `~`) for portability across shells.
+
 ## Fontconfig
 
 - **Config location:** `~/.config/fontconfig/fonts.conf` (per-user)

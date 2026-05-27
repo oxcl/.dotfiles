@@ -43,8 +43,17 @@ hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 -- 3-finger horizontal swipe to switch workspaces
 hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
 
+-- Float, center, and size yad dialogs
+hl.window_rule({
+    match = { class = "^(yad)$" },
+    float = true,
+    center = true,
+    size = { "40%", "30%" },
+})
+
 hl.config({
     input = {
+        kb_options = "caps:swapescape",
         touchpad = {
             natural_scroll = true;
         }

@@ -6,6 +6,8 @@ EXCLUDE=(
 	"LICENSE"
 	"README.md"
 	"TODO.md"
+        "images.png"
+	"AGENTS.md"
 )
 
 if ! command -v stow &>/dev/null; then
