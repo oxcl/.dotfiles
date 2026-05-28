@@ -22,6 +22,17 @@
   "HttpsOnlyMode": "force_enabled",
   "RestoreOnStartup": 5,
   "BookmarkBarEnabled": true,
+  "ManagedBookmarks": [
+    {
+      "name": "Policies",
+      "children": [
+        {
+          "name": "Dark Mode",
+          "url": "javascript:(function(){var s=document.createElement('style');s.textContent='html{filter:invert(1) hue-rotate(180deg)}img,video,canvas{filter:invert(1) hue-rotate(180deg)}';document.head.appendChild(s)})()"
+        }
+      ]
+    }
+  ],
   "ShowFullUrlsInAddressBar": true,
   "HideWebStoreIcon": true,
   "DefaultGeolocationSetting": 2,

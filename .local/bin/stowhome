@@ -18,6 +18,8 @@ fi
 DOTFILES="$HOME/.dotfiles"
 
 ENSURE_DIR=(
+	".config"
+	".local"
 	".config/fontconfig"
 )
 
