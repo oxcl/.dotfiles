@@ -102,18 +102,21 @@ announce() {
 		echo -e "    ${BLD}Remote:${RST}  ${G5}http://${IP}:${PORT}${RST}"
 	fi
 	echo -e "    ${BLD}Features:${RST} ${DIM}${features}${RST}"
+	echo ""
+	echo "-------------------------------------------------------------------"
+	echo ""
 }
 
 run_dufs() {
 	command -v dufs &>/dev/null || return 1
 	announce "dufs (WebDAV + Web UI)" "browse · upload · delete · search · edit · WebDAV mount"
-	exec dufs "$DIR" -p "$PORT" -A >/dev/null
+	exec dufs "$DIR" -p "$PORT" -A
 }
 
 run_miniserve() {
 	command -v miniserve &>/dev/null || return 1
 	announce "miniserve" "browse · upload · delete · mkdir · QR code"
-	exec miniserve "$DIR" --port "$PORT" --upload-files --mkdir --delete-files
+	exec miniserve "$DIR" --port "$PORT" --upload-files --mkdir --rm-files
 }
 
 run_python() {
@@ -150,7 +153,7 @@ with s.ThreadingHTTPServer(("", _PORT), H) as httpd:
 run_basic() {
 	command -v python3 &>/dev/null || return 1
 	announce "Python HTTP (read-only)" "browse only"
-	exec python3 -m http.server "$PORT" -d "$DIR" >/dev/null
+	exec python3 -m http.server "$PORT" -d "$DIR"
 }
 
 parse_args() {
@@ -204,4 +207,4 @@ if [ -n "$FORCE" ]; then
 	die "backend '$FORCE' is not available (install it or use a different one)"
 fi
 
-run_dufs || run_miniserve || run_python || run_basic || die "no suitable tool found (install dufs, miniserve, or ensure python3 is available)"
+run_miniserve || run_dufs || run_python || run_basic || die "no suitable tool found (install dufs, miniserve, or ensure python3 is available)"

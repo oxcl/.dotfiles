@@ -72,6 +72,10 @@ Add the export **after** the XDG block (so you can use `$XDG_*` vars), but **bef
 - **Auto-reload:** No — restart the application to see changes. `fc-cache` rebuilds font metadata (needed only when adding/removing font files, not when changing rendering settings).
 - **Verify config:** No built-in validator. XML syntax errors are silently ignored (fontconfig falls back to defaults). Use `fc-match <pattern>` to test font matching.
 
+## Zsh configuration
+
+When editing zsh configurations (`~/.config/zsh/rc.zsh` and friends), always ensure that `source "$ZDOTDIR/p10k.zsh"` is the **last non-blank line** in `rc.zsh`. Powerlevel10k captures shell state at source time, so anything sourced after it won't be reflected in the prompt.
+
 ## Hyprland
 
 When the user asks for changes to Hyprland config, Hyprland-related tools, or anything in the Hypr ecosystem, always search for the latest information first. Hyprland has recently moved to a `.lua`-based configuration file (instead of the older `.conf` style). Before making any modifications, check [https://wiki.hypr.land/](https://wiki.hypr.land/) to ensure you have the most current data.
