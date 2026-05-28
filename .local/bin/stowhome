@@ -19,6 +19,7 @@ DOTFILES="$HOME/.dotfiles"
 
 ENSURE_DIR=(
 	".config/fontconfig"
+	".local/share"
 )
 
 mkdir -p "${ENSURE_DIR[*]/#/$HOME/}"

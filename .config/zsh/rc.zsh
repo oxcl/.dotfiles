@@ -35,18 +35,24 @@ export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 zert "$ZDOTDIR/my_plugins/asciinema.plugin.zsh"
 
 
+zert use ohmyzsh
+
 # direnv integration with a wrapper for _direnv_hook to make direnv work without nagging
 # about .env files not being trusted. i do this because i have customized powerlevel10k
 # to add information in prompt about the status of direnv so i don't need explicit error
 # messages
 if (( ${+commands[direnv]} )); then
-    zert use ohmyzsh plugins/direnv
+    zert ohmyzsh plugins/direnv
     function _direnv_hook(){
       trap -- '' SIGINT
       eval "$(direnv export zsh 2> >(grep -v 'is blocked' >&2) )"
       trap - SIGINT;
     }
 fi
+
+# word navigation with Ctrl+Arrow
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
 
 # MUST be sourced last — powerlevel10k captures the state of the shell at source time,
 # so anything added after this line won't be reflected in the prompt
