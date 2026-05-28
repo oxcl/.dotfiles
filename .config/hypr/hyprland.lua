@@ -11,7 +11,9 @@ local terminal    = "foot"
 local fileManager = "dolphin"
 local menu        = "rofi -show run"
 
-
+hl.on("hyprland.start", function()
+    hl.exec_cmd("waybar")
+end)
 
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 

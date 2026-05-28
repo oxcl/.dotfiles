@@ -15,7 +15,17 @@
   "DefaultSearchProviderKeyword": "google.com",
   "BrowserSignin": 0,
   "SyncDisabled": true,
-  "ThirdPartyCookiesBlocked": true,
   "DefaultNotificationsSetting": 2,
-  "TranslateEnabled": false
+  "TranslateEnabled": false,
+  "MetricsReportingEnabled": false,
+  "PasswordManagerEnabled": false,
+  "HttpsOnlyMode": "force_enabled",
+  "RestoreOnStartup": 5,
+  "BookmarkBarEnabled": true,
+  "ShowFullUrlsInAddressBar": true,
+  "HideWebStoreIcon": true,
+  "DefaultGeolocationSetting": 2,
+  "ComponentUpdatesEnabled": false,
+  "ExtensionUnpublishedAvailability": 1,
+  "PrivacySandboxPromptEnabled": false
 }
