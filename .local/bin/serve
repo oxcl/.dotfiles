@@ -1,0 +1,207 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DIR="."
+PORT=""
+FORCE=""
+
+if [ -t 1 ]; then
+	ESC=$'\e'
+	BLD="${ESC}[1m"
+	DIM="${ESC}[2m"
+	RST="${ESC}[0m"
+	CYA="${ESC}[36m"
+	YEL="${ESC}[33m"
+	G1="${ESC}[38;5;202m"
+	G2="${ESC}[38;5;208m"
+	G3="${ESC}[38;5;214m"
+	G4="${ESC}[38;5;220m"
+	G5="${ESC}[38;5;226m"
+	G6="${ESC}[38;5;228m"
+	G7="${ESC}[38;5;230m"
+else
+	ESC=''
+	BLD=''; DIM=''; RST=''
+	CYA=''; YEL=''
+	G1=''; G2=''; G3=''; G4=''; G5=''; G6=''; G7=''
+fi
+
+show_help() {
+	cat <<'EOF'
+Usage: serve [OPTIONS] [DIRECTORY] [PORT]
+
+Share a directory over the network via HTTP/WebDAV.
+Picks the best available backend automatically.
+
+Arguments:
+  DIRECTORY           Directory to share (default: .)
+  PORT                Port number (alternative to --port)
+
+Options:
+  -h, --help          Show this help message
+  -p, --port PORT     Port to listen on (auto: 8000-9999)
+  -f, --force TOOL    Force a specific backend (dufs, miniserve, python, basic)
+
+Backends (first available wins unless --force is used):
+  dufs       WebDAV + Web UI, full file management
+  miniserve  Web UI with upload/delete/mkdir
+  python     Custom Python server with PUT/DELETE support
+  basic      python3 -m http.server (read-only)
+EOF
+	exit 0
+}
+
+die() {
+	echo "Error: $*" >&2
+	exit 1
+}
+
+find_free_port() {
+	local port="${1:-8000}" max="${2:-9999}"
+	while [ "$port" -le "$max" ]; do
+		if ! ss -tln 2>/dev/null | awk '{print $4}' | grep -qF ":$port"; then
+			echo "$port"
+			return 0
+		fi
+		port=$((port + 1))
+	done
+	die "no free port in $1-$2"
+}
+
+get_ip() {
+	local ip
+	ip=$(hostname -I 2>/dev/null | awk '{print $1}')
+	[ -n "$ip" ] && echo "$ip" && return 0
+	ip=$(ip route get 1 2>/dev/null | awk '{print $7}' | head -1)
+	[ -n "$ip" ] && echo "$ip" && return 0
+	echo "127.0.0.1"
+}
+
+show_banner() {
+	echo ""
+	echo -e "${G1}"$'   $$$$$$\\  $$$$$$$$\\ $$$$$$$\\  $$\\    $$\\ $$$$$$$$\\ '"${RST}"
+	echo -e "${G2}"$'   $$  __$$\\ $$  _____|$$  __$$\\ $$ |   $$ |$$  _____|'"${RST}"
+	echo -e "${G3}"$'   $$ /  \\__|$$ |      $$ |  $$ |$$ |   $$ |$$ |      '"${RST}"
+	echo -e "${G4}"$'   \\$$$$$$\\  $$$$$\\    $$$$$$$  |\\$$\\  $$  |$$$$$\\    '"${RST}"
+	echo -e "${G5}"$'   \\____$$\\ $$  __|   $$  __$$<  \\$$\\$$  / $$  __|   '"${RST}"
+	echo -e "${G5}"$'   $$\\   $$ |$$ |      $$ |  $$ |  \\$$$  /  $$ |      '"${RST}"
+	echo -e "${G6}"$'   \\$$$$$$  |$$$$$$$$\\ $$ |  $$ |   \\$  /   $$$$$$$$\\ '"${RST}"
+	echo -e "${G7}"$'   \\______/ \\________|\\__|  \\__|    \\_/    \\________|'"${RST}"
+	echo ""
+}
+
+announce() {
+	local name="$1" features="$2"
+	show_banner
+	echo -e "   ${G5}→${RST} Using ${BLD}${name}${RST} on port ${G4}${PORT}${RST}"
+	if [ -n "$RST" ]; then
+		echo -e "    ${BLD}Local:${RST}   ${G5}${ESC}]8;;http://localhost:${PORT}${ESC}\\http://localhost:${PORT}${ESC}]8;;${ESC}\\${RST}"
+		echo -e "    ${BLD}Remote:${RST}  ${G5}${ESC}]8;;http://${IP}:${PORT}${ESC}\\http://${IP}:${PORT}${ESC}]8;;${ESC}\\${RST}"
+	else
+		echo -e "    ${BLD}Local:${RST}   ${G5}http://localhost:${PORT}${RST}"
+		echo -e "    ${BLD}Remote:${RST}  ${G5}http://${IP}:${PORT}${RST}"
+	fi
+	echo -e "    ${BLD}Features:${RST} ${DIM}${features}${RST}"
+}
+
+run_dufs() {
+	command -v dufs &>/dev/null || return 1
+	announce "dufs (WebDAV + Web UI)" "browse · upload · delete · search · edit · WebDAV mount"
+	exec dufs "$DIR" -p "$PORT" -A >/dev/null
+}
+
+run_miniserve() {
+	command -v miniserve &>/dev/null || return 1
+	announce "miniserve" "browse · upload · delete · mkdir · QR code"
+	exec miniserve "$DIR" --port "$PORT" --upload-files --mkdir --delete-files
+}
+
+run_python() {
+	command -v python3 &>/dev/null || return 1
+	announce "Python HTTP + PUT/DELETE" 'browse · upload (curl -X PUT) · delete'
+	exec python3 -u -c '
+import os, sys, http.server as s
+_DIR = sys.argv[2]
+_PORT = int(sys.argv[1])
+class H(s.SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=_DIR, **kwargs)
+    def do_PUT(self):
+        path = self.translate_path(self.path)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        length = int(self.headers.get("Content-Length", 0))
+        with open(path, "wb") as f:
+            f.write(self.rfile.read(length))
+        self.send_response(201)
+        self.end_headers()
+    def do_DELETE(self):
+        path = self.translate_path(self.path)
+        try:
+            os.remove(path)
+            self.send_response(204)
+        except FileNotFoundError:
+            self.send_response(404)
+        self.end_headers()
+with s.ThreadingHTTPServer(("", _PORT), H) as httpd:
+    httpd.serve_forever()
+' "$PORT" "$DIR"
+}
+
+run_basic() {
+	command -v python3 &>/dev/null || return 1
+	announce "Python HTTP (read-only)" "browse only"
+	exec python3 -m http.server "$PORT" -d "$DIR" >/dev/null
+}
+
+parse_args() {
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		-h | --help)
+			show_help
+			;;
+		-f | --force)
+			FORCE="${2:?--force requires a backend name}"
+			shift 2
+			;;
+		-p | --port)
+			PORT="${2:?--port requires a number}"
+			shift 2
+			;;
+		-*)
+			die "unknown option: $1 (use --help)"
+			;;
+		*)
+			if [ "$DIR" = "." ]; then
+				DIR="$1"
+			elif [ -z "$PORT" ]; then
+				PORT="$1"
+			else
+				die "unexpected argument: $1"
+			fi
+			shift
+			;;
+		esac
+	done
+}
+
+parse_args "$@"
+
+[ -d "$DIR" ] || die "directory not found: $DIR"
+DIR=$(cd "$DIR" && pwd)
+
+[ -z "$PORT" ] && PORT=$(find_free_port 8000 9999)
+
+IP=$(get_ip)
+
+if [ -n "$FORCE" ]; then
+	case "$FORCE" in
+	dufs) run_dufs ;;
+	miniserve) run_miniserve ;;
+	python) run_python ;;
+	basic) run_basic ;;
+	*) die "unknown backend: $FORCE (choose: dufs, miniserve, python, basic)" ;;
+	esac
+	die "backend '$FORCE' is not available (install it or use a different one)"
+fi
+
+run_dufs || run_miniserve || run_python || run_basic || die "no suitable tool found (install dufs, miniserve, or ensure python3 is available)"
