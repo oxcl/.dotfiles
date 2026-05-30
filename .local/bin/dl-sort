@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+EXTRACT_DIR="/mnt/data/Extraction"
+DOWNLOADS_DIR="$HOME/Downloads"
+IMAGE_RE='\.(jpg|jpeg|png|gif|webp|bmp|tiff|tif|svg|heic|heif|avif)$'
+FIFO="/tmp/dl-sort-$$.fifo"
+
+get_next_number() {
+    local max=0
+    for dir in "$EXTRACT_DIR"/*/; do
+        [[ -d "$dir" ]] || continue
+        local base
+        base=$(basename "$dir")
+        if [[ "$base" =~ ^([0-9]+)- ]]; then
+            local num=$((10#${BASH_REMATCH[1]}))
+            ((num > max)) && max=$num
+        fi
+    done
+    printf '%03d' $((max + 1))
+}
+
+current_target=""
+
+update_target() {
+    local name="$1"
+    if [[ -z "$name" ]]; then
+        current_target=""
+        echo "Paused."
+        return
+    fi
+    local num
+    num=$(get_next_number)
+    current_target="$EXTRACT_DIR/${num}-${name}"
+    mkdir -p "$current_target"
+    echo "Target: $current_target"
+}
+
+move_image() {
+    local file="$1"
+    [[ -z "$current_target" ]] && return
+    [[ -f "$file" ]] || return
+    [[ "$file" =~ $IMAGE_RE ]] || return
+    local dest="$current_target/$(basename "$file")"
+    if [[ -e "$dest" ]]; then
+        echo "SKIP (exists): $(basename "$file")"
+        rm -f "$file"
+        return
+    fi
+    mv "$file" "$dest"
+    echo "Moved: $(basename "$file") -> $(basename "$current_target")/"
+}
+
+cleanup() {
+    kill "$INOTIFY_PID" 2>/dev/null || true
+    rm -f "$FIFO"
+    exit 0
+}
+trap cleanup INT TERM EXIT
+
+mkfifo "$FIFO"
+
+inotifywait -m -e close_write -e moved_to --format '%w%f' "$DOWNLOADS_DIR" > "$FIFO" 2>/dev/null &
+INOTIFY_PID=$!
+
+exec 3< "$FIFO"
+
+echo "Watching $DOWNLOADS_DIR for images. Enter a name (or empty to pause):"
+
+while true; do
+    if read -r -t 0.5 line; then
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
+        update_target "$line"
+    fi
+    while read -r -t 0 -u 3 filepath; do
+        [[ -n "$filepath" ]] && move_image "$filepath"
+    done
+done

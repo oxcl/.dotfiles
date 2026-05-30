@@ -31,3 +31,21 @@ window#waybar {
   color: #ffffff;
   box-shadow: inset 0 -3px #ffffff;
 }
+
+#bluetooth {
+  padding: 0 10px;
+  color: #555555;
+}
+
+#bluetooth.connected {
+  color: #ffffff;
+}
+
+#bluetooth.on {
+  color: #aaaaaa;
+}
+
+#bluetooth:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cccccc;
+}

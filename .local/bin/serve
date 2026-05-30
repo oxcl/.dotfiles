@@ -116,7 +116,7 @@ run_dufs() {
 run_miniserve() {
 	command -v miniserve &>/dev/null || return 1
 	announce "miniserve" "browse · upload · delete · mkdir · QR code"
-	exec miniserve "$DIR" --port "$PORT" --upload-files --mkdir --rm-files
+	exec miniserve "$DIR" --port "$PORT" --enable-webdav --upload-files --mkdir --rm-files
 }
 
 run_python() {

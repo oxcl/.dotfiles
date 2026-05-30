@@ -76,6 +76,14 @@ Add the export **after** the XDG block (so you can use `$XDG_*` vars), but **bef
 
 When editing zsh configurations (`~/.config/zsh/rc.zsh` and friends), always ensure that `source "$ZDOTDIR/p10k.zsh"` is the **last non-blank line** in `rc.zsh`. Powerlevel10k captures shell state at source time, so anything sourced after it won't be reflected in the prompt.
 
+## Waybar
+
+- **Config location:** `~/.config/waybar/config.jsonc`
+- **Stylesheet:** `~/.config/waybar/style.css`
+- **Auto-reload:** No — send `SIGUSR1` to reload config in-place: `kill -SIGUSR1 $(pidof waybar)`
+- **Full restart:** `pkill waybar; waybar &` (causes flicker)
+- **Config verification:** No built-in validator. Check `journalctl --user -u waybar` for errors.
+
 ## Hyprland
 
 When the user asks for changes to Hyprland config, Hyprland-related tools, or anything in the Hypr ecosystem, always search for the latest information first. Hyprland has recently moved to a `.lua`-based configuration file (instead of the older `.conf` style). Before making any modifications, check [https://wiki.hypr.land/](https://wiki.hypr.land/) to ensure you have the most current data.
