@@ -1,8 +1,6 @@
 # AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.
 # Commit this file to version control for reproducible installs.
 version::1
-github.com--zdharma-continuum--fast-syntax-highlighting::git::https://github.com/zdharma-continuum/fast-syntax-highlighting::3d574ccf48804b10dca52625df13da5edae7f553::
-github.com--zsh-users--zsh-autosuggestions::git::https://github.com/zsh-users/zsh-autosuggestions::85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5::
 github.com--romkatv--powerlevel10k::git::https://github.com/romkatv/powerlevel10k::604f19a9eaa18e76db2e60b8d446d5f879065f90::
-ohmyzsh::ohmyzsh::ohmyzsh::d170d18746bb06db7b2fc97b67e281597a3fc152::
-zert::zert::https://github.com/oxcl/zert.git::f68e3f8c7c9323a5c21a5ab01ce80d91d39cd224::
+github.com--zsh-users--zsh-autosuggestions::git::https://github.com/zsh-users/zsh-autosuggestions::85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5::
+ohmyzsh::ohmyzsh::ohmyzsh::70ad5e3df8f7bed68aa6672029496926e632aedd::

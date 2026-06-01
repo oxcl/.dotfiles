@@ -18,7 +18,7 @@ zert romkatv/powerlevel10k # the best zsh prompt
 [ -f "$ZDOTDIR/p10k_custom.zsh" ] && source "$ZDOTDIR/p10k_custom.zsh"
 
 
-zert zdharma-continuum/fast-syntax-highlighting
+#zert zdharma-continuum/fast-syntax-highlighting
 
 # show command autosuggestion (after the cursor in gray color) based on history, zsh completions, etc..
 zert https://github.com/zsh-users/zsh-autosuggestions
@@ -53,6 +53,9 @@ fi
 # word navigation with Ctrl+Arrow
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
+
+# delete word with Ctrl+Backspace
+bindkey "^H" backward-kill-word
 
 # MUST be sourced last — powerlevel10k captures the state of the shell at source time,
 # so anything added after this line won't be reflected in the prompt

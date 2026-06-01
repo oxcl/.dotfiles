@@ -106,7 +106,7 @@ alias ascii-upload="asciiupload"
 
 # disable command history for the current shell if it's an asciinema session
 if (( $_ASCIINEMA_SEGMENT )); then
-  unsetopt HISTFILE
+  # unsetopt HISTFILE
   export HISTSIZE=0
   export SAVEHIST=0
 fi
