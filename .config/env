@@ -24,6 +24,7 @@ function add_to_path(){
   fi
 }
 add_to_path "${XDG_DATA_HOME}/npm/bin"
+add_to_path "${XDG_CACHE_HOME}/.bun/bin"
 add_to_path "${XDG_BIN_HOME}"
 
 # set defaults
@@ -35,6 +36,8 @@ export SAVEHIST=100000 # maximum size for $HISTFILE
 # make direnv work silently
 export DIRENV_LOG_FORMAT=""
 
+
+export FIRECRAWL_NO_TELEMETRY=1
 
 # load environment variables local to this device
 [[ -f "${XDG_CONFIG_HOME}/env.local" ]] && source "${XDG_CONFIG_HOME}/env.local"

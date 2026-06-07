@@ -12,7 +12,15 @@ export SAVEHIST=20000
 [[ -r "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh" ]] && source "${XDG_CACHE_HOME}/p10k-instant-prompt-${(%):-%n}.zsh"
 
 
-source "$HOME/Projects/zert/zert.zsh"
+
+export ZERT_DIR="/tmp/zert"
+ZERT_PLUGINS_DIR="${ZERT_PLUGINS_DIR:-${ZERT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/zert}/plugins}"; \
+[[ -f "$ZERT_PLUGINS_DIR/zert/zert.zsh" ]] || \
+(curl -fsSL https://raw.githubusercontent.com/oxcl/zert/main/bootstrap.sh | zsh); \
+source "$ZERT_PLUGINS_DIR/zert/zert.zsh"
+
+zert zert  # manage zert itself (optional, enables self-updates)
+
 
 zert romkatv/powerlevel10k # the best zsh prompt
 [ -f "$ZDOTDIR/p10k_custom.zsh" ] && source "$ZDOTDIR/p10k_custom.zsh"
@@ -56,6 +64,9 @@ bindkey "^[[1;5D" backward-word
 
 # delete word with Ctrl+Backspace
 bindkey "^H" backward-kill-word
+
+
+
 
 # MUST be sourced last — powerlevel10k captures the state of the shell at source time,
 # so anything added after this line won't be reflected in the prompt
