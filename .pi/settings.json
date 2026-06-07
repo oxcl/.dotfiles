@@ -1,0 +1,22 @@
+{
+  "lastChangelogVersion": "0.78.1",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "mimo-v2.5-pro",
+  "defaultThinkingLevel": "high",
+  "compaction": {
+    "enabled": true
+  },
+  "enableSkillCommands": true,
+  "showHardwareCursor": false,
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "steeringMode": "all",
+  "followUpMode": "all",
+  "transport": "auto",
+  "hideThinkingBlock": false,
+  "collapseChangelog": false,
+  "enableInstallTelemetry": false,
+  "doubleEscapeAction": "tree",
+  "quietStartup": true
+}
