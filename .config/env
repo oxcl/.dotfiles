@@ -30,7 +30,9 @@ add_to_path "${XDG_BIN_HOME}"
 # set defaults
 export EDITOR="code"
 export BROWSER="helium"
-export SSH_AUTH_SOCK="${HOME}/.bitwarden-ssh-agent.sock"
+if command -v bitwarden-desktop &>/dev/null; then
+  export SSH_AUTH_SOCK="${HOME}/.bitwarden-ssh-agent.sock"
+fi
 export SAVEHIST=100000 # maximum size for $HISTFILE
 
 # make direnv work silently
