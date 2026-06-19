@@ -1,2 +1,3 @@
 .config/env.local
 .zcompdump
+.local/share/icons/hicolor/
