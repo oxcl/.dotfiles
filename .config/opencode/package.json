@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@opencode-ai/plugin": "1.17.8"
+    "@opencode-ai/plugin": "1.17.8",
+    "exa-js": "^2.14.0"
   }
 }
