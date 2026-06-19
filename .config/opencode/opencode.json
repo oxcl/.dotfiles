@@ -12,23 +12,43 @@
       "models": {
         "big-pickle": {
           "name": "Big Pickle",
-          "limit": { "context": 200000, "output": 32000 }
+          "limit": { "context": 200000, "output": 32000 },
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
         },
         "deepseek-v4-flash-free": {
           "name": "DeepSeek V4 Flash",
-          "limit": { "context": 200000, "output": 128000 }
+          "limit": { "context": 200000, "output": 128000 },
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
         },
         "mimo-v2.5-free": {
           "name": "MiMo V2.5",
-          "limit": { "context": 200000, "output": 32000 }
+          "limit": { "context": 200000, "output": 32000 },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
         },
         "north-mini-code-free": {
           "name": "North Mini Code",
-          "limit": { "context": 256000, "output": 32000 }
+          "limit": { "context": 256000, "output": 32000 },
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
         },
         "nemotron-3-ultra-free": {
           "name": "Nemotron 3 Ultra",
-          "limit": { "context": 1000000, "output": 128000 }
+          "limit": { "context": 1000000, "output": 128000 },
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          }
         }
       }
     }
@@ -38,6 +58,7 @@
     "plan": { "disable": true }
   },
   "permission": {
-    "skill": { "customize-opencode": "deny" }
+    "skill": { "customize-opencode": "deny" },
+    "webfetch": "deny"
   }
 }
