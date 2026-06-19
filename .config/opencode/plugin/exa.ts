@@ -4,9 +4,24 @@ import Exa from "exa-js"
 
 const MAX_SEARCH_RESULTS = 5
 const MAX_FETCH_CHARS = 5000
+const HINT_THRESHOLD = 3
+const HINT_WINDOW_MS = 10_000
+const HINT_MESSAGE =
+  "Hint: Consider using the research subagent if you are doing complex searches and data gathering"
 
 const plugin: Plugin = async () => {
   const exa = new Exa()
+  const callTimestamps: number[] = []
+
+  function shouldAddHint(): boolean {
+    const now = Date.now()
+    const cutoff = now - HINT_WINDOW_MS
+    callTimestamps.push(now)
+    while (callTimestamps.length > 0 && callTimestamps[0] < cutoff) {
+      callTimestamps.shift()
+    }
+    return callTimestamps.length >= HINT_THRESHOLD
+  }
 
   return {
     tool: {
@@ -27,7 +42,7 @@ const plugin: Plugin = async () => {
             return "No results found."
           }
 
-          return results
+          const searchResult = results
             .map((r, i) => {
               const highlights = r.highlights?.length
                 ? "\n" + r.highlights.join("\n")
@@ -35,6 +50,10 @@ const plugin: Plugin = async () => {
               return `${i + 1}. **${r.title ?? "Untitled"}**\n   ${r.url}${highlights}`
             })
             .join("\n\n")
+
+          return shouldAddHint()
+            ? searchResult + "\n\n" + HINT_MESSAGE
+            : searchResult
         },
       }),
 
@@ -57,12 +76,16 @@ const plugin: Plugin = async () => {
             return "No content retrieved."
           }
 
-          return results
+          const fetchResult = results
             .map((r) => {
               const text = r.text ?? "(no text content)"
               return `## ${r.title ?? r.url}\n\n${text}`
             })
             .join("\n\n---\n\n")
+
+          return shouldAddHint()
+            ? fetchResult + "\n\n" + HINT_MESSAGE
+            : fetchResult
         },
       }),
     },
