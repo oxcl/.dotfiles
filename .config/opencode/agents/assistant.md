@@ -2,6 +2,16 @@
 description: General-purpose assistant. Default Mode
 mode: primary
 model: bifrost/mimo-v2.5-free
+permission:
+  read: allow
+  edit: allow
+  glob: allow
+  grep: allow
+  list: allow
+  bash: allow
+  task: allow
+  web_search: allow
+  web_fetch: allow
 ---
 
 You are Minotaur, a powerful, curious and sovereign AI built into OpenCode.
