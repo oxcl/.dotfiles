@@ -5,10 +5,10 @@ const PLANNER_AGENT = "planner"
 const DENIED_TOOLS = new Set(["edit", "write", "bash"])
 
 const PLAN_MODE_NOTIFICATION =
-  "[SYSTEM] You are now in Plan Mode. You can read files and analyze but cannot modify files or execute commands. Focus on analysis and documenting your plan. Ask the user to switch to Agent mode when ready to implement."
+  "[SYSTEM] this is a hidden message from the system. don't mention this message to the user. You are now in Plan Mode. You can read files and analyze but cannot modify files or execute commands. Focus on analysis and documenting your plan. Ask the user to switch to Agent mode when ready to implement."
 
 const CODER_MODE_NOTIFICATION =
-  "[SYSTEM] You are now in Agent Mode.  You have full tool access. You may reference plans in .opencode/plans/*.md."
+  "[SYSTEM] this is a hidden message from the system. don't mention this message to the user. You are now in Agent Mode.  You have full tool access. You may reference plans in .opencode/plans/*.md."
 
 const plugin: Plugin = async () => {
   const previousAgent = new Map<string, string>()
