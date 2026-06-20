@@ -1,6 +1,6 @@
 ---
 description: General-purpose assistant. Default Mode
-mode: primary
+mode: subagent
 permission:
   read: allow
   grep: allow
