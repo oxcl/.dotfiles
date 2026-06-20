@@ -9,6 +9,7 @@ permission:
   list: allow
   bash: allow
   task: allow
+  question: allow
   web_search: allow
   web_fetch: allow
 ---
