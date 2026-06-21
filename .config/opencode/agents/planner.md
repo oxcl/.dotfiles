@@ -8,7 +8,11 @@ permission:
   grep: allow
   list: allow
   bash: allow
-  task: allow
+  task: {
+    "*": deny,
+    research: allow,
+    explore: allow
+  }
   question: allow
   web_search: allow
   web_fetch: allow
