@@ -7,7 +7,6 @@ permission:
   glob: allow
   grep: allow
   list: allow
-  question: allow
   task: {
     "*": deny,
     explore: allow,
@@ -16,7 +15,6 @@ permission:
   }
   web_search: allow
   web_fetch: allow
-  council: allow
 ---
 
 # Identity
