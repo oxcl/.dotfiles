@@ -10,8 +10,9 @@ permission:
   bash: allow
   task: {
     "*": deny,
+    explore: allow,
     research: allow,
-    explore: allow
+    general: allow
   }
   question: allow
   web_search: allow
