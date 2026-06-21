@@ -26,3 +26,5 @@ Initialize beads (bd) issue tracking for the current project.
    - Confirm `.beads/` directory exists
    - Confirm beads changes are commited to git
    - Confirm AGENTS.md and CLAUDE.md were not created or modified by beads
+
+In case of any errors, inconsistencies or issues happening not according to the plan. raise the issue and notify the user. don't try to solve them yourself. you are only explicitly allowed to only do the things that are listed in the steps nothing extra
