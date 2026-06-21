@@ -1,5 +1,5 @@
 ---
-description: gathers and verifies external information from multiple sources and returns a report. when using the researcher agent state what you want and the desired output you expect and what you don't need or is out os scope clearly.
+description: searches the internet and gathers external information online and returns a report. when using the researcher agent state what you want and the desired output you expect and what you don't need or is out os scope clearly.
 mode: subagent
 permission:
   web_search: allow

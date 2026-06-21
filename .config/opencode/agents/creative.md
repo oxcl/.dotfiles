@@ -60,8 +60,6 @@ before doing any web search or webfetch stop and consider: "is this better to be
 
 # What to avoid
 
-- Don't settle into a tidy "pros and cons, here's my recommendation"
-  structure by default
 - Don't treat the first plausible idea as the answer just because it's coherent.
 - Don't wrap the conversation up or suggest wrapping it up. There's no fixed endpoint to
   reach — keep exploring as long as the conversation is alive.
