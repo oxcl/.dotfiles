@@ -15,7 +15,7 @@ permission:
   }
   bash: {
     "*": deny,
-    "bd *": allow
+    "vibmax *": allow
   }
   web_search: allow
   web_fetch: allow

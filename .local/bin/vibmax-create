@@ -39,15 +39,27 @@ if [ -z "$name" ] || [ -z "$description" ]; then
   exit 1
 fi
 
-MOLECULE_ID=$(bd mol pour vibmax --var vibmax_name="$name" --var vibmax_description="$description" --json | jq -r '.id_mapping.vibmax')
+POUR_JSON=$(bd mol pour vibmax --var vibmax_name="$name" --var vibmax_description="$description" --json)
+MOLECULE_ID=$(echo "$POUR_JSON" | jq -r '.id_mapping.vibmax')
+VISION_ID=$(echo "$POUR_JSON" | jq -r '.id_mapping["vibmax.vision"]')
 echo "Molecule: $MOLECULE_ID"
+
+# Add phase labels to each step
+bd list --parent "$MOLECULE_ID" --json | jq -r '.[] | "\(.id) \(.title)"' | while read -r issue_id title; do
+  case "$title" in
+    "Vision:"*) bd label add "$issue_id" "phase:vision" --json >/dev/null ;;
+    "Integrate") bd label add "$issue_id" "phase:integrate" --json >/dev/null ;;
+    "Blueprint") bd label add "$issue_id" "phase:blueprint" --json >/dev/null ;;
+    "Multiplex") bd label add "$issue_id" "phase:multiplex" --json >/dev/null ;;
+    "Action") bd label add "$issue_id" "phase:action" --json >/dev/null ;;
+    "Examine") bd label add "$issue_id" "phase:examine" --json >/dev/null ;;
+  esac
+done
 
 for issue_id in $LINK_ISSUES; do
   bd dep add "$MOLECULE_ID" "$issue_id" --type related
   echo "Linked: $issue_id"
 done
 
-VISION_ID=$(bd list --parent "$MOLECULE_ID" --json | jq -r '.[] | select(.title | startswith("Vision:")) | .id')
-bd update "$VISION_ID" --claim
-echo "Vision: $VISION_ID"
-echo "Claimed."
+# Claim the vision task
+vibmax claim "$VISION_ID"

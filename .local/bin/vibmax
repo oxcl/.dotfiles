@@ -7,6 +7,7 @@ usage() {
   echo "  init             Initialize beads"
   echo "  find-similar     Search for related issues"
   echo "  create           Pour vibmax molecule"
+  echo "  claim            Claim next ready task"
   echo ""
   echo "Use 'vibmax <command> --help' for more info on a command."
 }
@@ -24,6 +25,7 @@ case "$command" in
   init)         vibmax-init "$@" ;;
   find-similar) vibmax-find-similar "$@" ;;
   create)       vibmax-create "$@" ;;
+  claim)        vibmax-claim "$@" ;;
   *)
     echo "Unknown command: $command"
     usage
