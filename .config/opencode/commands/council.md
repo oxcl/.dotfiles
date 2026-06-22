@@ -22,6 +22,7 @@ If the user has comment section above is empty analyze the current conversation 
     Use the `task` tool to delegate to the council. 
     *   **Subagent/Agent Name:** `council`
     *   **Prompt:** The formulated prompt from Step 1.
+    *   **User Comment**: if the user has provided a comment in the user comment block above include it here as is.
 
 3.  **Process the Council's Report:**
     Once the Council President returns the Synthesized Report, review the diverse perspectives provided by the experts. think about the perspectives and continue discussing the topic with the user.
