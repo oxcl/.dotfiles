@@ -44,3 +44,5 @@
    EOF
    ```
    If there are no extracted vibmaxes, use an empty array: `"extracted_vibmaxes": []`
+
+5. **Do NOT claim the next step.** After closing, stop. Do not automatically claim the blueprint task. Only claim it if the user explicitly asks you to.

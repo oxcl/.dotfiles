@@ -1,0 +1,45 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax create-action <task-name> <parent-id>"
+  echo "Pour a vibmax-action molecule nested under a parent issue."
+  echo ""
+  echo "Arguments:"
+  echo "  task-name   Name of the action task"
+  echo "  parent-id   Parent issue ID (usually the action phase)"
+  echo ""
+  echo "The molecule will be created with do/test steps and labeled"
+  echo "for orchestrator pickup."
+  exit 0
+fi
+
+TASK_NAME="$1"
+PARENT_ID="$2"
+
+if [ -z "$TASK_NAME" ] || [ -z "$PARENT_ID" ]; then
+  echo "Error: task-name and parent-id required"
+  echo "Usage: vibmax create-action <task-name> <parent-id>"
+  exit 1
+fi
+
+# Check if beads is initialized
+if ! bd stats --json >/dev/null 2>&1; then
+  echo "Error: beads is not initialized in this directory."
+  echo "Run 'vibmax init' first."
+  exit 1
+fi
+
+# Pour the vibmax-action molecule
+POUR_JSON=$(bd mol pour vibmax-action --var task_name="$TASK_NAME" --json)
+
+# Check if pour succeeded
+MOLECULE_ID=$(echo "$POUR_JSON" | jq -r '.id_mapping["vibmax-action"] // empty')
+if [ -z "$MOLECULE_ID" ]; then
+  echo "Error: failed to pour molecule"
+  echo "$POUR_JSON" | jq -r '.error // "unknown error"'
+  exit 1
+fi
+
+# Nest under parent (parent-child relationship)
+bd dep add "$MOLECULE_ID" "$PARENT_ID" --type parent-child --json >/dev/null 2>&1
+
+echo "$MOLECULE_ID"

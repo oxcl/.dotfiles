@@ -35,3 +35,5 @@
    <one-pager content>
    EOF
    ```
+
+4. **Do NOT claim the next step.** After closing, stop. Do not automatically claim the integrate task. Only claim it if the user explicitly asks you to.

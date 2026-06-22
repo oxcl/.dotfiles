@@ -1,0 +1,22 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax dep-add <blocked> <blocker>"
+  echo "Create a blocking dependency between two issues."
+  echo ""
+  echo "Arguments:"
+  echo "  blocked   Issue that is blocked (cannot proceed until blocker is done)"
+  echo "  blocker   Issue that blocks the other (must complete first)"
+  exit 0
+fi
+
+BLOCKED="$1"
+BLOCKER="$2"
+
+if [ -z "$BLOCKED" ] || [ -z "$BLOCKER" ]; then
+  echo "Error: blocked and blocker IDs required"
+  echo "Usage: vibmax dep-add <blocked> <blocker>"
+  exit 1
+fi
+
+bd dep add "$BLOCKED" "$BLOCKER" --type blocks --json >/dev/null 2>&1
+echo "$BLOCKED is blocked by $BLOCKER"
