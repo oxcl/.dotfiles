@@ -3,7 +3,8 @@ usage() {
   echo "Usage: vibmax close <type> [args...]"
   echo ""
   echo "Types:"
-  echo "  vision    Close a vision task and pass one-pager to integrate"
+  echo "  vision      Close a vision task and pass one-pager to integrate"
+  echo "  integrate   Close integrate task, pass revised one-pager to blueprint"
   echo ""
   echo "Use 'vibmax close <type> --help' for more info on a type."
 }
@@ -17,7 +18,8 @@ type="$1"
 shift
 
 case "$type" in
-  vision) vibmax-close-vision "$@" ;;
+  vision)    vibmax-close-vision "$@" ;;
+  integrate) vibmax-close-integrate "$@" ;;
   *)
     echo "Unknown type: $type"
     usage

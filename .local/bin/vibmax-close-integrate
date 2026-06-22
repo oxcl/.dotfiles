@@ -1,0 +1,132 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax close integrate <issue-id> <<'EOF'"
+  echo "{"
+  echo '  "revised_one_pager": "...",'
+  echo '  "extracted_vibmaxes": [{"title": "...", "description": "..."}]'
+  echo "}"
+  echo "EOF"
+  echo ""
+  echo "Close an integrate task, pass revised one-pager to blueprint,"
+  echo "and create extracted vibmaxes as blocked by current vibmax."
+  exit 0
+fi
+
+ISSUE_ID="$1"
+
+if [ -z "$ISSUE_ID" ]; then
+  echo "Error: issue ID required"
+  echo "Usage: vibmax close integrate <issue-id>"
+  exit 1
+fi
+
+# Read JSON from stdin
+INPUT=$(cat)
+
+if [ -z "$INPUT" ]; then
+  echo "Error: JSON input required via stdin"
+  exit 1
+fi
+
+# Validate JSON syntax
+if ! echo "$INPUT" | jq empty 2>/dev/null; then
+  echo "Error: invalid JSON syntax"
+  exit 1
+fi
+
+# Validate revised_one_pager exists and is a string
+REVISED_ONE_PAGER=$(echo "$INPUT" | jq -r '.revised_one_pager // empty')
+if [ -z "$REVISED_ONE_PAGER" ]; then
+  echo "Error: 'revised_one_pager' field is required and must be a non-empty string"
+  exit 1
+fi
+
+# Validate extracted_vibmaxes exists and is an array
+if ! echo "$INPUT" | jq -e '.extracted_vibmaxes | type == "array"' >/dev/null 2>&1; then
+  echo "Error: 'extracted_vibmaxes' field is required and must be an array"
+  exit 1
+fi
+EXTRACTED_COUNT=$(echo "$INPUT" | jq '.extracted_vibmaxes | length')
+
+# Validate each extracted vibmax has title and description
+echo "$INPUT" | jq -c '.extracted_vibmaxes[]?' 2>/dev/null | while read -r vibmax; do
+  TITLE=$(echo "$vibmax" | jq -r '.title // empty')
+  DESC=$(echo "$vibmax" | jq -r '.description // empty')
+  if [ -z "$TITLE" ] || [ -z "$DESC" ]; then
+    echo "Error: each extracted vibmax must have 'title' and 'description' fields"
+    exit 1
+  fi
+done
+
+# Find molecule root (parent of integrate)
+MOLECULE_ROOT=$(bd list --json 2>/dev/null | jq -r --arg id "$ISSUE_ID" '.[] | select(.id == $id) | .parent // empty')
+if [ -z "$MOLECULE_ROOT" ]; then
+  echo "Error: could not find parent molecule for $ISSUE_ID"
+  exit 1
+fi
+
+# Find blueprint (blocked by integrate)
+BLUEPRINT_ID=$(bd blocked --json 2>/dev/null | jq -r --arg iid "$ISSUE_ID" '.[] | select(.blocked_by[]? == $iid) | .id' | head -1)
+if [ -z "$BLUEPRINT_ID" ]; then
+  echo "Error: could not find blueprint issue (blocked by $ISSUE_ID)"
+  exit 1
+fi
+
+# Update blueprint description with revised one-pager
+echo "$REVISED_ONE_PAGER" | bd update "$BLUEPRINT_ID" --stdin 2>/dev/null
+
+# Create extracted vibmaxes
+CREATED_COUNT=0
+echo "$INPUT" | jq -c '.extracted_vibmaxes[]?' 2>/dev/null | while read -r vibmax; do
+  TITLE=$(echo "$vibmax" | jq -r '.title')
+  DESC=$(echo "$vibmax" | jq -r '.description')
+
+  # Pour the molecule
+  POUR_JSON=$(bd mol pour vibmax --var vibmax_name="$TITLE" --var vibmax_description="$DESC" --json 2>/dev/null)
+  NEW_MOLECULE_ID=$(echo "$POUR_JSON" | jq -r '.id_mapping.vibmax // empty')
+
+  if [ -z "$NEW_MOLECULE_ID" ]; then
+    echo "Error: failed to create vibmax '$TITLE'"
+    continue
+  fi
+
+  # Add phase labels to new molecule
+  bd list --parent "$NEW_MOLECULE_ID" --json 2>/dev/null | jq -r '.[] | "\(.id) \(.title)"' | while read -r issue_id title; do
+    case "$title" in
+      "Vision:"*)
+        bd label add "$issue_id" "phase:vision" --json >/dev/null
+        bd label add "$issue_id" "requires-human" --json >/dev/null
+        ;;
+      "Integrate:"*)
+        bd label add "$issue_id" "phase:integrate" --json >/dev/null
+        bd label add "$issue_id" "requires-human" --json >/dev/null
+        ;;
+      "Blueprint:"*)
+        bd label add "$issue_id" "phase:blueprint" --json >/dev/null
+        bd label add "$issue_id" "requires-human" --json >/dev/null
+        ;;
+      "Multiplex:"*)
+        bd label add "$issue_id" "phase:multiplex" --json >/dev/null
+        bd label add "$issue_id" "requires-human" --json >/dev/null
+        ;;
+      "Action:"*)
+        bd label add "$issue_id" "phase:action" --json >/dev/null
+        ;;
+      "Examine:"*)
+        bd label add "$issue_id" "phase:examine" --json >/dev/null
+        bd label add "$issue_id" "requires-human" --json >/dev/null
+        ;;
+    esac
+  done
+
+  # Link new molecule as blocked by current vibmax molecule root
+  bd dep add "$NEW_MOLECULE_ID" "$MOLECULE_ROOT" 2>/dev/null
+
+  echo "Created vibmax: $NEW_MOLECULE_ID ($TITLE)"
+  CREATED_COUNT=$((CREATED_COUNT + 1))
+done
+
+# Close the integrate task
+bd close "$ISSUE_ID" --reason "Done" --force 2>/dev/null
+
+echo "Integrate closed. Blueprint updated with revised one-pager."
