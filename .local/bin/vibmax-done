@@ -1,0 +1,36 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax done <issue-id>"
+  echo "Show cleanup instructions for completing a task."
+  exit 0
+fi
+
+ISSUE_ID="$1"
+
+if [ -z "$ISSUE_ID" ]; then
+  echo "Error: issue ID required"
+  echo "Usage: vibmax done <issue-id>"
+  exit 1
+fi
+
+# Get the issue phase label
+PHASE=$(bd list --json | jq --arg id "$ISSUE_ID" -r '.[] | select(.id == $id) | .labels[]? | select(startswith("phase:")) | split(":")[1]')
+
+if [ -z "$PHASE" ]; then
+  echo "Error: could not determine phase for $ISSUE_ID"
+  exit 1
+fi
+
+# Print done instructions if file exists
+INSTRUCTIONS_FILE=""
+if [ -f ".beads/done-instructions/${PHASE}.md" ]; then
+  INSTRUCTIONS_FILE=".beads/done-instructions/${PHASE}.md"
+elif [ -f "$HOME/.beads/done-instructions/${PHASE}.md" ]; then
+  INSTRUCTIONS_FILE="$HOME/.beads/done-instructions/${PHASE}.md"
+fi
+
+if [ -n "$INSTRUCTIONS_FILE" ] && [ -s "$INSTRUCTIONS_FILE" ]; then
+  cat "$INSTRUCTIONS_FILE"
+else
+  echo "No done instructions found for phase: $PHASE"
+fi

@@ -8,6 +8,7 @@ usage() {
   echo "  find-similar     Search for related issues"
   echo "  create           Pour vibmax molecule"
   echo "  claim            Claim next ready task"
+  echo "  done             Show cleanup instructions for completing a task"
   echo ""
   echo "Use 'vibmax <command> --help' for more info on a command."
 }
@@ -26,6 +27,7 @@ case "$command" in
   find-similar) vibmax-find-similar "$@" ;;
   create)       vibmax-create "$@" ;;
   claim)        vibmax-claim "$@" ;;
+  done)         vibmax-done "$@" ;;
   *)
     echo "Unknown command: $command"
     usage
