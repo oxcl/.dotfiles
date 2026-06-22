@@ -18,35 +18,35 @@ labels = ["phase:vision"]
 
 [[steps]]
 id = "integrate"
-title = "Integrate"
+title = "Integrate: {{vibmax_name}}"
 type = "task"
 needs = ["vision"]
 labels = ["phase:integrate"]
 
 [[steps]]
 id = "blueprint"
-title = "Blueprint"
+title = "Blueprint: {{vibmax_name}}"
 type = "task"
 needs = ["integrate"]
 labels = ["phase:blueprint"]
 
 [[steps]]
 id = "multiplex"
-title = "Multiplex"
+title = "Multiplex: {{vibmax_name}}"
 type = "task"
 needs = ["blueprint"]
 labels = ["phase:multiplex"]
 
 [[steps]]
 id = "action"
-title = "Action"
+title = "Action: {{vibmax_name}}"
 type = "task"
 needs = ["multiplex"]
 labels = ["phase:action", "structural"]
 
 [[steps]]
 id = "examine"
-title = "Examine"
+title = "Examine: {{vibmax_name}}"
 type = "task"
 needs = ["action"]
 labels = ["phase:examine"]

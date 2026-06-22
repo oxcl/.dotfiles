@@ -29,10 +29,7 @@
 2. **Ask the user for confirmation.** Simply and literally ask "Is this good?" Wait for the user to say yes, confirm, or approve before proceeding.
 
 3. **Close the vision task.** Only after explicit user confirmation, pipe the one-pager to:
-   ```
-   vibmax close vision <issue-id> < one-pager.md
-   ```
-   Or use a heredoc:
+   use a heredoc:
    ```
    vibmax close vision <issue-id> <<'EOF'
    <one-pager content>
