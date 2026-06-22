@@ -1,1 +1,3 @@
 - [ ] Find or implement a shell prompt animation for zsh similar to coding agents like claude code
+- [ ] add context7 and grep.app tools for the expert_programmer agent and also the up and comming Coder agent
+- [ ] research which experts would perform better with which new tools.
