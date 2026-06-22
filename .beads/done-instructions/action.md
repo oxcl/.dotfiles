@@ -1,4 +1,7 @@
-1. **Run tests.** Verify all tests pass.
-2. **Check code quality.** Ensure code meets quality standards.
-3. **Verify implementation.** Confirm the implementation matches the plan.
-4. **Do NOT claim the next step.** After closing, stop. Do not automatically claim the examine task. Only claim it if the user explicitly asks you to.
+The action phase is a structural placeholder. It is not pickable by agents or the orchestrator.
+
+Do NOT claim this task. Do NOT close this task manually.
+
+The action phase will be closed automatically when all action molecules (do+test pairs) under it are completed.
+
+When all action molecules are done, the action phase issue will become unblocked and the examine phase can proceed.
