@@ -6,33 +6,41 @@ version = 1
 description = "Name of the vibmax"
 required = true
 
+[vars.vibmax_description]
+description = "Description of the vibmax"
+required = true
+
 [[steps]]
 id = "vision"
 title = "Vision: {{vibmax_name}}"
 type = "task"
+labels = ["phase:vision"]
 
 [[steps]]
 id = "integrate"
 title = "Integrate"
 type = "task"
 needs = ["vision"]
+labels = ["phase:integrate"]
 
 [[steps]]
 id = "blueprint"
 title = "Blueprint"
 type = "task"
 needs = ["integrate"]
+labels = ["phase:blueprint"]
 
 [[steps]]
 id = "multiplex"
 title = "Multiplex"
 type = "task"
 needs = ["blueprint"]
+labels = ["phase:multiplex"]
 
 [[steps]]
 id = "action"
 title = "Action"
-type = "epic"
+type = "task"
 needs = ["multiplex"]
 labels = ["phase:action", "structural"]
 
@@ -41,3 +49,4 @@ id = "examine"
 title = "Examine"
 type = "task"
 needs = ["action"]
+labels = ["phase:examine"]

@@ -1,0 +1,13 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax-check-init"
+  echo "Check if beads is set up in the current project."
+  exit 0
+fi
+
+if [ -d .beads ]; then
+  echo "Beads is set up"
+else
+  echo "Not set up"
+  exit 1
+fi

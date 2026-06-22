@@ -1,0 +1,53 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax-create <name> <description> [--link id] [--link id]..."
+  echo "Pour vibmax molecule and claim vision task."
+  echo ""
+  echo "Options:"
+  echo "  --link <id>   Link related issues (can be repeated)"
+  echo ""
+  echo "Examples:"
+  echo "  vibmax-create \"auth-system\" \"JWT authentication for API\""
+  echo "  vibmax-create \"auth-system\" \"JWT auth\" --link bd-abc123 --link bd-def456"
+  exit 0
+fi
+
+name="$1"
+description="$2"
+shift 2
+
+LINK_ISSUES=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --link)
+      if [ -n "$LINK_ISSUES" ]; then
+        LINK_ISSUES="${LINK_ISSUES} $2"
+      else
+        LINK_ISSUES="$2"
+      fi
+      shift 2
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
+
+if [ -z "$name" ] || [ -z "$description" ]; then
+  echo "Error: name and description required"
+  echo "Usage: vibmax-create <name> <description> [--link id] [--link id]..."
+  exit 1
+fi
+
+MOLECULE_ID=$(bd mol pour vibmax --var vibmax_name="$name" --var vibmax_description="$description" --json | jq -r '.id_mapping.vibmax')
+echo "Molecule: $MOLECULE_ID"
+
+for issue_id in $LINK_ISSUES; do
+  bd dep add "$MOLECULE_ID" "$issue_id" --type related
+  echo "Linked: $issue_id"
+done
+
+VISION_ID=$(bd list --parent "$MOLECULE_ID" --json | jq -r '.[] | select(.title | startswith("Vision:")) | .id')
+bd update "$VISION_ID" --claim
+echo "Vision: $VISION_ID"
+echo "Claimed."

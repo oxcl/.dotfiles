@@ -15,9 +15,7 @@ permission:
   }
   bash: {
     "*": deny,
-    "bd search *": allow,
-    "bd find-duplicates *": allow,
-    "bd show *": allow
+    "bd *": allow
   }
   web_search: allow
   web_fetch: allow

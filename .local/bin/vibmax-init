@@ -1,0 +1,32 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax-init [--stealth]"
+  echo "Initialize beads in the current project."
+  echo ""
+  echo "Options:"
+  echo "  --stealth   Skip agents and run silently"
+  exit 0
+fi
+
+if [ -d .beads ]; then
+  echo "Already initialized"
+  exit 0
+fi
+
+# Initialize beads
+if [ "$1" = "--stealth" ]; then
+  bd init --skip-agents --stealth
+else
+  bd init --skip-agents
+fi
+
+# Clean up
+rm -f .beads/README.md
+rm -rf .claude/
+rm -f .beads/hooks/prepare-commit-msg
+
+# Amend the commit
+git add -A
+git commit --amend --no-edit
+
+echo "Beads initialized"

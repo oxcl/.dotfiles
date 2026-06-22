@@ -1,0 +1,38 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax claim"
+  echo "Claim the next ready task and show its details with phase instructions."
+  exit 0
+fi
+
+# Get the next ready task
+ISSUE_JSON=$(bd ready --claim --json 2>/dev/null)
+
+# Check if an issue was claimed
+ISSUE_ID=$(echo "$ISSUE_JSON" | jq -r '.issue.id // empty')
+if [ -z "$ISSUE_ID" ]; then
+  echo "No ready tasks available."
+  exit 0
+fi
+
+# Extract phase from labels
+PHASE=$(echo "$ISSUE_JSON" | jq -r '.issue.labels[]? | select(startswith("phase:")) | split(":")[1]')
+
+# Show the issue details
+bd show "$ISSUE_ID"
+
+# Append instructions if file exists
+if [ -n "$PHASE" ] && [ -f "${ZDOTDIR:-$HOME/.config}/zsh/../.beads/task-instructions/${PHASE}.md" ]; then
+  INSTRUCTIONS_FILE="${ZDOTDIR:-$HOME/.config}/zsh/../.beads/task-instructions/${PHASE}.md"
+elif [ -n "$PHASE" ] && [ -f "$HOME/.beads/task-instructions/${PHASE}.md" ]; then
+  INSTRUCTIONS_FILE="$HOME/.beads/task-instructions/${PHASE}.md"
+elif [ -n "$PHASE" ] && [ -f ".beads/task-instructions/${PHASE}.md" ]; then
+  INSTRUCTIONS_FILE=".beads/task-instructions/${PHASE}.md"
+fi
+
+if [ -n "$INSTRUCTIONS_FILE" ] && [ -s "$INSTRUCTIONS_FILE" ]; then
+  echo ""
+  echo "## Task Instructions"
+  echo ""
+  cat "$INSTRUCTIONS_FILE"
+fi

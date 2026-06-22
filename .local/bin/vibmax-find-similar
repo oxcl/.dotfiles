@@ -1,0 +1,26 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax-find-similar <keyword> [keyword...]"
+  echo "Search for related issues and find duplicates."
+  echo ""
+  echo "Examples:"
+  echo "  vibmax-find-similar auth"
+  echo "  vibmax-find-similar auth login jwt"
+  exit 0
+fi
+
+if [ $# -eq 0 ]; then
+  echo "Error: keyword required"
+  echo "Usage: vibmax-find-similar <keyword> [keyword...]"
+  exit 1
+fi
+
+echo "=== Related issues ==="
+for keyword in "$@"; do
+  echo "--- $keyword ---"
+  bd search "$keyword" --status all
+done
+
+echo ""
+echo "=== Duplicates ==="
+bd find-duplicates --method mechanical

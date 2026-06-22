@@ -1,0 +1,32 @@
+#!/bin/sh
+usage() {
+  echo "Usage: vibmax <command> [args...]"
+  echo ""
+  echo "Commands:"
+  echo "  check-init       Check if beads is set up"
+  echo "  init             Initialize beads"
+  echo "  find-similar     Search for related issues"
+  echo "  create           Pour vibmax molecule"
+  echo ""
+  echo "Use 'vibmax <command> --help' for more info on a command."
+}
+
+if [ $# -eq 0 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  usage
+  exit 0
+fi
+
+command="$1"
+shift
+
+case "$command" in
+  check-init)   vibmax-check-init "$@" ;;
+  init)         vibmax-init "$@" ;;
+  find-similar) vibmax-find-similar "$@" ;;
+  create)       vibmax-create "$@" ;;
+  *)
+    echo "Unknown command: $command"
+    usage
+    exit 1
+    ;;
+esac
