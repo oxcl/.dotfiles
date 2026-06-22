@@ -21,9 +21,14 @@ agent: creative
 
 4. **Report.** Write a small summary:
    ```
-   Idea: <title for the idea or feature>
-   Description: <short description for the idea or feature>
-   Prior work: <what you found, or "none">
+   **Idea**: 
+   <title for the idea or feature>
+   
+   **Description**: 
+   <short description for the idea or feature>
+   
+   **Prior work**: 
+   <what you found, or "none">
    ```
    simply and literally ask the user "Confirm?"
 
