@@ -9,6 +9,7 @@ usage() {
   echo "  create           Pour vibmax molecule"
   echo "  claim            Claim next ready task"
   echo "  done             Show cleanup instructions for completing a task"
+  echo "  close            Close a task and pass work to next step"
   echo ""
   echo "Use 'vibmax <command> --help' for more info on a command."
 }
@@ -28,6 +29,7 @@ case "$command" in
   create)       vibmax-create "$@" ;;
   claim)        vibmax-claim "$@" ;;
   done)         vibmax-done "$@" ;;
+  close)        vibmax-close "$@" ;;
   *)
     echo "Unknown command: $command"
     usage

@@ -1,0 +1,26 @@
+#!/bin/sh
+usage() {
+  echo "Usage: vibmax close <type> [args...]"
+  echo ""
+  echo "Types:"
+  echo "  vision    Close a vision task and pass one-pager to integrate"
+  echo ""
+  echo "Use 'vibmax close <type> --help' for more info on a type."
+}
+
+if [ $# -eq 0 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  usage
+  exit 0
+fi
+
+type="$1"
+shift
+
+case "$type" in
+  vision) vibmax-close-vision "$@" ;;
+  *)
+    echo "Unknown type: $type"
+    usage
+    exit 1
+    ;;
+esac

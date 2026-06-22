@@ -1,0 +1,40 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax close vision <issue-id> < one-pager.md"
+  echo "Close a vision task and pass the one-pager to the integrate step."
+  echo ""
+  echo "Reads the one-pager from stdin and updates the integrate issue description."
+  exit 0
+fi
+
+ISSUE_ID="$1"
+
+if [ -z "$ISSUE_ID" ]; then
+  echo "Error: issue ID required"
+  echo "Usage: vibmax close vision <issue-id> < one-pager.md"
+  exit 1
+fi
+
+# Read one-pager from stdin
+ONE_PAGER=$(cat)
+
+if [ -z "$ONE_PAGER" ]; then
+  echo "Error: one-pager content required via stdin"
+  exit 1
+fi
+
+# Find integrate issue (blocked by vision)
+INTEGRATE_ID=$(bd blocked --json 2>/dev/null | jq -r --arg vid "$ISSUE_ID" '.[] | select(.blocked_by[] == $vid) | .id' | head -1)
+
+if [ -z "$INTEGRATE_ID" ]; then
+  echo "Error: could not find integrate issue (child of $ISSUE_ID)"
+  exit 1
+fi
+
+# Update integrate issue description with one-pager
+echo "$ONE_PAGER" | bd update "$INTEGRATE_ID" --stdin
+
+# Close the vision task
+bd close "$ISSUE_ID" --reason "Done"
+
+echo "Vision closed. One-pager passed to $INTEGRATE_ID"
