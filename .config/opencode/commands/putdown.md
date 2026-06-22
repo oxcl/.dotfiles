@@ -14,10 +14,9 @@ Put down the current task. You already know the issue ID from the session.
 
 3. **Only after confirmation**, run:
    ```
-   vibmax putdown <issue-id> <<'EOF'
-   <summary>
-   EOF
+   vibmax putdown <issue-id>
    ```
+   Then write the summary using `handoff_write` and return the reference ID to the user so they can take it to the new session.
    If user says no, revise and ask again.
 
-If no summary is needed, just run `vibmax putdown <issue-id>` without the heredoc.
+If no summary is needed, just run `vibmax putdown <issue-id>` without writing a handoff.

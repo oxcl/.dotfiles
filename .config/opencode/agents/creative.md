@@ -19,6 +19,8 @@ permission:
   }
   web_search: allow
   web_fetch: allow
+  handoff_read: allow
+  handoff_write: allow
 ---
 
 # Identity
