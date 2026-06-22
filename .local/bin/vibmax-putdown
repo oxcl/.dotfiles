@@ -1,0 +1,32 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax putdown <issue-id>"
+  echo "Put down a claimed task and write a handoff note."
+  echo ""
+  echo "Reads summary from stdin if provided. If no stdin,"
+  echo "unclaims without writing a note."
+  exit 0
+fi
+
+ISSUE_ID="$1"
+
+if [ -z "$ISSUE_ID" ]; then
+  echo "Error: issue ID required"
+  echo "Usage: vibmax putdown <issue-id>"
+  exit 1
+fi
+
+# Read summary from stdin if available
+if [ ! -t 0 ]; then
+  SUMMARY=$(cat)
+fi
+
+# Unclaim the task
+bd update "$ISSUE_ID" --assignee "" --status open --json >/dev/null 2>&1
+
+# Write handoff note if summary provided
+if [ -n "$SUMMARY" ]; then
+  echo "$SUMMARY" | bd note "$ISSUE_ID" --stdin
+fi
+
+echo "Put down $ISSUE_ID"

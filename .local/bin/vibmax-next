@@ -19,6 +19,9 @@ fi
 bd ready --json 2>/dev/null | jq -r '
   [.[] | select(.labels[]? == "requires-human")]
   | if length == 0 then "No tasks available."
-    else .[] | "\(.id): \(.title)"
+    else .[] |
+      "\(.id): \(.title)" +
+      (if .description != "" and .description != null then "\n\n\(.description)" else "" end) +
+      (if .notes != "" and .notes != null then "\n\nNotes:\n\(.notes)" else "" end)
     end
 '

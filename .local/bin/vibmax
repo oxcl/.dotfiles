@@ -11,6 +11,7 @@ usage() {
   echo "  next             Show available tasks that require human"
   echo "  done             Show cleanup instructions for completing a task"
   echo "  close            Close a task and pass work to next step"
+  echo "  putdown          Put down a task and write a handoff note"
   echo ""
   echo "Use 'vibmax <command> --help' for more info on a command."
 }
@@ -32,6 +33,7 @@ case "$command" in
   next)         vibmax-next "$@" ;;
   done)         vibmax-done "$@" ;;
   close)        vibmax-close "$@" ;;
+  putdown)      vibmax-putdown "$@" ;;
   *)
     echo "Unknown command: $command"
     usage

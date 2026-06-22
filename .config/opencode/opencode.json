@@ -58,17 +58,7 @@
     "plan": { "disable": true }
   },
   "permission": {
-    "read": "deny",
-    "edit": "deny",
-    "glob": "deny",
-    "grep": "deny",
-    "list": "deny",
-    "bash": "deny",
-    "task": "deny",
-    "web_search": "deny",
-    "web_fetch": "deny",
-    "websearch": "deny",
-    "webfetch": "deny",
+    "*": "deny",
     "skill": { "customize-opencode": "deny" }
   }
 }
