@@ -14,28 +14,28 @@ required = true
 id = "vision"
 title = "Vision: {{vibmax_name}}"
 type = "task"
-labels = ["phase:vision"]
+labels = ["phase:vision", "requires-human"]
 
 [[steps]]
 id = "integrate"
 title = "Integrate: {{vibmax_name}}"
 type = "task"
 needs = ["vision"]
-labels = ["phase:integrate"]
+labels = ["phase:integrate", "requires-human"]
 
 [[steps]]
 id = "blueprint"
 title = "Blueprint: {{vibmax_name}}"
 type = "task"
 needs = ["integrate"]
-labels = ["phase:blueprint"]
+labels = ["phase:blueprint", "requires-human"]
 
 [[steps]]
 id = "multiplex"
 title = "Multiplex: {{vibmax_name}}"
 type = "task"
 needs = ["blueprint"]
-labels = ["phase:multiplex"]
+labels = ["phase:multiplex", "requires-human"]
 
 [[steps]]
 id = "action"
@@ -49,4 +49,4 @@ id = "examine"
 title = "Examine: {{vibmax_name}}"
 type = "task"
 needs = ["action"]
-labels = ["phase:examine"]
+labels = ["phase:examine", "requires-human"]

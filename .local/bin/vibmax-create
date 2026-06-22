@@ -59,15 +59,32 @@ fi
 VISION_ID=$(echo "$POUR_JSON" | jq -r '.id_mapping["vibmax.vision"]')
 echo "Molecule: $MOLECULE_ID"
 
-# Add phase labels to each step
+# Add phase labels and requires-human to each step
 bd list --parent "$MOLECULE_ID" --json | jq -r '.[] | "\(.id) \(.title)"' | while read -r issue_id title; do
   case "$title" in
-    "Vision:"*) bd label add "$issue_id" "phase:vision" --json >/dev/null ;;
-    "Integrate") bd label add "$issue_id" "phase:integrate" --json >/dev/null ;;
-    "Blueprint") bd label add "$issue_id" "phase:blueprint" --json >/dev/null ;;
-    "Multiplex") bd label add "$issue_id" "phase:multiplex" --json >/dev/null ;;
-    "Action") bd label add "$issue_id" "phase:action" --json >/dev/null ;;
-    "Examine") bd label add "$issue_id" "phase:examine" --json >/dev/null ;;
+    "Vision:"*)
+      bd label add "$issue_id" "phase:vision" --json >/dev/null
+      bd label add "$issue_id" "requires-human" --json >/dev/null
+      ;;
+    "Integrate:"*)
+      bd label add "$issue_id" "phase:integrate" --json >/dev/null
+      bd label add "$issue_id" "requires-human" --json >/dev/null
+      ;;
+    "Blueprint:"*)
+      bd label add "$issue_id" "phase:blueprint" --json >/dev/null
+      bd label add "$issue_id" "requires-human" --json >/dev/null
+      ;;
+    "Multiplex:"*)
+      bd label add "$issue_id" "phase:multiplex" --json >/dev/null
+      bd label add "$issue_id" "requires-human" --json >/dev/null
+      ;;
+    "Action:"*)
+      bd label add "$issue_id" "phase:action" --json >/dev/null
+      ;;
+    "Examine:"*)
+      bd label add "$issue_id" "phase:examine" --json >/dev/null
+      bd label add "$issue_id" "requires-human" --json >/dev/null
+      ;;
   esac
 done
 

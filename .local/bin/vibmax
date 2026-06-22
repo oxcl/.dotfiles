@@ -8,6 +8,7 @@ usage() {
   echo "  find-similar     Search for related issues"
   echo "  create           Pour vibmax molecule"
   echo "  claim            Claim next ready task"
+  echo "  next             Show available tasks that require human"
   echo "  done             Show cleanup instructions for completing a task"
   echo "  close            Close a task and pass work to next step"
   echo ""
@@ -28,6 +29,7 @@ case "$command" in
   find-similar) vibmax-find-similar "$@" ;;
   create)       vibmax-create "$@" ;;
   claim)        vibmax-claim "$@" ;;
+  next)         vibmax-next "$@" ;;
   done)         vibmax-done "$@" ;;
   close)        vibmax-close "$@" ;;
   *)

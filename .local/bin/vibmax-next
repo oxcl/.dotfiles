@@ -1,0 +1,24 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax next"
+  echo "Show ready tasks that require human intervention."
+  exit 0
+fi
+
+# Check beads is initialized
+if ! command -v bd >/dev/null 2>&1; then
+  echo "Error: bd command not found. Run 'vibmax init' first."
+  exit 1
+fi
+
+if [ ! -d ".beads" ]; then
+  echo "Error: beads not initialized. Run 'vibmax init' first."
+  exit 1
+fi
+
+bd ready --json 2>/dev/null | jq -r '
+  [.[] | select(.labels[]? == "requires-human")]
+  | if length == 0 then "No tasks available."
+    else .[] | "\(.id): \(.title)"
+    end
+'
