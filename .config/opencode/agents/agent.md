@@ -12,7 +12,8 @@ permission:
     "*": deny,
     explore: allow,
     research: allow,
-    general: allow
+    general: allow,
+    council: allow
   }
   question: allow
   web_search: allow
