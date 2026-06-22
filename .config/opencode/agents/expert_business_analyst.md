@@ -2,7 +2,7 @@
 description: Business & Economics Expert - Analyzes corporate strategy, economic systems, operational efficiency, financial mechanisms, and macroeconomic trends. Invoke this expert for anything involving capital, markets, incentives, corporate strategy, or economic policy.
 mode: subagent
 permission:
-   handoff_read: allow
+  handoff_read: allow
   web_search: allow
   web_fetch: allow
 ---

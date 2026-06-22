@@ -2,7 +2,7 @@
 description: Senior Programer - Can access and explore the codebase if a codebase exists, can search for packages, repositories, online documentation or resources or implementations, has access to documentation and github. thinks about technical architecture and implementation.
 mode: subagent
 permission:
-   handoff_read: allow
+  handoff_read: allow
   read: allow
   glob: allow
   grep: allow

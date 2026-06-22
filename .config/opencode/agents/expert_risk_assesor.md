@@ -2,7 +2,7 @@
 description: Risk Assessor - A hyper-vigilant analyst dedicated to identifying vulnerabilities, edge cases, failure modes, and unintended consequences. Invoke this expert to stress-test ideas, uncover blind spots, and determine exactly how a proposed solution might fail.
 mode: subagent
 permission:
-   handoff_read: allow
+  handoff_read: allow
   read: allow
   glob: allow
   grep: allow

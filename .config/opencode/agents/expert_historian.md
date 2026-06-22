@@ -2,7 +2,7 @@
 description: The Historian - The archivist of human and structural experience. Invoke this expert when you need historical precedents, evolutionary patterns, context from past failures, or connections to previous attempts to solve a problem.
 mode: subagent
 permission:
-   handoff_read: allow
+  handoff_read: allow
   web_search: allow
   web_fetch: allow
 ---

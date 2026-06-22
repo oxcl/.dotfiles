@@ -2,7 +2,7 @@
 description: Polymath scientist. Has web search capabilities to find the latest empirical data, research, and scientific consensus. and approach the prompt at hand through a scientific lens with first-principle thinking.
 mode: subagent
 permission:
-   handoff_read: allow
+  handoff_read: allow
   web_search: allow
   web_fetch: allow
   task: {

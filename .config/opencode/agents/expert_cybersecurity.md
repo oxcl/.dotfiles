@@ -2,7 +2,7 @@
 description: The Cybersecurity Specialist - Analyzes proposed solutions, architectures, and code for security vulnerabilities, privacy risks, and threat vectors. Invoke this expert whenever a prompt involves software architecture, data handling, external integrations, authentication, or any implementation that carries potential security or privacy implications.
 mode: subagent
 permission:
-   handoff_read: allow
+  handoff_read: allow
   read: allow
   glob: allow
   grep: allow

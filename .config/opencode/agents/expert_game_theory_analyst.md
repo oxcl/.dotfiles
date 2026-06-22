@@ -2,7 +2,7 @@
 description: Game Theory Analyst - Evaluates strategic interactions, competing incentives, payoffs, and optimal decision-making among rational actors. Invoke this expert when a problem involves multi-agent competition, negotiation, incentive alignment, or predicting adversarial behavior.
 mode: subagent
 permission:
-   handoff_read: allow
+  handoff_read: allow
   web_search: allow
   web_fetch: allow 
 ---
