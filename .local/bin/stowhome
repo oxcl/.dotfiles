@@ -21,6 +21,7 @@ ENSURE_DIR=(
 	".config/fontconfig"
 	".local/share"
         ".local/share/icons"
+        ".beads"
 )
 
 mkdir -p "${ENSURE_DIR[*]/#/$HOME/}"

@@ -13,7 +13,7 @@ agent: creative
    thinking about before proceeding to next steps.
 3. **Check prior work.** Search existing issues for anything related:
    - `bd search "<keywords>" --status all`
-   - `bd find-duplicates --method ai`
+   - `bd find-duplicates --method mechanical`
 
    Use the result to shape your first message back to the user:
    - **Hard duplicate found** — tell the user directly, and ask if they'd

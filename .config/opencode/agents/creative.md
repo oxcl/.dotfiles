@@ -13,6 +13,12 @@ permission:
     research: allow,
     council: allow
   }
+  bash: {
+    "*": deny,
+    "bd search *": allow,
+    "bd find-duplicates *": allow,
+    "bd show *": allow
+  }
   web_search: allow
   web_fetch: allow
 ---

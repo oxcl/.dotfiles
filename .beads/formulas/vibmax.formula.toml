@@ -1,0 +1,43 @@
+formula = "vibmax"
+description = "Vision → Integrate → Blueprint → Multiplex → Action → Examine workflow"
+version = 1
+
+[vars.vibmax_name]
+description = "Name of the vibmax"
+required = true
+
+[[steps]]
+id = "vision"
+title = "Vision: {{vibmax_name}}"
+type = "task"
+
+[[steps]]
+id = "integrate"
+title = "Integrate"
+type = "task"
+needs = ["vision"]
+
+[[steps]]
+id = "blueprint"
+title = "Blueprint"
+type = "task"
+needs = ["integrate"]
+
+[[steps]]
+id = "multiplex"
+title = "Multiplex"
+type = "task"
+needs = ["blueprint"]
+
+[[steps]]
+id = "action"
+title = "Action"
+type = "epic"
+needs = ["multiplex"]
+labels = ["phase:action", "structural"]
+
+[[steps]]
+id = "examine"
+title = "Examine"
+type = "task"
+needs = ["action"]
