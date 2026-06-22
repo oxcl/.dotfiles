@@ -1,0 +1,40 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax close blueprint <issue-id> < PRD.md"
+  echo "Close a blueprint task and pass the PRD to the multiplex step."
+  echo ""
+  echo "Reads the PRD from stdin and updates the multiplex issue description."
+  exit 0
+fi
+
+ISSUE_ID="$1"
+
+if [ -z "$ISSUE_ID" ]; then
+  echo "Error: issue ID required"
+  echo "Usage: vibmax close blueprint <issue-id>"
+  exit 1
+fi
+
+# Read PRD from stdin
+PRD=$(cat)
+
+if [ -z "$PRD" ]; then
+  echo "Error: PRD content required via stdin"
+  exit 1
+fi
+
+# Find multiplex issue (blocked by blueprint)
+MULTIPLEX_ID=$(bd blocked --json 2>/dev/null | jq -r --arg bid "$ISSUE_ID" '.[] | select(.blocked_by[]? == $bid) | .id' | head -1)
+
+if [ -z "$MULTIPLEX_ID" ]; then
+  echo "Error: could not find multiplex issue (blocked by $ISSUE_ID)"
+  exit 1
+fi
+
+# Update multiplex issue description with PRD
+echo "$PRD" | bd update "$MULTIPLEX_ID" --stdin
+
+# Close the blueprint task
+bd close "$ISSUE_ID" --reason "Done" --force 2>/dev/null
+
+echo "Blueprint closed. PRD passed to $MULTIPLEX_ID"

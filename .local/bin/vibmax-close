@@ -5,6 +5,7 @@ usage() {
   echo "Types:"
   echo "  vision      Close a vision task and pass one-pager to integrate"
   echo "  integrate   Close integrate task, pass revised one-pager to blueprint"
+  echo "  blueprint   Close blueprint task and pass PRD to multiplex"
   echo ""
   echo "Use 'vibmax close <type> --help' for more info on a type."
 }
@@ -20,6 +21,7 @@ shift
 case "$type" in
   vision)    vibmax-close-vision "$@" ;;
   integrate) vibmax-close-integrate "$@" ;;
+  blueprint) vibmax-close-blueprint "$@" ;;
   *)
     echo "Unknown type: $type"
     usage
