@@ -39,8 +39,23 @@ if [ -z "$name" ] || [ -z "$description" ]; then
   exit 1
 fi
 
+# Check if beads is initialized
+if ! bd stats --json >/dev/null 2>&1; then
+  echo "Error: beads is not initialized in this directory."
+  echo "Run 'vibmax init' first."
+  exit 1
+fi
+
 POUR_JSON=$(bd mol pour vibmax --var vibmax_name="$name" --var vibmax_description="$description" --json)
-MOLECULE_ID=$(echo "$POUR_JSON" | jq -r '.id_mapping.vibmax')
+
+# Check if pour succeeded
+MOLECULE_ID=$(echo "$POUR_JSON" | jq -r '.id_mapping.vibmax // empty')
+if [ -z "$MOLECULE_ID" ]; then
+  echo "Error: failed to pour molecule"
+  echo "$POUR_JSON" | jq -r '.error // "unknown error"'
+  exit 1
+fi
+
 VISION_ID=$(echo "$POUR_JSON" | jq -r '.id_mapping["vibmax.vision"]')
 echo "Molecule: $MOLECULE_ID"
 

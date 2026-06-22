@@ -25,7 +25,7 @@ agent: creative
    Description: <short description for the idea or feature>
    Prior work: <what you found, or "none">
    ```
-   simply ask the user "Confirm?"
+   simply and literally ask the user "Confirm?"
 
    **DO NOT create the molecule without explicit user confirmation.** Wait for
    the user to say yes, confirm, or approve before proceeding to step 5.
