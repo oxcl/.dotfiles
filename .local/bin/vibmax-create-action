@@ -1,6 +1,12 @@
 #!/bin/sh
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-  echo "Usage: vibmax create-action <task-name> <parent-id>"
+  echo "Usage: vibmax create-action <task-name> <parent-id> <<'EOF'"
+  echo "{"
+  echo '  "do_instructions": "What to implement...",'
+  echo '  "test_instructions": "What to test and how..."'
+  echo "}"
+  echo "EOF"
+  echo ""
   echo "Pour a vibmax-action molecule nested under a parent issue."
   echo ""
   echo "Arguments:"
@@ -9,6 +15,9 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
   echo ""
   echo "The molecule will be created with do/test steps and labeled"
   echo "for orchestrator pickup."
+  echo ""
+  echo "The do and test instructions are passed via stdin as JSON."
+  echo "They will be set as the description of the do and test issues."
   exit 0
 fi
 
@@ -28,6 +37,21 @@ if ! bd stats --json >/dev/null 2>&1; then
   exit 1
 fi
 
+# Read JSON from stdin (optional)
+INPUT=$(cat)
+
+# Parse do and test instructions from JSON if provided
+DO_INSTRUCTIONS=""
+TEST_INSTRUCTIONS=""
+if [ -n "$INPUT" ]; then
+  if ! echo "$INPUT" | jq empty 2>/dev/null; then
+    echo "Error: invalid JSON syntax"
+    exit 1
+  fi
+  DO_INSTRUCTIONS=$(echo "$INPUT" | jq -r '.do_instructions // empty')
+  TEST_INSTRUCTIONS=$(echo "$INPUT" | jq -r '.test_instructions // empty')
+fi
+
 # Pour the vibmax-action molecule
 POUR_JSON=$(bd mol pour vibmax-action --var task_name="$TASK_NAME" --json)
 
@@ -41,5 +65,19 @@ fi
 
 # Nest under parent (parent-child relationship)
 bd dep add "$MOLECULE_ID" "$PARENT_ID" --type parent-child --json >/dev/null 2>&1
+
+# Find do and test issues in the molecule
+DO_ID=$(bd list --parent "$MOLECULE_ID" --json 2>/dev/null | jq -r '.[] | select(.title | startswith("Do:")) | .id')
+TEST_ID=$(bd list --parent "$MOLECULE_ID" --json 2>/dev/null | jq -r '.[] | select(.title | startswith("Test:")) | .id')
+
+# Set do instructions as description if provided
+if [ -n "$DO_ID" ] && [ -n "$DO_INSTRUCTIONS" ]; then
+  echo "$DO_INSTRUCTIONS" | bd update "$DO_ID" --stdin 2>/dev/null
+fi
+
+# Set test instructions as description if provided
+if [ -n "$TEST_ID" ] && [ -n "$TEST_INSTRUCTIONS" ]; then
+  echo "$TEST_INSTRUCTIONS" | bd update "$TEST_ID" --stdin 2>/dev/null
+fi
 
 echo "$MOLECULE_ID"

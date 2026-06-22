@@ -35,27 +35,20 @@ Done. No further action needed.
 
 1. **Create a new do+test molecule pair:**
    ```
-   vibmax create-action "<original-task-name>" <action-phase-id>
+   vibmax create-action "<original-task-name>" <action-phase-id> <<'EOF'
+   {
+     "do_instructions": "Your review report: what issues you found, what needs to be fixed...",
+     "test_instructions": "Same test instructions from your task description..."
+   }
+   EOF
    ```
 
-2. **Update the NEW do issue description** with your review report:
-   ```
-   bd update <new-do-issue-id> --stdin
-   ```
-   Write your full review report: what issues you found, what needs to be fixed, specific criticisms.
-
-3. **Copy the test instructions to the NEW test issue:**
-   ```
-   bd update <new-test-issue-id> --stdin
-   ```
-   Copy the exact same test instructions from your task description.
-
-4. **Wire the dependency** (new do blocks new test):
+2. **Wire the dependency** (new do blocks new test):
    ```
    vibmax dep-add <new-test-issue-id> <new-do-issue-id>
    ```
 
-5. **Close this test issue:**
+3. **Close this test issue:**
    ```
    bd close <this-issue-id> --reason "Review failed, new pair created"
    ```

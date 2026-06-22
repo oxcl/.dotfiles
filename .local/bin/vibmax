@@ -12,7 +12,7 @@ usage() {
   echo "  done             Show cleanup instructions for completing a task"
   echo "  close            Close a task and pass work to next step"
   echo "  putdown          Put down a task and write a handoff note"
-  echo "  create-action    Pour action molecule under a parent"
+  echo "  create-action    Pour action molecule under a parent (accepts JSON via stdin)"
   echo "  dep-add          Wire blocking dependency between issues"
   echo ""
   echo "Use 'vibmax <command> --help' for more info on a command."
