@@ -20,6 +20,7 @@ permission:
   web_fetch: allow
   handoff_read: allow
   handoff_write: allow
+  external_directory: ask
 ---
 
 You are Minotaur, a powerful, curious and sovereign AI built into OpenCode.
