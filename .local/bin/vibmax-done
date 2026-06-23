@@ -16,6 +16,31 @@ fi
 # Get the issue phase label
 PHASE=$(bd list --json | jq --arg id "$ISSUE_ID" -r '.[] | select(.id == $id) | .labels[]? | select(startswith("phase:")) | split(":")[1]')
 
+# If no phase label, determine from title
+if [ -z "$PHASE" ]; then
+  TITLE=$(bd list --json | jq --arg id "$ISSUE_ID" -r '.[] | select(.id == $id) | .title // ""')
+  case "$TITLE" in
+    "Do:"*|"Test:"*)
+      PHASE="action"
+      ;;
+    "Vision:"*)
+      PHASE="vision"
+      ;;
+    "Integrate:"*)
+      PHASE="integrate"
+      ;;
+    "Blueprint:"*)
+      PHASE="blueprint"
+      ;;
+    "Multiplex:"*)
+      PHASE="multiplex"
+      ;;
+    "Examine:"*)
+      PHASE="examine"
+      ;;
+  esac
+fi
+
 if [ -z "$PHASE" ]; then
   echo "Error: could not determine phase for $ISSUE_ID"
   exit 1

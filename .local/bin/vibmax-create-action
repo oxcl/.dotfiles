@@ -70,6 +70,19 @@ bd dep add "$MOLECULE_ID" "$PARENT_ID" --type parent-child --json >/dev/null 2>&
 DO_ID=$(bd list --parent "$MOLECULE_ID" --json 2>/dev/null | jq -r '.[] | select(.title | startswith("Do:")) | .id')
 TEST_ID=$(bd list --parent "$MOLECULE_ID" --json 2>/dev/null | jq -r '.[] | select(.title | startswith("Test:")) | .id')
 
+# Add labels to do issue
+if [ -n "$DO_ID" ]; then
+  bd label add "$DO_ID" "type:action" --json >/dev/null 2>&1
+  bd label add "$DO_ID" "orchestrator:assignable" --json >/dev/null 2>&1
+fi
+
+# Add labels to test issue
+if [ -n "$TEST_ID" ]; then
+  bd label add "$TEST_ID" "type:action" --json >/dev/null 2>&1
+  bd label add "$TEST_ID" "orchestrator:assignable" --json >/dev/null 2>&1
+  bd label add "$TEST_ID" "phase:test" --json >/dev/null 2>&1
+fi
+
 # Set do instructions as description if provided
 if [ -n "$DO_ID" ] && [ -n "$DO_INSTRUCTIONS" ]; then
   echo "$DO_INSTRUCTIONS" | bd update "$DO_ID" --stdin 2>/dev/null

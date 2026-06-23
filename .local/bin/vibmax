@@ -14,6 +14,8 @@ usage() {
   echo "  putdown          Put down a task and write a handoff note"
   echo "  create-action    Pour action molecule under a parent (accepts JSON via stdin)"
   echo "  dep-add          Wire blocking dependency between issues"
+  echo "  pass             Close test issue after successful review"
+  echo "  reject           Reject test review, create new do+test pair"
   echo ""
   echo "Use 'vibmax <command> --help' for more info on a command."
 }
@@ -38,6 +40,8 @@ case "$command" in
   putdown)      vibmax-putdown "$@" ;;
   create-action) vibmax-create-action "$@" ;;
   dep-add)      vibmax-dep-add "$@" ;;
+  pass)         vibmax-pass "$@" ;;
+  reject)       vibmax-reject "$@" ;;
   *)
     echo "Unknown command: $command"
     usage
