@@ -1,0 +1,370 @@
+#!/usr/bin/env bun
+
+import { execSync } from "child_process"
+
+// Types
+interface Project {
+  path: string
+  prefix: string
+  lastPoll: number
+}
+
+interface Task {
+  id: string
+  title: string
+  description: string
+  labels: string[]
+  phase: string
+  type: "do" | "test"
+  created_at: number
+}
+
+interface ActiveTask {
+  issueId: string
+  sessionId: string
+  worktreeName: string
+  project: Project
+  type: "do" | "test"
+}
+
+// State
+const projects = new Map<string, Project>()
+const activeTasks = new Map<string, ActiveTask>()
+const MAX_CONCURRENT = 10
+const POLL_INTERVAL = 10000 // 10 seconds
+const OPENCODE_URL = process.env.OPENCODE_URL || "http://localhost:4096"
+const SERVER_PORT = parseInt(process.env.VIBMAX_PORT || "4097")
+
+// Helper: run command from project directory
+function runScript(script: string, args: string[], cwd: string): string {
+  try {
+    return execSync(`${script} ${args.join(" ")}`, { cwd, encoding: "utf-8" }).trim()
+  } catch (e) {
+    console.error(`Error running ${script}: ${e}`)
+    return ""
+  }
+}
+
+// Helper: fetch assignable tasks for a project
+function fetchAssignableTasks(project: Project): Task[] {
+  const output = runScript("vibmax-fetch-assignable", [], project.path)
+  if (!output) return []
+  try {
+    return JSON.parse(output)
+  } catch (e) {
+    console.error(`Error parsing tasks for ${project.path}: ${e}`)
+    return []
+  }
+}
+
+// Helper: claim a task
+function claimTask(issueId: string, cwd: string): string {
+  return runScript("vibmax", ["claim", issueId], cwd)
+}
+
+// Helper: get done instructions for a task
+function getDoneInstructions(issueId: string, cwd: string): string {
+  return runScript("vibmax", ["done", issueId], cwd)
+}
+
+// Helper: check if issue is closed
+function isIssueClosed(issueId: string, cwd: string): boolean {
+  const output = runScript("bd", ["show", issueId, "--json"], cwd)
+  if (!output) return false
+  try {
+    const issue = JSON.parse(output)
+    return issue.status === "closed"
+  } catch (e) {
+    return false
+  }
+}
+
+// OpenCode SDK helpers (using fetch since SDK may not expose all params)
+async function createWorktree(projectPath: string, name: string): Promise<string | null> {
+  try {
+    const response = await fetch(`${OPENCODE_URL}/experimental/worktree?directory=${projectPath}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    })
+    if (!response.ok) {
+      console.error(`Failed to create worktree: ${response.statusText}`)
+      return null
+    }
+    const data = await response.json() as any
+    return data.directory
+  } catch (e) {
+    console.error(`Error creating worktree: ${e}`)
+    return null
+  }
+}
+
+async function deleteWorktree(projectPath: string, name: string): Promise<void> {
+  try {
+    await fetch(`${OPENCODE_URL}/experimental/worktree?directory=${projectPath}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    })
+  } catch (e) {
+    console.error(`Error deleting worktree: ${e}`)
+  }
+}
+
+async function createSession(directory: string, title: string): Promise<string | null> {
+  try {
+    const response = await fetch(`${OPENCODE_URL}/session?directory=${directory}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    })
+    if (!response.ok) {
+      console.error(`Failed to create session: ${response.statusText}`)
+      return null
+    }
+    const data = await response.json() as any
+    return data.data?.id || data.id
+  } catch (e) {
+    console.error(`Error creating session: ${e}`)
+    return null
+  }
+}
+
+async function deleteSession(sessionId: string): Promise<void> {
+  try {
+    await fetch(`${OPENCODE_URL}/session/${sessionId}`, {
+      method: "DELETE",
+    })
+  } catch (e) {
+    console.error(`Error deleting session: ${e}`)
+  }
+}
+
+async function injectContext(sessionId: string, text: string): Promise<void> {
+  try {
+    await fetch(`${OPENCODE_URL}/session/${sessionId}/prompt`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        noReply: true,
+        parts: [{ type: "text", text }],
+      }),
+    })
+  } catch (e) {
+    console.error(`Error injecting context: ${e}`)
+  }
+}
+
+async function sendPrompt(sessionId: string, text: string): Promise<void> {
+  try {
+    await fetch(`${OPENCODE_URL}/session/${sessionId}/prompt`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        parts: [{ type: "text", text }],
+      }),
+    })
+  } catch (e) {
+    console.error(`Error sending prompt: ${e}`)
+  }
+}
+
+async function subscribeEvents(): Promise<ReadableStream | null> {
+  try {
+    const response = await fetch(`${OPENCODE_URL}/event/subscribe`, {
+      method: "GET",
+    })
+    if (!response.ok) return null
+    return response.body
+  } catch (e) {
+    console.error(`Error subscribing to events: ${e}`)
+    return null
+  }
+}
+
+// Wait for session to become idle
+async function waitIdle(sessionId: string, eventStream: ReadableStream): Promise<void> {
+  return new Promise((resolve) => {
+    const reader = eventStream.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ""
+
+    const check = async () => {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split("\n")
+        buffer = lines.pop() || ""
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue
+          try {
+            const event = JSON.parse(line.slice(6))
+            if (event.type === "session.status") {
+              const { sessionID, status } = event.properties
+              if (sessionID === sessionId && status?.type === "idle") {
+                reader.cancel()
+                resolve()
+                return
+              }
+            }
+          } catch (e) {
+            // ignore parse errors
+          }
+        }
+      }
+      resolve()
+    }
+
+    check()
+  })
+}
+
+// Process a single task
+async function processTask(task: Task, project: Project, eventStream: ReadableStream) {
+  console.log(`Processing task: ${task.id} (${task.title})`)
+
+  // 1. Claim
+  const context = claimTask(task.id, project.path)
+  if (!context) {
+    console.error(`Failed to claim task ${task.id}`)
+    return
+  }
+
+  // 2. Create worktree
+  const worktreeName = `task-${task.id}`
+  const worktreeDir = await createWorktree(project.path, worktreeName)
+  if (!worktreeDir) {
+    console.error(`Failed to create worktree for ${task.id}`)
+    return
+  }
+
+  // 3. Create session
+  const sessionId = await createSession(worktreeDir, `Task: ${task.id}`)
+  if (!sessionId) {
+    console.error(`Failed to create session for ${task.id}`)
+    await deleteWorktree(project.path, worktreeName)
+    return
+  }
+
+  // 4. Track
+  activeTasks.set(task.id, {
+    issueId: task.id,
+    sessionId,
+    worktreeName,
+    project,
+    type: task.type,
+  })
+
+  // 5. Inject context
+  await injectContext(sessionId, context)
+
+  // 6. Send prompt
+  await sendPrompt(sessionId, "Execute the task.")
+
+  // 7. Wait for idle
+  await waitIdle(sessionId, eventStream)
+
+  // 8. Loop: inject done instructions until issue is closed
+  let attempts = 0
+  const MAX_ATTEMPTS = 10
+
+  while (!isIssueClosed(task.id, project.path) && attempts < MAX_ATTEMPTS) {
+    console.log(`Task ${task.id} not closed yet, injecting done instructions (attempt ${attempts + 1})`)
+
+    const doneInstructions = getDoneInstructions(task.id, project.path)
+    if (doneInstructions) {
+      await injectContext(sessionId, doneInstructions)
+      await sendPrompt(sessionId, "Follow the instructions above to complete this task.")
+      await waitIdle(sessionId, eventStream)
+    }
+
+    attempts++
+  }
+
+  if (attempts >= MAX_ATTEMPTS) {
+    console.error(`Task ${task.id} not closed after ${MAX_ATTEMPTS} attempts`)
+  }
+
+  // 9. Cleanup
+  await deleteSession(sessionId)
+  await deleteWorktree(project.path, worktreeName)
+  activeTasks.delete(task.id)
+
+  console.log(`Task ${task.id} completed`)
+}
+
+// Poll loop
+async function poll() {
+  for (const [, project] of projects) {
+    if (activeTasks.size >= MAX_CONCURRENT) break
+
+    const tasks = fetchAssignableTasks(project)
+    for (const task of tasks) {
+      if (activeTasks.size >= MAX_CONCURRENT) break
+      if (activeTasks.has(task.id)) continue
+
+      // Get event stream for this poll cycle
+      const eventStream = await subscribeEvents()
+      if (!eventStream) {
+        console.error("Failed to subscribe to events")
+        continue
+      }
+
+      await processTask(task, project, eventStream)
+    }
+  }
+}
+
+// HTTP server for registration
+const server = Bun.serve({
+  port: SERVER_PORT,
+  async fetch(req) {
+    const url = new URL(req.url)
+
+    if (url.pathname === "/projects/register" && req.method === "POST") {
+      const body = await req.json() as any
+      const configPath = `${body.path}/.beads/config.yaml`
+
+      // Parse prefix from config.yaml
+      let prefix = "default"
+      try {
+        const config = Bun.file(configPath)
+        if (await config.exists()) {
+          const content = await config.text()
+          const match = content.match(/prefix:\s*(.+)/)
+          if (match) prefix = match[1].trim()
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      projects.set(body.path, { path: body.path, prefix, lastPoll: 0 })
+      return Response.json({ ok: true, prefix })
+    }
+
+    if (url.pathname === "/projects/list") {
+      return Response.json({ projects: Array.from(projects.values()) })
+    }
+
+    if (url.pathname === "/health") {
+      return Response.json({
+        ok: true,
+        activeTasks: activeTasks.size,
+        maxTasks: MAX_CONCURRENT,
+        projects: projects.size,
+      })
+    }
+
+    return new Response("Not found", { status: 404 })
+  },
+})
+
+// Main loop
+setInterval(poll, POLL_INTERVAL)
+
+console.log(`Orchestration server running on :${SERVER_PORT}`)
+console.log(`OpenCode URL: ${OPENCODE_URL}`)
+console.log(`Max concurrent tasks: ${MAX_CONCURRENT}`)

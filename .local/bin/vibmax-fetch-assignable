@@ -1,0 +1,41 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax fetch-assignable"
+  echo "Fetch ready tasks with orchestrator:assignable label."
+  echo "Only returns tasks that are at least 30 seconds old."
+  echo ""
+  echo "Output: JSON array of tasks"
+  exit 0
+fi
+
+# Check beads is initialized
+if ! command -v bd >/dev/null 2>&1; then
+  echo "Error: bd command not found."
+  exit 1
+fi
+
+if [ ! -d ".beads" ]; then
+  echo "Error: beads not initialized."
+  exit 1
+fi
+
+# Get current time in seconds
+NOW=$(date +%s)
+MIN_AGE=30
+
+# Get ready tasks and filter by label and age
+bd ready --json 2>/dev/null | jq -r --argjson now "$NOW" --argjson min_age "$MIN_AGE" '
+  [.[] | select(.labels[]? == "orchestrator:assignable")]
+  | [.[] | select(
+      (.created_at // 0) <= ($now - $min_age)
+    )]
+  | [.[] | {
+      id: .id,
+      title: .title,
+      description: (.description // ""),
+      labels: (.labels // []),
+      phase: (.labels | map(select(startswith("phase:"))) | .[0] // "" | ltrimstr("phase:")),
+      type: (if (.labels | any(. == "phase:test")) then "test" else "do" end),
+      created_at: (.created_at // 0)
+    }]
+'
