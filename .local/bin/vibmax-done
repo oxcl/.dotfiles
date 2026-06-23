@@ -20,8 +20,11 @@ PHASE=$(bd list --json | jq --arg id "$ISSUE_ID" -r '.[] | select(.id == $id) | 
 if [ -z "$PHASE" ]; then
   TITLE=$(bd list --json | jq --arg id "$ISSUE_ID" -r '.[] | select(.id == $id) | .title // ""')
   case "$TITLE" in
-    "Do:"*|"Test:"*)
-      PHASE="action"
+    "Do:"*)
+      PHASE="do"
+      ;;
+    "Test:"*)
+      PHASE="test"
       ;;
     "Vision:"*)
       PHASE="vision"

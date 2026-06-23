@@ -1,12 +1,13 @@
 1. **Create action molecules for each vertical slice.** For each approved task, run:
    ```
-   vibmax create-action "<task-name>" <action-phase-id> <<'EOF'
+   vibmax create-action "<task-name>" <your-task-id> <<'EOF'
    {
      "do_instructions": "What to implement for this specific slice...",
      "test_instructions": "What to test and how for this specific slice..."
    }
    EOF
    ```
+   Replace `<your-task-id>` with this task's ID (shown at the top when you claimed it).
 
 2. **Wire dependencies.** For each blocking relationship, run:
    ```

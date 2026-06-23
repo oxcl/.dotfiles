@@ -1,0 +1,64 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax reject <test-issue-id> <<'EOF'"
+  echo "Review report: what needs to be fixed..."
+  echo "EOF"
+  echo ""
+  echo "Reject a test review, create new do+test pair with review report."
+  exit 0
+fi
+
+TEST_ID="$1"
+
+if [ -z "$TEST_ID" ]; then
+  echo "Error: test issue ID required"
+  exit 1
+fi
+
+# Read review report from stdin
+REVIEW_REPORT=$(cat)
+
+if [ -z "$REVIEW_REPORT" ]; then
+  echo "Error: review report required via stdin"
+  exit 1
+fi
+
+# Get the original task name (remove "Test: " prefix)
+TITLE=$(bd show "$TEST_ID" --json 2>/dev/null | jq -r '.[0].title // ""')
+TASK_NAME=$(echo "$TITLE" | sed 's/^Test: //')
+
+if [ -z "$TASK_NAME" ]; then
+  echo "Error: could not determine task name from $TEST_ID"
+  exit 1
+fi
+
+# Find the parent molecule (action phase)
+PARENT_ID=$(bd show "$TEST_ID" --json 2>/dev/null | jq -r '.[0].parent // ""')
+if [ -z "$PARENT_ID" ]; then
+  echo "Error: could not find parent for $TEST_ID"
+  exit 1
+fi
+
+# Get test instructions from current test issue description
+TEST_INSTRUCTIONS=$(bd show "$TEST_ID" --json 2>/dev/null | jq -r '.[0].description // ""')
+
+# Create new do+test molecule with review report and test instructions
+MOLECULE_ID=$(echo "{\"do_instructions\": \"$REVIEW_REPORT\", \"test_instructions\": \"$TEST_INSTRUCTIONS\"}" | vibmax create-action "$TASK_NAME" "$PARENT_ID")
+
+if [ -z "$MOLECULE_ID" ]; then
+  echo "Error: failed to create new molecule"
+  exit 1
+fi
+
+# Find new test issue in the molecule
+NEW_TEST_ID=$(bd list --parent "$MOLECULE_ID" --json 2>/dev/null | jq -r '.[] | select(.title | startswith("Test:")) | .id')
+
+# Wire dependency: new test blocks old test (so old test can close)
+if [ -n "$NEW_TEST_ID" ]; then
+  bd dep add "$TEST_ID" "$NEW_TEST_ID" --type blocks --json >/dev/null 2>&1
+fi
+
+# Close the current test issue
+bd close "$TEST_ID" --reason "Review failed, new pair created" --force 2>/dev/null
+
+echo "Test rejected. New molecule: $MOLECULE_ID"

@@ -19,6 +19,19 @@ bd update "$ISSUE_ID" --claim --json >/dev/null 2>&1
 # Get the issue details with labels
 PHASE=$(bd list --json | jq --arg id "$ISSUE_ID" -r '.[] | select(.id == $id) | .labels[]? | select(startswith("phase:")) | split(":")[1]')
 
+# If no phase label, determine from title
+if [ -z "$PHASE" ]; then
+  TITLE=$(bd list --json | jq --arg id "$ISSUE_ID" -r '.[] | select(.id == $id) | .title // ""')
+  case "$TITLE" in
+    "Do:"*)
+      PHASE="do"
+      ;;
+    "Test:"*)
+      PHASE="test"
+      ;;
+  esac
+fi
+
 # Show the issue details (includes notes)
 bd show "$ISSUE_ID"
 

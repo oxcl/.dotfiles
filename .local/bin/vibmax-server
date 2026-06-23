@@ -1,6 +1,8 @@
 #!/usr/bin/env bun
 
 import { execSync } from "child_process"
+import { existsSync, readFileSync, writeFileSync } from "fs"
+import { join } from "path"
 
 // Types
 interface Project {
@@ -27,32 +29,85 @@ interface ActiveTask {
   type: "do" | "test"
 }
 
+// Config
+const CACHE_DIR = join(process.env.HOME || "/home/user", ".cache", "vibmax-server")
+const PROJECTS_FILE = join(CACHE_DIR, "projects.json")
+
 // State
-const projects = new Map<string, Project>()
+let projects = new Map<string, Project>()
 const activeTasks = new Map<string, ActiveTask>()
 const MAX_CONCURRENT = 10
 const POLL_INTERVAL = 10000 // 10 seconds
 const OPENCODE_URL = process.env.OPENCODE_URL || "http://localhost:4096"
 const SERVER_PORT = parseInt(process.env.VIBMAX_PORT || "4097")
 
+// Load projects from file
+function loadProjects(): void {
+  try {
+    if (existsSync(PROJECTS_FILE)) {
+      const data = readFileSync(PROJECTS_FILE, "utf-8")
+      const arr = JSON.parse(data)
+      for (const p of arr) {
+        projects.set(p.path, p)
+      }
+      console.log(`[DEBUG] Loaded ${projects.size} projects from ${PROJECTS_FILE}`)
+    }
+  } catch (e) {
+    console.error(`[ERROR] Failed to load projects: ${e}`)
+  }
+}
+
+// Save projects to file
+function saveProjects(): void {
+  try {
+    // Ensure directory exists
+    const dir = PROJECTS_FILE.substring(0, PROJECTS_FILE.lastIndexOf("/"))
+    execSync(`mkdir -p "${dir}"`, { encoding: "utf-8" })
+
+    const arr = Array.from(projects.values())
+    writeFileSync(PROJECTS_FILE, JSON.stringify(arr, null, 2))
+  } catch (e) {
+    console.error(`[ERROR] Failed to save projects: ${e}`)
+  }
+}
+
 // Helper: run command from project directory
 function runScript(script: string, args: string[], cwd: string): string {
   try {
-    return execSync(`${script} ${args.join(" ")}`, { cwd, encoding: "utf-8" }).trim()
-  } catch (e) {
-    console.error(`Error running ${script}: ${e}`)
+    const cmd = `${script} ${args.join(" ")}`
+    console.log(`[DEBUG] Running: ${cmd} (in ${cwd})`)
+    const result = execSync(cmd, { cwd, encoding: "utf-8" }).trim()
+    console.log(`[DEBUG] Result length: ${result.length}`)
+    return result
+  } catch (e: any) {
+    console.error(`[ERROR] Running ${script}: ${e.message}`)
     return ""
   }
 }
 
 // Helper: fetch assignable tasks for a project
 function fetchAssignableTasks(project: Project): Task[] {
+  console.log(`[DEBUG] Fetching tasks for ${project.path}`)
   const output = runScript("vibmax-fetch-assignable", [], project.path)
-  if (!output) return []
+  if (!output) {
+    console.log(`[DEBUG] No output from fetch-assignable`)
+    return []
+  }
   try {
-    return JSON.parse(output)
+    const tasks = JSON.parse(output)
+    console.log(`[DEBUG] Found ${tasks.length} tasks`)
+    if (tasks.length === 0) {
+      // Debug: check what bd ready returns
+      const rawOutput = runScript("bd", ["ready", "--json"], project.path)
+      console.log(`[DEBUG] bd ready raw output length: ${rawOutput.length}`)
+      if (rawOutput.length > 0 && rawOutput !== "[]") {
+        console.log(`[DEBUG] bd ready sample: ${rawOutput.substring(0, 500)}`)
+      }
+    }
+    return tasks
   } catch (e) {
-    console.error(`Error parsing tasks for ${project.path}: ${e}`)
+    console.error(`[ERROR] Parsing tasks: ${e}`)
+    console.error(`[ERROR] Raw output: ${output.substring(0, 200)}`)
     return []
   }
 }
@@ -183,7 +238,13 @@ async function subscribeEvents(): Promise<ReadableStream | null> {
 }
 
 // Wait for session to become idle
-async function waitIdle(sessionId: string, eventStream: ReadableStream): Promise<void> {
+async function waitIdle(sessionId: string): Promise<void> {
+  const eventStream = await subscribeEvents()
+  if (!eventStream) {
+    console.error(`Failed to subscribe to events for session ${sessionId}`)
+    return
+  }
+
   return new Promise((resolve) => {
     const reader = eventStream.getReader()
     const decoder = new TextDecoder()
@@ -223,7 +284,7 @@ async function waitIdle(sessionId: string, eventStream: ReadableStream): Promise
 }
 
 // Process a single task
-async function processTask(task: Task, project: Project, eventStream: ReadableStream) {
+async function processTask(task: Task, project: Project) {
   console.log(`Processing task: ${task.id} (${task.title})`)
 
   // 1. Claim
@@ -265,7 +326,7 @@ async function processTask(task: Task, project: Project, eventStream: ReadableSt
   await sendPrompt(sessionId, "Execute the task.")
 
   // 7. Wait for idle
-  await waitIdle(sessionId, eventStream)
+  await waitIdle(sessionId)
 
   // 8. Loop: inject done instructions until issue is closed
   let attempts = 0
@@ -278,7 +339,7 @@ async function processTask(task: Task, project: Project, eventStream: ReadableSt
     if (doneInstructions) {
       await injectContext(sessionId, doneInstructions)
       await sendPrompt(sessionId, "Follow the instructions above to complete this task.")
-      await waitIdle(sessionId, eventStream)
+      await waitIdle(sessionId)
     }
 
     attempts++
@@ -298,22 +359,28 @@ async function processTask(task: Task, project: Project, eventStream: ReadableSt
 
 // Poll loop
 async function poll() {
-  for (const [, project] of projects) {
-    if (activeTasks.size >= MAX_CONCURRENT) break
+  console.log(`[DEBUG] Polling... (${projects.size} projects, ${activeTasks.size} active tasks)`)
+
+  for (const [path, project] of projects) {
+    console.log(`[DEBUG] Checking project: ${path}`)
+    if (activeTasks.size >= MAX_CONCURRENT) {
+      console.log(`[DEBUG] Max concurrent reached, skipping`)
+      break
+    }
 
     const tasks = fetchAssignableTasks(project)
+    console.log(`[DEBUG] Got ${tasks.length} tasks from ${path}`)
+
     for (const task of tasks) {
       if (activeTasks.size >= MAX_CONCURRENT) break
-      if (activeTasks.has(task.id)) continue
-
-      // Get event stream for this poll cycle
-      const eventStream = await subscribeEvents()
-      if (!eventStream) {
-        console.error("Failed to subscribe to events")
+      if (activeTasks.has(task.id)) {
+        console.log(`[DEBUG] Task ${task.id} already active, skipping`)
         continue
       }
 
-      await processTask(task, project, eventStream)
+      console.log(`[DEBUG] Processing task: ${task.id}`)
+
+      await processTask(task, project)
     }
   }
 }
@@ -342,6 +409,8 @@ const server = Bun.serve({
       }
 
       projects.set(body.path, { path: body.path, prefix, lastPoll: 0 })
+      saveProjects()
+      console.log(`[DEBUG] Registered project: ${body.path} (prefix: ${prefix})`)
       return Response.json({ ok: true, prefix })
     }
 
@@ -362,9 +431,13 @@ const server = Bun.serve({
   },
 })
 
+// Load projects on startup
+loadProjects()
+
 // Main loop
 setInterval(poll, POLL_INTERVAL)
 
 console.log(`Orchestration server running on :${SERVER_PORT}`)
 console.log(`OpenCode URL: ${OPENCODE_URL}`)
 console.log(`Max concurrent tasks: ${MAX_CONCURRENT}`)
+console.log(`Projects file: ${PROJECTS_FILE}`)

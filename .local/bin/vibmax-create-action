@@ -1,32 +1,35 @@
 #!/bin/sh
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-  echo "Usage: vibmax create-action <task-name> <parent-id> <<'EOF'"
+  echo "Usage: vibmax create-action <task-name> <from-task-id> <<'EOF'"
   echo "{"
   echo '  "do_instructions": "What to implement...",'
   echo '  "test_instructions": "What to test and how..."'
   echo "}"
   echo "EOF"
   echo ""
-  echo "Pour a vibmax-action molecule nested under a parent issue."
+  echo "Pour a vibmax-action molecule nested under the action phase."
   echo ""
   echo "Arguments:"
-  echo "  task-name   Name of the action task"
-  echo "  parent-id   Parent issue ID (usually the action phase)"
+  echo "  task-name     Name of the action task"
+  echo "  from-task-id  The task you are working on (e.g. multiplex task ID)"
   echo ""
-  echo "The molecule will be created with do/test steps and labeled"
-  echo "for orchestrator pickup."
-  echo ""
-  echo "The do and test instructions are passed via stdin as JSON."
-  echo "They will be set as the description of the do and test issues."
+  echo "The script finds the action phase automatically from the workflow."
   exit 0
 fi
 
 TASK_NAME="$1"
-PARENT_ID="$2"
+FROM_TASK_ID="$2"
 
-if [ -z "$TASK_NAME" ] || [ -z "$PARENT_ID" ]; then
-  echo "Error: task-name and parent-id required"
-  echo "Usage: vibmax create-action <task-name> <parent-id>"
+if [ -z "$TASK_NAME" ] || [ -z "$FROM_TASK_ID" ]; then
+  echo "Error: task-name and from-task-id required"
+  echo "Usage: vibmax create-action <task-name> <from-task-id> <<'EOF'"
+  echo "{"
+  echo '  "do_instructions": "What to implement...",'
+  echo '  "test_instructions": "What to test and how..."'
+  echo "}"
+  echo "EOF"
+  echo ""
+  echo "from-task-id: the task you are currently working on (e.g. multiplex task)"
   exit 1
 fi
 
@@ -34,6 +37,25 @@ fi
 if ! bd stats --json >/dev/null 2>&1; then
   echo "Error: beads is not initialized in this directory."
   echo "Run 'vibmax init' first."
+  exit 1
+fi
+
+# Find the action phase: look for phase:action label in the same workflow
+# The from-task and action-phase share the same grandparent (vibmax root)
+FROM_PARENT=$(bd list --json 2>/dev/null | jq -r --arg id "$FROM_TASK_ID" '.[] | select(.id == $id) | .parent // empty')
+
+if [ -n "$FROM_PARENT" ]; then
+  # Find action phase as sibling of from-task's parent (both children of vibmax root)
+  PARENT_ID=$(bd list --json 2>/dev/null | jq -r --arg parent "$FROM_PARENT" '.[] | select(.parent == $parent and .labels[]? == "phase:action") | .id' | head -1)
+fi
+
+# Fallback: find any task with phase:action label
+if [ -z "$PARENT_ID" ]; then
+  PARENT_ID=$(bd list --json 2>/dev/null | jq -r '.[] | select(.labels[]? == "phase:action") | .id' | head -1)
+fi
+
+if [ -z "$PARENT_ID" ]; then
+  echo "Error: could not find action phase"
   exit 1
 fi
 

@@ -1,0 +1,24 @@
+#!/bin/sh
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  echo "Usage: vibmax pass <test-issue-id>"
+  echo "Close a test issue after successful review."
+  exit 0
+fi
+
+TEST_ID="$1"
+
+if [ -z "$TEST_ID" ]; then
+  echo "Error: test issue ID required"
+  exit 1
+fi
+
+# Verify this is a test issue
+TITLE=$(bd show "$TEST_ID" --json 2>/dev/null | jq -r '.[0].title // ""')
+if [[ "$TITLE" != Test:* ]]; then
+  echo "Error: $TEST_ID is not a test issue (title: $TITLE)"
+  exit 1
+fi
+
+# Close the test issue
+bd close "$TEST_ID" --reason "Review passed" --force 2>/dev/null
+echo "Test passed and closed: $TEST_ID"

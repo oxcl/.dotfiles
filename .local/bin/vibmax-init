@@ -29,4 +29,19 @@ rm -f .beads/hooks/prepare-commit-msg
 git add -A
 git commit --amend --no-edit
 
+# Register with vibmax server if running
+VIBMAX_PORT="${VIBMAX_PORT:-4097}"
+PROJECT_PATH="$(pwd)"
+if curl -sf "http://localhost:${VIBMAX_PORT}/health" >/dev/null 2>&1; then
+  if curl -sf -X POST "http://localhost:${VIBMAX_PORT}/projects/register" \
+    -H "Content-Type: application/json" \
+    -d "{\"path\": \"${PROJECT_PATH}\"}" >/dev/null 2>&1; then
+    echo "Registered with vibmax server"
+  else
+    echo "Warning: failed to register with vibmax server"
+  fi
+else
+  echo "Note: vibmax server not running, skipping registration"
+fi
+
 echo "Beads initialized"
